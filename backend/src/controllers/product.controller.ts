@@ -1,0 +1,134 @@
+import { Request, Response } from 'express';
+import { prisma } from '../db/prisma';
+import { AppError } from '../middleware/error.middleware';
+
+export const getProducts = async (req: Request, res: Response): Promise<void> => {
+  const {
+    page = '1', limit = '12', gender, category, minPrice, maxPrice,
+    sort = 'createdAt', order = 'desc', featured, bestSeller,
+    newArrival, search,
+  } = req.query;
+
+  const pageNum = parseInt(page as string);
+  const limitNum = parseInt(limit as string);
+  const skip = (pageNum - 1) * limitNum;
+
+  const where: Record<string, unknown> = { isActive: true };
+
+  if (gender) where.gender = (gender as string).toUpperCase();
+  if (featured === 'true') where.isFeatured = true;
+  if (bestSeller === 'true') where.isBestSeller = true;
+  if (newArrival === 'true') where.isNewArrival = true;
+  if (category) where.category = { slug: category };
+  if (search) {
+    where.OR = [
+      { name: { contains: search as string } },
+      { description: { contains: search as string } },
+      { tags: { contains: search as string } },
+    ];
+  }
+  if (minPrice || maxPrice) {
+    where.basePrice = {};
+    if (minPrice) (where.basePrice as Record<string, unknown>).gte = parseFloat(minPrice as string);
+    if (maxPrice) (where.basePrice as Record<string, unknown>).lte = parseFloat(maxPrice as string);
+  }
+
+  const orderBy: Record<string, string> = {};
+  orderBy[sort as string] = order as string;
+
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+      where,
+      include: {
+        images: { where: { isPrimary: true }, take: 1 },
+        category: { select: { name: true, slug: true } },
+      },
+      skip,
+      take: limitNum,
+      orderBy,
+    }),
+    prisma.product.count({ where }),
+  ]);
+
+  const parsed = products.map((p) => ({
+    ...p,
+    tags: safeParseJson(p.tags, []),
+  }));
+
+  res.json({
+    success: true,
+    data: parsed,
+    pagination: {
+      page: pageNum, limit: limitNum, total,
+      pages: Math.ceil(total / limitNum),
+    },
+  });
+};
+
+export const getProductById = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const product = await prisma.product.findFirst({
+    where: { OR: [{ id }, { slug: id }], isActive: true },
+    include: {
+      images: { orderBy: { angle: 'asc' } },
+      category: true,
+      variants: true,
+      reviews: {
+        include: { user: { select: { firstName: true, lastName: true, avatar: true } } },
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+      },
+    },
+  });
+
+  if (!product) throw new AppError('Product not found', 404);
+
+  res.json({
+    success: true,
+    data: {
+      ...product,
+      tags: safeParseJson(product.tags, []),
+      reviews: product.reviews.map((r) => ({
+        ...r,
+        images: safeParseJson(r.images, []),
+      })),
+    },
+  });
+};
+
+export const getCategories = async (req: Request, res: Response): Promise<void> => {
+  const categories = await prisma.category.findMany({
+    where: { parentId: null },
+    include: {
+      children: true,
+      _count: { select: { products: true } },
+    },
+  });
+  res.json({ success: true, data: categories });
+};
+
+export const getFeaturedProducts = async (req: Request, res: Response): Promise<void> => {
+  const products = await prisma.product.findMany({
+    where: { isFeatured: true, isActive: true },
+    include: { images: { where: { isPrimary: true }, take: 1 } },
+    take: 8,
+  });
+  res.json({ success: true, data: products.map((p) => ({ ...p, tags: safeParseJson(p.tags, []) })) });
+};
+
+export const getRelatedProducts = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const product = await prisma.product.findUnique({ where: { id } });
+  if (!product) throw new AppError('Product not found', 404);
+
+  const related = await prisma.product.findMany({
+    where: { categoryId: product.categoryId, gender: product.gender, id: { not: id }, isActive: true },
+    include: { images: { where: { isPrimary: true }, take: 1 } },
+    take: 6,
+  });
+  res.json({ success: true, data: related.map((p) => ({ ...p, tags: safeParseJson(p.tags, []) })) });
+};
+
+function safeParseJson(val: string, fallback: unknown) {
+  try { return JSON.parse(val); } catch { return fallback; }
+}
