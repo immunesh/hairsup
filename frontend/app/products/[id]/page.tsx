@@ -11,10 +11,10 @@ import {
 import Product360View from '@/components/features/Product360View';
 import ProductCard from '@/components/ui/ProductCard';
 import StarRating from '@/components/ui/StarRating';
-import { DEMO_PRODUCTS, formatPrice, getDiscountPercent, formatDate } from '@/lib/utils';
+import { formatPrice, getDiscountPercent, formatDate } from '@/lib/utils';
 import { Product } from '@/types';
 import { useCartStore, useWishlistStore, useAuthStore, useUIStore } from '@/lib/store';
-import { cartApi, wishlistApi } from '@/lib/api';
+import { cartApi, wishlistApi, productsApi } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
 const PRODUCT_TABS = ['Description', 'Care Guide', 'Reviews', 'FAQ'];
@@ -32,40 +32,98 @@ export default function ProductDetailPage() {
   const [viewMode, setViewMode] = useState<'gallery' | '360'>('gallery');
   const [activeImage, setActiveImage] = useState(0);
   const [userRating, setUserRating] = useState(0);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const { isAuthenticated } = useAuthStore();
   const { addItem: addToCart } = useCartStore();
   const { items: wishlistItems, addItem: addToWishlist, removeItem: removeFromWishlist } = useWishlistStore();
   const { showToast } = useUIStore();
 
-  useEffect(() => {
-    const found = DEMO_PRODUCTS.find(
-      (p) => p.id === productId || p.slug === productId
-    ) as unknown as Product | undefined;
+  const loadProduct = async () => {
+    setLoadError(null);
+    try {
+      const response = await productsApi.getById(productId);
+      const productData = response.data.data; 
 
-    if (found) {
-      setProduct(found);
-      const related = DEMO_PRODUCTS.filter(
-        (p) => p.gender === found.gender && p.id !== found.id
-      ).slice(0, 4) as unknown as Product[];
-      setRelatedProducts(related);
+      setProduct(productData);
+      setActiveImage(0);
+
+      const relatedResponse = await productsApi.getRelated(productData.id);
+      setRelatedProducts(relatedResponse.data.data.slice(0, 4));
+    } catch (err: any) {
+      // Log full error for developer debugging and show a friendly message
+      console.error('Failed to load product (axios)', err);
+      const axiosMsg = err?.response?.data?.message || err?.message || 'Network Error';
+      // Try a plain fetch fallback to see if axios-specific behavior or CORS is the problem
+      try {
+        const API_BASE = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:5000/api';
+        const fallbackRes = await fetch(`${API_BASE}/products/${productId}`);
+        const text = await fallbackRes.text();
+        if (fallbackRes.ok) {
+          // parse JSON and set product if possible
+          try {
+            const parsed = JSON.parse(text);
+            const productData = parsed.data;
+            setProduct(productData);
+            setActiveImage(0);
+            // try related via fetch too
+            try {
+              const relRes = await fetch(`${API_BASE}/products/${productData.id}/related`);
+              if (relRes.ok) {
+                const relParsed = await relRes.json();
+                setRelatedProducts(relParsed.data.slice(0, 4));
+              }
+            } catch (e) {
+              console.warn('Related fetch fallback failed', e);
+            }
+            return;
+          } catch (parseErr) {
+            console.warn('Fallback response not JSON', parseErr, text);
+          }
+        } else {
+          console.warn('Fallback fetch failed', fallbackRes.status, text);
+        }
+        setLoadError(`Network Error: ${axiosMsg} (fallback status: ${fallbackRes.status})`);
+      } catch (fetchErr) {
+        console.error('Fallback fetch also failed', fetchErr);
+        setLoadError(axiosMsg || 'Unable to load product details.');
+      }
     }
+  };
+
+  useEffect(() => {
+    if (productId) loadProduct();
   }, [productId]);
 
   if (!product) {
     return (
       <div className="container-custom py-20 text-center">
-        <div className="animate-pulse">
-          <div className="skeleton h-96 w-full rounded-2xl mb-6" />
-          <div className="skeleton h-8 w-64 mx-auto mb-3 rounded" />
-          <div className="skeleton h-4 w-96 mx-auto rounded" />
-        </div>
+        {loadError ? (
+          <div className="space-y-4">
+            <div className="text-red-600 text-lg font-medium">{loadError}</div>
+            <div>
+              <button
+                onClick={() => loadProduct()}
+                className="mt-2 inline-flex items-center px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="animate-pulse">
+            <div className="skeleton h-96 w-full rounded-2xl mb-6" />
+            <div className="skeleton h-8 w-64 mx-auto mb-3 rounded" />
+            <div className="skeleton h-4 w-96 mx-auto rounded" />
+          </div>
+        )}
       </div>
     );
   }
 
   const isWishlisted = wishlistItems.some((i) => i.productId === product.id);
-  const primaryImage = product.images?.find((i) => i.isPrimary) || product.images?.[0];
+  const sortedImages = (product.images || []).slice().sort((a, b) => a.angle - b.angle);
+  const primaryImage = sortedImages.find((i) => i.isPrimary) || sortedImages[0];
   const discountPct = product.salePrice ? getDiscountPercent(product.basePrice, product.salePrice) : 0;
 
   const handleAddToCart = async () => {
@@ -142,17 +200,20 @@ export default function ProductDetailPage() {
             </div>
 
             {viewMode === '360' ? (
-              <Product360View images={product.images || [{ id: '1', url: primaryImage?.url || '', isPrimary: true, angle: 0 }]} productName={product.name} />
+              <Product360View
+                images={sortedImages.length > 0 ? sortedImages : [{ id: 'fallback', url: primaryImage?.url || '', angle: 0, isPrimary: true }]}
+                productName={product.name}
+              />
             ) : (
               <div className="space-y-3">
                 {/* Main image */}
-                <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 group">
-                  {product.images?.[activeImage] && (
+                <div className="relative rounded-2xl overflow-hidden bg-gray-50 group w-full h-[560px]">
+                  {sortedImages[activeImage] && (
                     <Image
-                      src={product.images[activeImage].url}
+                      src={sortedImages[activeImage].url}
                       alt={product.name}
                       fill
-                      className="object-cover"
+                      className="object-fill pointer-events-none"
                       priority
                       sizes="(max-width: 1024px) 100vw, 50vw"
                     />
@@ -165,9 +226,9 @@ export default function ProductDetailPage() {
                   )}
                 </div>
                 {/* Thumbnails */}
-                {product.images && product.images.length > 1 && (
+                {sortedImages.length > 1 && (
                   <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-                    {product.images.map((img, idx) => (
+                    {sortedImages.map((img, idx) => (
                       <button
                         key={img.id}
                         onClick={() => setActiveImage(idx)}
@@ -176,7 +237,7 @@ export default function ProductDetailPage() {
                           activeImage === idx ? 'border-brand-500' : 'border-gray-200 hover:border-brand-300'
                         )}
                       >
-                        <Image src={img.url} alt={`View ${idx + 1}`} fill className="object-cover" sizes="80px" />
+                          <Image src={img.url} alt={`View ${idx + 1}`} fill className="object-fill" sizes="80px" />
                       </button>
                     ))}
                   </div>

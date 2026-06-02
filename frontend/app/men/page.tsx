@@ -5,6 +5,7 @@ import { Grid, List, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import ProductCard from '@/components/ui/ProductCard';
 import FilterSidebar from '@/components/ui/FilterSidebar';
 import { DEMO_PRODUCTS } from '@/lib/utils';
+import { productsApi } from '@/lib/api';
 import { Product } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -42,9 +43,27 @@ export default function MenPage() {
   const [activeSubcat, setActiveSubcat] = useState('');
 
   useEffect(() => {
-    const menProducts = DEMO_PRODUCTS.filter((p) => p.gender === 'MEN') as unknown as Product[];
-    setProducts(menProducts);
-  }, []);
+    let mounted = true;
+    const load = async () => {
+      try {
+        const res = await productsApi.getAll();
+        let list = (res.data.data || []) as Product[];
+        list = list.filter((p) => p.gender === 'MEN');
+        if (activeSubcat) {
+          const val = activeSubcat;
+          if (val === 'human-hair') list = list.filter((p) => String(p.material || '').toLowerCase().includes('human'));
+          else if (val === 'hair-system') list = list.filter((p) => String(p.name || '').toLowerCase().includes('system') || String(p.description || '').toLowerCase().includes('system'));
+          else if (val === 'toupee') list = list.filter((p) => String(p.name || '').toLowerCase().includes('toupee'));
+        }
+        if (mounted) setProducts(list);
+      } catch (e) {
+        const menProducts = DEMO_PRODUCTS.filter((p) => p.gender === 'MEN') as unknown as Product[];
+        if (mounted) setProducts(menProducts);
+      }
+    };
+    load();
+    return () => { mounted = false; };
+  }, [activeSubcat]);
 
   const handleFilterChange = (key: string, value: string | string[] | undefined) => {
     setFilters((prev) => ({ ...prev, [key]: value }));

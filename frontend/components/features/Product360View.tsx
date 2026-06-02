@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
-import Image from 'next/image';
+import { useState, useRef, useCallback, useEffect } from 'react';
+import NextImage from 'next/image';
 import { RotateCcw, ZoomIn, ZoomOut, Play, Pause, Expand } from 'lucide-react';
 import { ProductImage } from '@/types';
 import { cn } from '@/lib/utils';
@@ -13,71 +13,126 @@ interface Product360ViewProps {
 
 export default function Product360View({ images, productName }: Product360ViewProps) {
   const sortedImages = [...images].sort((a, b) => a.angle - b.angle);
+  const length = sortedImages.length;
+
+  // currentIndex is the frame index shown. We update it via RAF from a ref for smoothness.
   const [currentIndex, setCurrentIndex] = useState(0);
+  const isAutoPlayingRef = useRef(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
+  const isDraggingRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [dragStartX, setDragStartX] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const positionRef = useRef(0); // fractional frame position
+  const velocityRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const pointerIdRef = useRef<number | null>(null);
+  const lastPointerXRef = useRef<number | null>(null);
+  const preloadedRef = useRef<Record<string, HTMLImageElement>>({});
 
   const goToIndex = useCallback((index: number) => {
-    setCurrentIndex(((index % sortedImages.length) + sortedImages.length) % sortedImages.length);
-  }, [sortedImages.length]);
+    if (length === 0) return;
+    const wrapped = ((Math.floor(index) % length) + length) % length;
+    setCurrentIndex(wrapped);
+    positionRef.current = index; // keep fractional position in sync
+  }, [length]);
 
+  // Auto-play uses RAF to advance smoothly
   const startAutoPlay = useCallback(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % sortedImages.length);
-    }, 120);
+    isAutoPlayingRef.current = true;
     setIsAutoPlaying(true);
-  }, [sortedImages.length]);
+  }, []);
 
   const stopAutoPlay = useCallback(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
+    isAutoPlayingRef.current = false;
     setIsAutoPlaying(false);
   }, []);
 
   const toggleAutoPlay = () => {
-    if (isAutoPlaying) stopAutoPlay();
+    if (isAutoPlayingRef.current) stopAutoPlay();
     else startAutoPlay();
   };
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  // Pointer-based dragging (mouse & touch unified)
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (length === 0) return;
+    const el = e.currentTarget as Element;
+    (el as HTMLElement).setPointerCapture(e.pointerId);
+    pointerIdRef.current = e.pointerId;
+    lastPointerXRef.current = e.clientX;
+    isDraggingRef.current = true;
     setIsDragging(true);
-    setDragStartX(e.clientX);
+    velocityRef.current = 0;
     stopAutoPlay();
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    const delta = e.clientX - dragStartX;
-    if (Math.abs(delta) > 10) {
-      const direction = delta > 0 ? -1 : 1;
-      goToIndex(currentIndex + direction);
-      setDragStartX(e.clientX);
-    }
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!isDraggingRef.current || lastPointerXRef.current === null) return;
+    const dx = e.clientX - lastPointerXRef.current;
+    lastPointerXRef.current = e.clientX;
+    // sensitivity: pixels per full rotation (8 frames) -> tune
+    const pixelsPerRevolution = 240; // swipe 240px for one full cycle
+    const framesPerRevolution = Math.max(1, length);
+    const deltaFrames = (dx / pixelsPerRevolution) * framesPerRevolution;
+    positionRef.current = positionRef.current - deltaFrames; // dragging right should go previous frame
+    // small damping
+    velocityRef.current = deltaFrames;
   };
 
-  const handleMouseUp = () => setIsDragging(false);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setDragStartX(e.touches[0].clientX);
-    stopAutoPlay();
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    const delta = e.touches[0].clientX - dragStartX;
-    if (Math.abs(delta) > 8) {
-      const direction = delta > 0 ? -1 : 1;
-      goToIndex(currentIndex + direction);
-      setDragStartX(e.touches[0].clientX);
+  const endPointer = (e?: React.PointerEvent) => {
+    if (pointerIdRef.current !== null && containerRef.current) {
+      try { containerRef.current.releasePointerCapture(pointerIdRef.current); } catch {}
     }
+    pointerIdRef.current = null;
+    lastPointerXRef.current = null;
+    isDraggingRef.current = false;
+    setIsDragging(false);
+    // gentle inertia based on velocity
+    // velocityRef.current retains last deltaFrames value
   };
 
   const currentImage = sortedImages[currentIndex];
-  const progress = ((currentIndex + 1) / sortedImages.length) * 100;
+
+  // Preload images once
+  useEffect(() => {
+    sortedImages.forEach((img) => {
+      if (preloadedRef.current[img.url]) return;
+      const i = new (globalThis as any).Image();
+      i.src = img.url;
+      i.onload = () => { preloadedRef.current[img.url] = i; };
+    });
+  }, [sortedImages]);
+
+  // RAF loop to update frame based on positionRef, autoplay, and inertia
+  useEffect(() => {
+    const tick = () => {
+      // autoplay advances position continuously
+      if (isAutoPlayingRef.current && length > 0) {
+        // rotate at ~6 frames per second
+        positionRef.current = positionRef.current + 6 / 60; // 6 fps
+      }
+
+      // inertia damping when not dragging
+      if (!isDraggingRef.current) {
+        velocityRef.current *= 0.92;
+        positionRef.current -= velocityRef.current * 0.5;
+        if (Math.abs(velocityRef.current) < 0.001) velocityRef.current = 0;
+      }
+
+      // normalize position to keep it within range (avoid huge numbers)
+      if (Math.abs(positionRef.current) > 1e6) positionRef.current = positionRef.current % length;
+
+      // determine new index
+      const newIndex = ((Math.floor(positionRef.current) % length) + length) % length;
+      setCurrentIndex((prev) => (prev === newIndex ? prev : newIndex));
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [length]);
 
   if (!currentImage) return null;
 
@@ -86,68 +141,40 @@ export default function Product360View({ images, productName }: Product360ViewPr
       <div
         ref={containerRef}
         className={cn(
-          'relative select-none overflow-hidden rounded-2xl bg-gray-50',
-          isFullscreen ? 'w-full h-full rounded-none' : 'aspect-square',
+          'relative overflow-hidden rounded-2xl bg-gray-50',
+          // fixed height when not fullscreen to avoid layout shifts during frame swaps
+          isFullscreen ? 'w-full h-full rounded-none' : 'w-full h-[560px]',
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         )}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={() => {}}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endPointer}
+        onPointerCancel={endPointer}
+        onPointerLeave={endPointer}
+        style={{ touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none' }}
       >
         {/* Main image */}
         <div
-          className="w-full h-full transition-transform duration-100"
+          className="w-full h-full transition-transform duration-100 flex items-center justify-center bg-transparent"
           style={{ transform: `scale(${zoom})` }}
         >
-          <Image
+          <NextImage
             src={currentImage.url}
-            alt={`${productName} — ${currentImage.angle}°`}
+            alt={productName}
             fill
-            className="object-cover pointer-events-none"
+            className="object-fill pointer-events-none"
             priority
             sizes="(max-width: 768px) 100vw, 50vw"
             draggable={false}
+            onDragStart={(e) => e.preventDefault()}
           />
         </div>
-
-        {/* 360° badge */}
-        <div className="absolute top-3 left-3 bg-black/70 text-white text-xs font-bold px-2 py-1 rounded-lg backdrop-blur-sm flex items-center gap-1">
-          <RotateCcw className="w-3 h-3" /> 360°
-        </div>
-
-        {/* Angle indicator */}
-        <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-lg backdrop-blur-sm">
-          {currentImage.angle}°
-        </div>
-
-        {/* Drag hint */}
-        {!isDragging && currentIndex === 0 && (
-          <div className="absolute inset-x-0 bottom-14 flex justify-center pointer-events-none">
-            <div className="bg-black/50 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm animate-pulse-soft flex items-center gap-2">
-              <span>←</span> Drag to rotate <span>→</span>
-            </div>
-          </div>
-        )}
-
-        {/* Progress bar */}
-        <div className="absolute bottom-0 inset-x-0 h-1 bg-white/20">
-          <div
-            className="h-full bg-brand-500 transition-all duration-100"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        {/* Note: angle labels and frame counters intentionally removed for professional UX */}
       </div>
 
       {/* Controls */}
       <div className="flex items-center gap-2 mt-3 px-1">
-        {/* Frame indicator */}
-        <span className="text-xs text-gray-500 mr-auto">
-          {currentIndex + 1} / {sortedImages.length} frames
-        </span>
+        <div className="flex-1" />
 
         {/* Zoom out */}
         <button
@@ -206,10 +233,7 @@ export default function Product360View({ images, productName }: Product360ViewPr
               i === currentIndex ? 'border-brand-500 scale-105' : 'border-gray-200 hover:border-brand-300'
             )}
           >
-            <Image src={img.url} alt={`${img.angle}°`} fill className="object-cover" sizes="56px" />
-            <span className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-[9px] text-center py-0.5">
-              {img.angle}°
-            </span>
+            <NextImage src={img.url} alt={productName} fill className="object-cover" sizes="56px" draggable={false} onDragStart={(e) => e.preventDefault()} />
           </button>
         ))}
       </div>

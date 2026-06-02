@@ -6,6 +6,7 @@ import { Grid, List, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import ProductCard from '@/components/ui/ProductCard';
 import FilterSidebar from '@/components/ui/FilterSidebar';
 import { DEMO_PRODUCTS } from '@/lib/utils';
+import { productsApi } from '@/lib/api';
 import { Product } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -39,9 +40,34 @@ export default function WomenPage() {
   const [activeSubcat, setActiveSubcat] = useState('');
 
   useEffect(() => {
-    const womenProducts = DEMO_PRODUCTS.filter((p) => p.gender === 'WOMEN') as unknown as Product[];
-    setProducts(womenProducts);
-  }, []);
+    let mounted = true;
+    const load = async () => {
+      try {
+        const res = await productsApi.getAll();
+        let list = (res.data.data || []) as Product[];
+        // filter women
+        list = list.filter((p) => p.gender === 'WOMEN');
+
+        // apply active subcategory heuristics
+        if (activeSubcat) {
+          const val = activeSubcat;
+          if (val === 'human-hair') list = list.filter((p) => String(p.material || '').toLowerCase().includes('human'));
+          else if (val === 'synthetic') list = list.filter((p) => String(p.material || '').toLowerCase().includes('synthetic'));
+          else if (val === 'lace-front') list = list.filter((p) => String(p.name || '').toLowerCase().includes('lace') || String(p.description || '').toLowerCase().includes('lace'));
+          else if (val === 'curly') list = list.filter((p) => String(p.texture || '').toLowerCase().includes('curly'));
+          else if (val === 'straight') list = list.filter((p) => String(p.texture || '').toLowerCase().includes('straight'));
+        }
+
+        if (mounted) setProducts(list);
+      } catch (e) {
+        // fallback to demo products
+        const womenProducts = DEMO_PRODUCTS.filter((p) => p.gender === 'WOMEN') as unknown as Product[];
+        if (mounted) setProducts(womenProducts);
+      }
+    };
+    load();
+    return () => { mounted = false; };
+  }, [activeSubcat]);
 
   const handleFilterChange = (key: string, value: string | string[] | undefined) => {
     setFilters((prev) => ({ ...prev, [key]: value }));

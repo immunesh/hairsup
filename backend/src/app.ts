@@ -17,8 +17,15 @@ import { errorHandler, notFound } from './middleware/error.middleware';
 const app = express();
 
 app.use(helmet());
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000').split(',').map((origin) => origin.trim());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+    callback(new Error('CORS not allowed by server'));
+  },
   credentials: true,
 }));
 app.use(compression());

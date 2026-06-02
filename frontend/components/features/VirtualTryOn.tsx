@@ -1,11 +1,13 @@
 'use client';
-
+import { getFaceLandmarker } from '@/lib/faceMesh';
+import { drawWig } from '@/lib/wigRenderer';
+import { getAngleIndex } from '@/lib/wigSelector';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Camera, CameraOff, RefreshCw, Download, Zap, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import { cn } from '@/lib/utils';
-
+import { FaceLandmarker } from "@mediapipe/tasks-vision";
 interface VirtualTryOnProps {
   products?: Product[];
   selectedProduct?: Product;
@@ -25,13 +27,22 @@ export default function VirtualTryOn({ products = [], selectedProduct }: Virtual
   const streamRef = useRef<MediaStream | null>(null);
   const animFrameRef = useRef<number>(0);
 
+
+const faceLandmarkerRef =
+  useRef<FaceLandmarker | null>(null);
+const wigImagesRef = useRef<Record<string, HTMLImageElement>>({});
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [selectedOverlay, setSelectedOverlay] = useState(0);
   const [selectedProductIdx, setSelectedProductIdx] = useState(0);
   const [processing, setProcessing] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [faceDetected, setFaceDetected] = useState(false);
+ const faceDetectedRef =
+  useRef(false);
+
+const [faceDetected, setFaceDetected] =
+  useState(false);
+ 
   const [mode, setMode] = useState<'camera' | 'upload'>('camera');
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
@@ -49,8 +60,13 @@ export default function VirtualTryOn({ products = [], selectedProduct }: Virtual
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
-        setCameraActive(true);
-        startRendering();
+
+faceLandmarkerRef.current =
+  await getFaceLandmarker();
+
+setCameraActive(true);
+
+startRendering();
       }
     } catch (err: unknown) {
       const error = err as Error;
@@ -71,7 +87,8 @@ export default function VirtualTryOn({ products = [], selectedProduct }: Virtual
     }
     if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     setCameraActive(false);
-    setFaceDetected(false);
+    faceDetectedRef.current = false;
+setFaceDetected(false);
   }, []);
 
   const startRendering = useCallback(() => {
@@ -82,80 +99,143 @@ export default function VirtualTryOn({ products = [], selectedProduct }: Virtual
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let frameCount = 0;
+    
 
-    const render = () => {
-      if (!videoRef.current || videoRef.current.readyState < 2) {
-        animFrameRef.current = requestAnimationFrame(render);
-        return;
-      }
+     const render = async () => {
+  if (
+    !videoRef.current ||
+    videoRef.current.readyState < 2
+  ) {
+    animFrameRef.current =
+      requestAnimationFrame(render);
 
-      canvas.width = video.videoWidth || 640;
-      canvas.height = video.videoHeight || 480;
+    return;
+  }
 
-      ctx.save();
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      ctx.restore();
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
 
-      frameCount++;
-      if (frameCount % 30 === 0) setFaceDetected(Math.random() > 0.3);
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
 
-      if (faceDetected) {
-        const cw = canvas.width;
-        const ch = canvas.height;
+  ctx.save();
 
-        // Simulate wig overlay in center of frame
-        const wigColor = WIG_OVERLAYS[selectedOverlay].color;
-        const wigStyle = WIG_OVERLAYS[selectedOverlay].style;
+  ctx.translate(canvas.width, 0);
 
-        ctx.save();
-        ctx.globalAlpha = 0.75;
-        ctx.fillStyle = wigColor;
+  ctx.scale(-1, 1);
 
-        // Head top arc
-        ctx.beginPath();
-        if (wigStyle === 'straight') {
-          ctx.ellipse(cw / 2, ch * 0.22, cw * 0.18, ch * 0.18, 0, Math.PI, 0);
-          ctx.fillRect(cw * 0.32, ch * 0.22, cw * 0.36, ch * 0.25);
-        } else if (wigStyle === 'wavy') {
-          ctx.ellipse(cw / 2, ch * 0.2, cw * 0.2, ch * 0.2, 0, Math.PI, 0);
-          // Wavy sides
-          for (let y = ch * 0.22; y < ch * 0.55; y += 12) {
-            ctx.beginPath();
-            ctx.arc(cw * 0.32 - Math.sin(y * 0.1) * 8, y, cw * 0.04, 0, Math.PI * 2);
-            ctx.arc(cw * 0.68 + Math.sin(y * 0.1) * 8, y, cw * 0.04, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        } else {
-          // Curly
-          ctx.ellipse(cw / 2, ch * 0.18, cw * 0.22, ch * 0.22, 0, Math.PI, 0);
-          for (let y = ch * 0.2; y < ch * 0.6; y += 8) {
-            for (let x = cw * 0.28; x < cw * 0.72; x += 12) {
-              ctx.beginPath();
-              ctx.arc(x + Math.sin(y) * 4, y, 6, 0, Math.PI * 2);
-              ctx.fill();
-            }
-          }
-        }
-        ctx.fill();
-        ctx.restore();
+  ctx.drawImage(
+    video,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
 
-        // Detected badge
-        ctx.fillStyle = 'rgba(16, 185, 129, 0.9)';
-        ctx.roundRect(12, 12, 120, 28, 8);
-        ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.font = '12px Inter, sans-serif';
-        ctx.fillText('Face Detected ✓', 20, 30);
-      }
+  ctx.restore();
 
-      animFrameRef.current = requestAnimationFrame(render);
-    };
+  const detector =
+    faceLandmarkerRef.current;
+
+  if (!detector) {
+    animFrameRef.current =
+      requestAnimationFrame(render);
+
+    return;
+  }
+
+  const result =
+    detector.detectForVideo(
+      video,
+      performance.now()
+    );
+
+  if (
+    result.faceLandmarks &&
+    result.faceLandmarks.length > 0
+  ) {
+   if (!faceDetectedRef.current) {
+  faceDetectedRef.current = true;
+  setFaceDetected(true);
+}
+
+    const landmarks =
+      result.faceLandmarks[0];
+
+    const forehead = landmarks[10];
+
+    const leftTemple = landmarks[234];
+
+    const rightTemple = landmarks[454];
+
+    const foreheadX =
+      canvas.width -
+      forehead.x * canvas.width;
+
+    const foreheadY =
+      forehead.y * canvas.height;
+
+    const headWidth =
+      Math.abs(
+        rightTemple.x -
+          leftTemple.x
+      ) * canvas.width;
+
+    const angle = Math.atan2(
+      rightTemple.y -
+        leftTemple.y,
+      rightTemple.x -
+        leftTemple.x
+    );
+
+    const spriteIndex =
+      getAngleIndex(angle);
+
+    const wigIndex =
+      selectedOverlay + 1;
+
+    const wigImage =
+      wigImagesRef.current[
+        `${wigIndex}-${spriteIndex}`
+      ];
+      if (wigImage && wigImage.complete) {
+  drawWig(
+    ctx,
+    wigImage,
+    foreheadX,
+    foreheadY,
+    headWidth,
+    angle
+  );
+}
+   
+if (wigImage) {
+  drawWig(
+    ctx,
+    wigImage,
+    foreheadX,
+    foreheadY,
+    headWidth,
+    angle
+  );
+}
+  } else {
+    if (faceDetectedRef.current) {
+  faceDetectedRef.current = false;
+  setFaceDetected(false);
+}
+  }
+
+  animFrameRef.current =
+    requestAnimationFrame(render);
+};
 
     animFrameRef.current = requestAnimationFrame(render);
-  }, [faceDetected, selectedOverlay]);
+  }, [selectedOverlay]);
 
   useEffect(() => {
     return () => {
@@ -163,6 +243,41 @@ export default function VirtualTryOn({ products = [], selectedProduct }: Virtual
     };
   }, [stopCamera]);
 
+  useEffect(() => {
+  const images: Record<string, HTMLImageElement> = {};
+
+  for (let wig = 1; wig <= 6; wig++) {
+    for (let angle = 1; angle <= 8; angle++) {
+      const key = `${wig}-${angle}`;
+
+const img = new window.Image();
+
+      img.src = `/wigs/wig${wig}/wig_no_label_${angle}.png`;
+
+      img.onload = () => {
+        console.log("Loaded:", key);
+      };
+
+      img.onerror = () => {
+        console.error("Failed:", key, img.src);
+      };
+
+      images[key] = img;
+    }
+  }
+
+  wigImagesRef.current = images;
+console.log(
+  "1-1",
+  wigImagesRef.current["1-1"]
+);
+
+console.log(
+  "1-8",
+  wigImagesRef.current["1-8"]
+);
+  console.log("ALL WIGS LOADED", images);
+}, []);
   const capturePhoto = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;

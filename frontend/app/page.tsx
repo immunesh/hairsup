@@ -11,6 +11,7 @@ import ProductCard from '@/components/ui/ProductCard';
 import { formatPrice } from '@/lib/utils';
 import { DEMO_PRODUCTS } from '@/lib/utils';
 import { Product } from '@/types';
+import { productsApi } from '@/lib/api';
 
 const HERO_SLIDES = [
   {
@@ -185,9 +186,30 @@ export default function HomePage() {
   };
 
   const slide = HERO_SLIDES[heroSlide];
-  const featuredProducts = DEMO_PRODUCTS.filter((p) => p.isFeatured).slice(0, 8) as unknown as Product[];
-  const newArrivals = DEMO_PRODUCTS.filter((p) => p.isNewArrival).slice(0, 4) as unknown as Product[];
-  const bestSellers = DEMO_PRODUCTS.filter((p) => p.isBestSeller).slice(0, 4) as unknown as Product[];
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [newArrivals, setNewArrivals] = useState<Product[]>([]);
+  const [bestSellers, setBestSellers] = useState<Product[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      try {
+        const res = await productsApi.getAll();
+        const list = (res.data.data || []) as Product[];
+        if (!mounted) return;
+        setFeaturedProducts(list.filter((p) => p.isFeatured).slice(0, 8));
+        setNewArrivals(list.filter((p) => p.isNewArrival).slice(0, 4));
+        setBestSellers(list.filter((p) => p.isBestSeller).slice(0, 4));
+      } catch (e) {
+        // fallback to demo products
+        setFeaturedProducts(DEMO_PRODUCTS.filter((p) => p.isFeatured).slice(0, 8) as unknown as Product[]);
+        setNewArrivals(DEMO_PRODUCTS.filter((p) => p.isNewArrival).slice(0, 4) as unknown as Product[]);
+        setBestSellers(DEMO_PRODUCTS.filter((p) => p.isBestSeller).slice(0, 4) as unknown as Product[]);
+      }
+    };
+    load();
+    return () => { mounted = false; };
+  }, []);
 
   return (
     <div>

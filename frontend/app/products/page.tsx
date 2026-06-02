@@ -6,6 +6,7 @@ import { Grid, List, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import ProductCard from '@/components/ui/ProductCard';
 import FilterSidebar from '@/components/ui/FilterSidebar';
 import { DEMO_PRODUCTS } from '@/lib/utils';
+import { productsApi } from '@/lib/api';
 import { Product } from '@/types';
 import Link from 'next/link';
 
@@ -27,22 +28,50 @@ export default function AllProductsPage() {
   const [activeGender, setActiveGender] = useState<'ALL' | 'WOMEN' | 'MEN'>('ALL');
 
   useEffect(() => {
-    let filtered = [...DEMO_PRODUCTS] as unknown as Product[];
-    const newArrival = searchParams.get('newArrival');
-    const bestSeller = searchParams.get('bestSeller');
-    const featured = searchParams.get('featured');
-    const gender = searchParams.get('gender');
+    let mounted = true;
+    const load = async () => {
+      try {
+        const res = await productsApi.getAll();
+        let list = (res.data.data || []) as Product[];
 
-    if (newArrival === 'true') filtered = filtered.filter((p) => p.isNewArrival);
-    if (bestSeller === 'true') filtered = filtered.filter((p) => p.isBestSeller);
-    if (featured === 'true') filtered = filtered.filter((p) => p.isFeatured);
-    if (gender) {
-      filtered = filtered.filter((p) => p.gender === gender.toUpperCase());
-      setActiveGender(gender.toUpperCase() as 'WOMEN' | 'MEN');
-    }
-    if (activeGender !== 'ALL') filtered = filtered.filter((p) => p.gender === activeGender);
+        // Apply URL filters like before
+        const newArrival = searchParams.get('newArrival');
+        const bestSeller = searchParams.get('bestSeller');
+        const featured = searchParams.get('featured');
+        const gender = searchParams.get('gender');
 
-    setProducts(filtered);
+        if (newArrival === 'true') list = list.filter((p) => p.isNewArrival);
+        if (bestSeller === 'true') list = list.filter((p) => p.isBestSeller);
+        if (featured === 'true') list = list.filter((p) => p.isFeatured);
+        if (gender) {
+          list = list.filter((p) => p.gender === gender.toUpperCase());
+          setActiveGender(gender.toUpperCase() as 'WOMEN' | 'MEN');
+        }
+        if (activeGender !== 'ALL') list = list.filter((p) => p.gender === activeGender);
+
+        if (mounted) setProducts(list);
+      } catch (e) {
+        // Fallback to demo products if API fails
+        let filtered = [...DEMO_PRODUCTS] as unknown as Product[];
+        const newArrival = searchParams.get('newArrival');
+        const bestSeller = searchParams.get('bestSeller');
+        const featured = searchParams.get('featured');
+        const gender = searchParams.get('gender');
+
+        if (newArrival === 'true') filtered = filtered.filter((p) => p.isNewArrival);
+        if (bestSeller === 'true') filtered = filtered.filter((p) => p.isBestSeller);
+        if (featured === 'true') filtered = filtered.filter((p) => p.isFeatured);
+        if (gender) {
+          filtered = filtered.filter((p) => p.gender === gender.toUpperCase());
+          setActiveGender(gender.toUpperCase() as 'WOMEN' | 'MEN');
+        }
+        if (activeGender !== 'ALL') filtered = filtered.filter((p) => p.gender === activeGender);
+
+        if (mounted) setProducts(filtered);
+      }
+    };
+    load();
+    return () => { mounted = false; };
   }, [searchParams, activeGender]);
 
   const handleFilterChange = (key: string, value: string | string[] | undefined) => {

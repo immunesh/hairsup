@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import ProductCard from '@/components/ui/ProductCard';
 import { DEMO_PRODUCTS } from '@/lib/utils';
+import { productsApi } from '@/lib/api';
 import { Product } from '@/types';
 
 const SUGGESTIONS = ['Lace Front', 'Human Hair', "Men's System", 'Curly Wig', 'Ombre', 'Body Wave', 'Synthetic', 'Short Bob', 'Afro', 'Straight'];
@@ -20,19 +21,38 @@ export default function SearchPage() {
   useEffect(() => {
     setLocalQuery(query);
     if (!query) { setResults([]); return; }
+    let mounted = true;
     setLoading(true);
-    setTimeout(() => {
-      const q = query.toLowerCase();
-      const matched = DEMO_PRODUCTS.filter((p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.texture?.toLowerCase().includes(q) ||
-        p.material?.toLowerCase().includes(q) ||
-        p.tags.some((t) => t.toLowerCase().includes(q))
-      ) as unknown as Product[];
-      setResults(matched);
-      setLoading(false);
-    }, 400);
+    const load = async () => {
+      try {
+        const res = await productsApi.getAll();
+        const list = (res.data.data || []) as Product[];
+        const q = query.toLowerCase();
+        const matched = list.filter((p) =>
+          String(p.name || '').toLowerCase().includes(q) ||
+          String(p.description || '').toLowerCase().includes(q) ||
+          String(p.texture || '').toLowerCase().includes(q) ||
+          String(p.material || '').toLowerCase().includes(q) ||
+          (p.tags || []).some((t: string) => t.toLowerCase().includes(q))
+        ) as unknown as Product[];
+        if (mounted) setResults(matched);
+      } catch (e) {
+        // fallback to demo search
+        const q = query.toLowerCase();
+        const matched = DEMO_PRODUCTS.filter((p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.texture?.toLowerCase().includes(q) ||
+          p.material?.toLowerCase().includes(q) ||
+          p.tags.some((t) => t.toLowerCase().includes(q))
+        ) as unknown as Product[];
+        if (mounted) setResults(matched);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+    const t = setTimeout(load, 200);
+    return () => { mounted = false; clearTimeout(t); };
   }, [query]);
 
   const handleSearch = (e: React.FormEvent) => {
