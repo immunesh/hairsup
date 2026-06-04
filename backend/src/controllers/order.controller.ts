@@ -127,3 +127,93 @@ export const cancelOrder = async (req: AuthRequest, res: Response): Promise<void
   });
   res.json({ success: true, message: 'Order cancelled successfully' });
 };
+
+export const getAdminOrders = async (
+req: AuthRequest,
+res: Response
+): Promise<void> => {
+const orders = await prisma.order.findMany({
+include: {
+user: {
+select: {
+firstName: true,
+lastName: true,
+email: true,
+},
+},
+items: true,
+},
+orderBy: {
+createdAt: "desc",
+},
+});
+
+res.json({
+success: true,
+data: orders,
+});
+};
+
+export const getAdminOrderById = async (
+req: AuthRequest,
+res: Response
+): Promise<void> => {
+const { id } = req.params;
+
+const order = await prisma.order.findUnique({
+where: {
+id,
+},
+include: {
+user: true,
+address: true,
+items: true,
+tracking: {
+orderBy: {
+createdAt: "desc",
+},
+},
+},
+});
+
+if (!order) {
+throw new AppError(
+"Order not found",
+404
+);
+}
+
+res.json({
+success: true,
+data: order,
+});
+};
+
+export const updateOrderStatus = async (
+req: AuthRequest,
+res: Response
+): Promise<void> => {
+const { id } = req.params;
+
+const { status } = req.body;
+
+const order =
+await prisma.order.update({
+where: { id },
+data: {
+status,
+tracking: {
+create: {
+status,
+message: `Order status updated to ${status}`,
+},
+},
+},
+});
+
+res.json({
+success: true,
+data: order,
+});
+};
+
