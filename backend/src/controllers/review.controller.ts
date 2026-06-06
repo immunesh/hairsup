@@ -83,3 +83,50 @@ export const deleteReview = async (req: AuthRequest, res: Response): Promise<voi
 function safeParseJson(val: string, fallback: unknown) {
   try { return JSON.parse(val); } catch { return fallback; }
 }
+
+export const getAllReviews = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  const reviews = await prisma.review.findMany({
+    include: {
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+        },
+      },
+      product: {
+        select: {
+          name: true,
+          slug: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  res.json({
+    success: true,
+    data: reviews,
+  });
+};
+
+export const adminDeleteReview = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+
+  await prisma.review.delete({
+    where: { id },
+  });
+
+  res.json({
+    success: true,
+    message: "Review deleted successfully",
+  });
+};

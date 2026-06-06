@@ -137,275 +137,303 @@ try {
 }
 
 if (loading) {
-return <div>Loading...</div>;
+  return (
+    <div className="flex items-center justify-center h-full text-white text-lg">
+      Loading Product...
+    </div>
+  );
 }
 
-return ( <div> <div className="flex justify-between items-center mb-6"> <h1 className="text-4xl font-bold">
-Edit Product </h1>
+return (
+  <div className="p-8">
+    <div className="flex items-center justify-between mb-8">
+      <div>
+        <h1 className="text-4xl font-bold text-white">
+          Edit Product
+        </h1>
 
+        <p className="text-slate-400 mt-2">
+          Update product information
+        </p>
+      </div>
 
-    <Link
-      href="/admin/products"
-      className="bg-gray-200 px-4 py-2 rounded"
+      <Link
+        href="/admin/products"
+        className="
+        px-5 py-3
+        rounded-2xl
+        bg-white/5
+        border border-white/10
+        text-slate-300
+        hover:bg-white/10
+        hover:text-white
+        transition-all
+        "
+      >
+        ← Back
+      </Link>
+    </div>
+
+    <form
+      onSubmit={handleUpdate}
+      className="
+      rounded-3xl
+      bg-white/5
+      backdrop-blur-xl
+      border border-white/10
+      p-8
+      "
     >
-      Back
-    </Link>
-  </div>
+      <div className="grid md:grid-cols-2 gap-6">
 
-  <form
-    onSubmit={handleUpdate}
-    className="bg-white p-6 rounded-xl shadow"
-  >
-    <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Product Name
+          </label>
 
-      <div>
-        <label className="block mb-2 font-medium">
-          Product Name
-        </label>
-        <input
-          value={form.name}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              name: e.target.value,
-            })
-          }
-          className="w-full border p-3 rounded"
-        />
-      </div>
+          <input
+            value={form.name}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                name: e.target.value,
+              })
+            }
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          />
+        </div>
 
-      <div>
-        <label className="block mb-2 font-medium">
-          Slug
-        </label>
-        <input
-          value={form.slug}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              slug: e.target.value,
-            })
-          }
-          className="w-full border p-3 rounded"
-        />
-      </div>
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Slug
+          </label>
 
-      <div>
-        <label className="block mb-2 font-medium">
-          Category
-        </label>
+          <input
+            value={form.slug}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                slug: e.target.value,
+              })
+            }
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          />
+        </div>
 
-        <select
-          value={form.categoryId}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              categoryId: e.target.value,
-            })
-          }
-          className="w-full border p-3 rounded"
-        >
-          <option value="">
-            Select Category
-          </option>
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Category
+          </label>
 
-          {categories.map(
-            (category: any) => (
+          <select
+            value={form.categoryId}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                categoryId: e.target.value,
+              })
+            }
+            className="w-full px-4 py-3 rounded-2xl bg-[#131827] border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          >
+            <option value="">
+              Select Category
+            </option>
+
+            {categories.map((category: any) => (
               <option
                 key={category.id}
                 value={category.id}
               >
                 {category.name}
               </option>
-            )
-          )}
-        </select>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Gender
+          </label>
+
+          <select
+            value={form.gender}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                gender: e.target.value,
+              })
+            }
+            className="w-full px-4 py-3 rounded-2xl bg-[#131827] border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          >
+            <option value="MEN">MEN</option>
+            <option value="WOMEN">WOMEN</option>
+            <option value="UNISEX">UNISEX</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            SKU
+          </label>
+
+          <input
+            value={form.sku}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                sku: e.target.value,
+              })
+            }
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Brand
+          </label>
+
+          <input
+            value={form.brand}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                brand: e.target.value,
+              })
+            }
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Base Price
+          </label>
+
+          <input
+            type="number"
+            value={form.basePrice}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                basePrice: e.target.value,
+              })
+            }
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Sale Price
+          </label>
+
+          <input
+            type="number"
+            value={form.salePrice}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                salePrice: e.target.value,
+              })
+            }
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Stock
+          </label>
+
+          <input
+            type="number"
+            value={form.stock}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                stock: e.target.value,
+              })
+            }
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="block mb-2 font-medium">
-          Gender
+      <div className="mt-6">
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Short Description
         </label>
 
-        <select
-          value={form.gender}
+        <textarea
+          rows={3}
+          value={form.shortDesc}
           onChange={(e) =>
             setForm({
               ...form,
-              gender: e.target.value,
+              shortDesc: e.target.value,
             })
           }
-          className="w-full border p-3 rounded"
-        >
-          <option value="MEN">
-            MEN
-          </option>
-          <option value="WOMEN">
-            WOMEN
-          </option>
-          <option value="UNISEX">
-            UNISEX
-          </option>
-        </select>
-      </div>
-
-      <div>
-        <label className="block mb-2 font-medium">
-          SKU
-        </label>
-
-        <input
-          value={form.sku}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              sku: e.target.value,
-            })
-          }
-          className="w-full border p-3 rounded"
+          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
 
-      <div>
-        <label className="block mb-2 font-medium">
-          Brand
+      <div className="mt-6">
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Full Description
         </label>
 
-        <input
-          value={form.brand}
+        <textarea
+          rows={6}
+          value={form.description}
           onChange={(e) =>
             setForm({
               ...form,
-              brand: e.target.value,
+              description: e.target.value,
             })
           }
-          className="w-full border p-3 rounded"
+          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
 
-      <div>
-        <label className="block mb-2 font-medium">
-          Base Price
+      <div className="mt-6">
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Tags
         </label>
 
         <input
-          type="number"
-          value={form.basePrice}
+          value={form.tags}
           onChange={(e) =>
             setForm({
               ...form,
-              basePrice:
-                e.target.value,
+              tags: e.target.value,
             })
           }
-          className="w-full border p-3 rounded"
+          placeholder="hair, wig, premium"
+          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
         />
       </div>
 
-      <div>
-        <label className="block mb-2 font-medium">
-          Sale Price
-        </label>
-
-        <input
-          type="number"
-          value={form.salePrice}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              salePrice:
-                e.target.value,
-            })
-          }
-          className="w-full border p-3 rounded"
-        />
-      </div>
-
-      <div>
-        <label className="block mb-2 font-medium">
-          Stock
-        </label>
-
-        <input
-          type="number"
-          value={form.stock}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              stock: e.target.value,
-            })
-          }
-          className="w-full border p-3 rounded"
-        />
-      </div>
-    </div>
-
-    <div className="mt-4">
-      <label className="block mb-2 font-medium">
-        Short Description
-      </label>
-
-      <textarea
-        rows={3}
-        value={form.shortDesc}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            shortDesc:
-              e.target.value,
-          })
-        }
-        className="w-full border p-3 rounded"
-      />
-    </div>
-
-    <div className="mt-4">
-      <label className="block mb-2 font-medium">
-        Full Description
-      </label>
-
-      <textarea
-        rows={6}
-        value={form.description}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            description:
-              e.target.value,
-          })
-        }
-        className="w-full border p-3 rounded"
-      />
-    </div>
-
-    <div className="mt-4">
-      <label className="block mb-2 font-medium">
-        Tags
-      </label>
-
-      <input
-        value={form.tags}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            tags:
-              e.target.value,
-          })
-        }
-        placeholder="hair, wig, premium"
-        className="w-full border p-3 rounded"
-      />
-    </div>
-
-    <button
-      type="submit"
-      className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl"
-    >
-      Update Product
-    </button>
-  </form>
-</div>
-
-
-);
-}
+      <button
+        type="submit"
+        className="
+        mt-8
+        px-8
+        py-3
+        rounded-2xl
+        bg-gradient-to-r
+        from-cyan-500
+        to-purple-600
+        text-white
+        font-medium
+        transition-all
+        duration-300
+        hover:scale-105
+        shadow-[0_0_25px_rgba(56,189,248,0.35)]
+        "
+      >
+        Update Product
+      </button>
+    </form>
+  </div>
+);}

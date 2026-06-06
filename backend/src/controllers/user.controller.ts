@@ -79,3 +79,61 @@ export const deleteAddress = async (req: AuthRequest, res: Response): Promise<vo
   await prisma.address.delete({ where: { id, userId: req.user!.userId } });
   res.json({ success: true, message: 'Address deleted' });
 };
+
+export const getAllUsers = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      role: true,
+      createdAt: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  res.json({
+    success: true,
+    data: users,
+  });
+};
+
+export const updateUserRole = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+  const { role } = req.body;
+
+  const user = await prisma.user.update({
+    where: { id },
+    data: { role },
+  });
+
+  res.json({
+    success: true,
+    data: user,
+  });
+};
+
+export const deleteUser = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+
+  await prisma.user.delete({
+    where: { id },
+  });
+
+  res.json({
+    success: true,
+    message: "User deleted",
+  });
+};

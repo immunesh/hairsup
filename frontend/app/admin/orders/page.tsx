@@ -1,165 +1,222 @@
-import Link from "next/link";
+"use client";
 
-async function getOrders() {
-try {
-const res = await fetch(
-"http://localhost:5000/api/orders/admin/all",
-{
-cache: "no-store",
-}
-);
+import { useEffect, useState } from "react";
+import {
+  getAllOrders,
+  updateOrderStatus,
+} from "@/lib/order-api";
 
+export default function OrdersPage() {
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-if (!res.ok) {
-  return [];
-}
+  useEffect(() => {
+    loadOrders();
+  }, []);
 
-const data = await res.json();
+  const loadOrders = async () => {
+    try {
+      const data = await getAllOrders();
+      setOrders(data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-return data.data || [];
+  const handleStatusChange = async (
+    id: string,
+    status: string
+  ) => {
+    try {
+      await updateOrderStatus(id, status);
+      loadOrders();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
+  if (loading) {
+    return <p>Loading orders...</p>;
+  }
 
-} catch (error) {
-console.error(error);
-return [];
-}
-}
+  return (
+  <div className="p-8">
+    {/* Header */}
+    <div className="mb-8">
+      <h1 className="text-4xl font-bold text-white">
+        Order Management
+      </h1>
 
-export default async function OrdersPage() {
-const orders = await getOrders();
-
-return ( <div> <div className="flex items-center justify-between mb-6"> <div> <h1 className="text-4xl font-bold">
-Orders </h1>
-
-
-      <p className="text-gray-500 mt-1">
-        Manage all customer orders
+      <p className="mt-2 text-slate-400">
+        Manage customer orders and update status
       </p>
     </div>
-  </div>
 
-  <div className="bg-white rounded-2xl shadow border overflow-hidden">
-    <table className="w-full">
-      <thead>
-        <tr className="border-b bg-gray-50">
-          <th className="p-4 text-left">
-            Order Number
-          </th>
+    {/* Loading */}
+    {loading ? (
+      <div
+        className="
+        rounded-3xl
+        bg-white/5
+        border
+        border-white/10
+        backdrop-blur-xl
+        p-10
+        text-center
+        text-slate-400
+        "
+      >
+        Loading orders...
+      </div>
+    ) : (
+      <div
+        className="
+        rounded-3xl
 
-          <th className="p-4 text-left">
-            Customer
-          </th>
+        border
+        border-white/10
 
-          <th className="p-4 text-left">
-            Email
-          </th>
+        bg-white/5
+        backdrop-blur-xl
 
-          <th className="p-4 text-left">
-            Total
-          </th>
+        overflow-x-auto
+        "
+      >
+        <table className="w-full min-w-[1000px]">
+          <thead>
+            <tr className="border-b border-white/10 bg-white/5">
+              <th className="text-left p-5 text-slate-300">
+                Order No
+              </th>
 
-          <th className="p-4 text-left">
-            Payment
-          </th>
+              <th className="text-left p-5 text-slate-300">
+                Customer
+              </th>
 
-          <th className="p-4 text-left">
-            Status
-          </th>
+              <th className="text-left p-5 text-slate-300">
+                Email
+              </th>
 
-          <th className="p-4 text-left">
-            Date
-          </th>
+              <th className="text-left p-5 text-slate-300">
+                Total
+              </th>
 
-          <th className="p-4 text-left">
-            Action
-          </th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {orders.length === 0 ? (
-          <tr>
-            <td
-              colSpan={8}
-              className="text-center p-10 text-gray-500"
-            >
-              No Orders Found
-            </td>
-          </tr>
-        ) : (
-          orders.map((order: any) => (
-            <tr
-              key={order.id}
-              className="border-b hover:bg-gray-50"
-            >
-              <td className="p-4 font-medium">
-                {order.orderNumber}
-              </td>
-
-              <td className="p-4">
-                {order.user?.firstName}{" "}
-                {order.user?.lastName}
-              </td>
-
-              <td className="p-4">
-                {order.user?.email}
-              </td>
-
-              <td className="p-4 font-semibold">
-                ₹{order.total}
-              </td>
-
-              <td className="p-4">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    order.paymentStatus ===
-                    "PAID"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-700"
-                  }`}
-                >
-                  {order.paymentStatus}
-                </span>
-              </td>
-
-              <td className="p-4">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    order.status ===
-                    "DELIVERED"
-                      ? "bg-green-100 text-green-700"
-                      : order.status ===
-                        "CANCELLED"
-                      ? "bg-red-100 text-red-700"
-                      : "bg-blue-100 text-blue-700"
-                  }`}
-                >
-                  {order.status}
-                </span>
-              </td>
-
-              <td className="p-4">
-                {new Date(
-                  order.createdAt
-                ).toLocaleDateString()}
-              </td>
-
-              <td className="p-4">
-                <Link
-                  href={`/admin/orders/${order.id}`}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded"
-                >
-                  View
-                </Link>
-              </td>
+              <th className="text-left p-5 text-slate-300">
+                Status
+              </th>
             </tr>
-          ))
-        )}
-      </tbody>
-    </table>
+          </thead>
+
+          <tbody>
+            {orders.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="
+                  text-center
+                  p-10
+                  text-slate-500
+                  "
+                >
+                  No orders found
+                </td>
+              </tr>
+            ) : (
+              orders.map((order) => (
+                <tr
+                  key={order.id}
+                  className="
+                  border-b
+                  border-white/5
+
+                  hover:bg-white/5
+
+                  transition-all
+                  duration-300
+                  "
+                >
+                  {/* Order Number */}
+                  <td className="p-5">
+                    <span className="font-medium text-white">
+                      {order.orderNumber}
+                    </span>
+                  </td>
+
+                  {/* Customer */}
+                  <td className="p-5 text-white">
+                    {order.user?.firstName}{" "}
+                    {order.user?.lastName}
+                  </td>
+
+                  {/* Email */}
+                  <td className="p-5 text-slate-400">
+                    {order.user?.email}
+                  </td>
+
+                  {/* Total */}
+                  <td className="p-5">
+                    <span className="font-semibold text-emerald-400">
+                      ₹{order.total}
+                    </span>
+                  </td>
+
+                  {/* Status */}
+                  <td className="p-5">
+                    <select
+                      value={order.status}
+                      onChange={(e) =>
+                        handleStatusChange(
+                          order.id,
+                          e.target.value
+                        )
+                      }
+                      className="
+                      px-4
+                      py-2
+
+                      rounded-xl
+
+                      bg-[#131827]
+
+                      border
+                      border-white/10
+
+                      text-white
+
+                      focus:outline-none
+                      focus:border-cyan-500/50
+                      "
+                    >
+                      <option value="PENDING">
+                        PENDING
+                      </option>
+
+                      <option value="PROCESSING">
+                        PROCESSING
+                      </option>
+
+                      <option value="SHIPPED">
+                        SHIPPED
+                      </option>
+
+                      <option value="DELIVERED">
+                        DELIVERED
+                      </option>
+
+                      <option value="CANCELLED">
+                        CANCELLED
+                      </option>
+                    </select>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    )}
   </div>
-</div>
-
-
 );
 }

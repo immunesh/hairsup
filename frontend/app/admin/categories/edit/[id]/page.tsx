@@ -27,26 +27,63 @@ export default async function EditCategoryPage({
     params.id
   );
 
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-4xl font-bold">
+ return (
+  <div className="p-8">
+    {/* Header */}
+    <div className="flex items-center justify-between mb-8">
+      <div>
+        <h1 className="text-4xl font-bold text-white">
           Edit Category
         </h1>
 
-        <Link
-          href="/admin/categories"
-          className="bg-gray-200 px-4 py-2 rounded"
-        >
-          Back
-        </Link>
+        <p className="text-slate-400 mt-2">
+          Update category information
+        </p>
       </div>
 
-      <div className="bg-white p-6 rounded-xl shadow">
-        <EditCategoryForm
-          category={category}
-        />
-      </div>
+      <Link
+        href="/admin/categories"
+        className="
+        px-5
+        py-3
+
+        rounded-2xl
+
+        bg-white/5
+        border
+        border-white/10
+
+        text-slate-300
+
+        hover:bg-white/10
+        hover:text-white
+
+        transition-all
+        duration-300
+        "
+      >
+        ← Back
+      </Link>
     </div>
-  );
+
+    {/* Form Card */}
+    <div
+      className="
+      rounded-3xl
+
+      bg-white/5
+      backdrop-blur-xl
+
+      border
+      border-white/10
+
+      p-8
+      "
+    >
+      <EditCategoryForm
+        category={category}
+      />
+    </div>
+  </div>
+);
 }

@@ -209,145 +209,223 @@ for (const image of galleryImages) {
   loadCategories();
 }, []);
 
-  return (
-    <div className="max-w-6xl">
-      <h1 className="text-3xl font-bold mb-6">
-        Add Product
-      </h1>
+ return (
+  <div className="p-8">
+    {/* Header */}
+    <div className="flex items-center justify-between mb-8">
+      <div>
+        <h1 className="text-4xl font-bold text-white">
+          Add Product
+        </h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-2xl shadow border space-y-6"
-      >
+        <p className="text-slate-400 mt-2">
+          Create a new product for your store
+        </p>
+      </div>
+    </div>
+
+    <form
+      onSubmit={handleSubmit}
+      className="
+      rounded-3xl
+      border
+      border-white/10
+      bg-white/5
+      backdrop-blur-xl
+      p-8
+      space-y-6
+      "
+    >
+      {/* Product Name */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Product Name
+        </label>
+
+        <input
+          type="text"
+          value={form.name}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              name: e.target.value,
+            })
+          }
+          className="
+          w-full
+          px-4
+          py-3
+          rounded-2xl
+          bg-white/5
+          border
+          border-white/10
+          text-white
+          focus:outline-none
+          focus:border-cyan-500/50
+          "
+        />
+      </div>
+
+      {/* Slug */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Slug
+        </label>
+
+        <input
+          type="text"
+          placeholder="curly-human-hair-wig"
+          value={form.slug}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              slug: e.target.value,
+            })
+          }
+          className="
+          w-full
+          px-4
+          py-3
+          rounded-2xl
+          bg-white/5
+          border
+          border-white/10
+          text-white
+          placeholder:text-slate-500
+          "
+        />
+      </div>
+
+      {/* SKU */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          SKU
+        </label>
+
+        <input
+          type="text"
+          value={form.sku}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              sku: e.target.value,
+            })
+          }
+          className="
+          w-full
+          px-4
+          py-3
+          rounded-2xl
+          bg-white/5
+          border
+          border-white/10
+          text-white
+          "
+        />
+      </div>
+
+      {/* Grid */}
+      <div className="grid md:grid-cols-4 gap-6">
         <div>
-          <label className="block mb-2 font-medium">
-            Product Name
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Category
           </label>
 
-          <input
-            type="text"
-            className="w-full border rounded-lg p-3"
-            value={form.name}
+          <select
+            value={form.categoryId}
             onChange={(e) =>
               setForm({
                 ...form,
-                name: e.target.value,
+                categoryId: e.target.value,
               })
             }
+            className="
+            w-full
+            px-4
+            py-3
+            rounded-2xl
+            bg-[#131827]
+            border
+            border-white/10
+            text-white
+            "
+          >
+            <option value="">
+              Select Category
+            </option>
+
+            {categories.map((category: any) => (
+              <option
+                key={category.id}
+                value={category.id}
+              >
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Base Price
+          </label>
+
+          <input
+            type="number"
+            value={form.basePrice}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                basePrice: e.target.value,
+              })
+            }
+            className="
+            w-full
+            px-4
+            py-3
+            rounded-2xl
+            bg-white/5
+            border
+            border-white/10
+            text-white
+            "
           />
         </div>
 
         <div>
-          <label className="block mb-2 font-medium">
-            Slug
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Sale Price
           </label>
 
           <input
-            type="text"
-            className="w-full border rounded-lg p-3"
-            placeholder="curly-human-hair-wig"
-            value={form.slug}
+            type="number"
+            value={form.salePrice}
             onChange={(e) =>
               setForm({
                 ...form,
-                slug: e.target.value,
+                salePrice: e.target.value,
               })
             }
+            className="
+            w-full
+            px-4
+            py-3
+            rounded-2xl
+            bg-white/5
+            border
+            border-white/10
+            text-white
+            "
           />
-        </div>
-<div>
-  <label className="block mb-2 font-medium">
-    SKU
-  </label>
-
-  <input
-    type="text"
-    className="w-full border rounded-lg p-3"
-    value={form.sku}
-    onChange={(e) =>
-      setForm({
-        ...form,
-        sku: e.target.value,
-      })
-    }
-  />
-</div>
-        <div className="grid md:grid-cols-4 gap-4">
-          <div>
-  <label className="block mb-2 font-medium">
-    Category
-  </label>
-
-  <select
-    className="w-full border rounded-lg p-3"
-    value={form.categoryId}
-    onChange={(e) =>
-      setForm({
-        ...form,
-        categoryId: e.target.value,
-      })
-    }
-  >
-    <option value="">
-      Select Category
-    </option>
-
-    {categories.map((category: any) => (
-      <option
-        key={category.id}
-        value={category.id}
-      >
-        {category.name}
-      </option>
-    ))}
-  </select>
-</div>
-
-          <div>
-            <label className="block mb-2 font-medium">
-              Base Price
-            </label>
-
-            <input
-              type="number"
-              className="w-full border rounded-lg p-3"
-              value={form.basePrice}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  basePrice: e.target.value,
-                })
-              }
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 font-medium">
-              Sale Price
-            </label>
-
-            <input
-              type="number"
-              className="w-full border rounded-lg p-3"
-              value={form.salePrice}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  salePrice: e.target.value,
-                })
-              }
-            />
-          </div>
         </div>
 
         <div>
-          <label className="block mb-2 font-medium">
+          <label className="block mb-2 text-sm font-medium text-slate-300">
             Stock
           </label>
 
           <input
             type="number"
-            className="w-full border rounded-lg p-3"
             value={form.stock}
             onChange={(e) =>
               setForm({
@@ -355,153 +433,237 @@ for (const image of galleryImages) {
                 stock: e.target.value,
               })
             }
+            className="
+            w-full
+            px-4
+            py-3
+            rounded-2xl
+            bg-white/5
+            border
+            border-white/10
+            text-white
+            "
           />
         </div>
-<div>
-  <label className="block mb-2 font-medium">
-    Short Description
-  </label>
+      </div>
 
-  <textarea
-    rows={3}
-    className="w-full border rounded-lg p-3"
-    value={form.shortDesc}
-    onChange={(e) =>
-      setForm({
-        ...form,
-        shortDesc: e.target.value,
-      })
-    }
-  />
-</div>
-        <div>
-          <label className="block mb-2 font-medium">
-            Full Description
-          </label>
+      {/* Short Description */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Short Description
+        </label>
 
-          <textarea
-            rows={6}
-            className="w-full border rounded-lg p-3"
-            value={form.description}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                description: e.target.value,
-              })
-            }
-          />
-        </div>
-
-        <div>
-          <label className="block mb-2 font-medium">
-            Tags
-          </label>
-
-          <input
-            type="text"
-            className="w-full border rounded-lg p-3"
-            placeholder="human hair, lace front, curly"
-            value={form.tags}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                tags: e.target.value,
-              })
-            }
-          />
-        </div>
-
-        <div>
-          <label className="block mb-2 font-medium">
-            Main Product Image
-          </label>
-
-       <input
-  type="file"
-  accept="image/*"
-  className="w-full border rounded-lg p-3"
-  onChange={(e) => {
-    const file =
-      e.target.files?.[0];
-
-    if (!file) return;
-
-    setMainImage(file);
-
-    setMainPreview(
-      URL.createObjectURL(file)
-    );
-  }}
-/>
-
-{mainPreview && (
-  <img
-    src={mainPreview}
-    alt="Preview"
-    className="mt-3 w-40 h-40 object-cover border rounded-lg"
-  />
-)}
-        </div>
-
-        <div>
-          <label className="block mb-2 font-medium">
-            360 Product Images (8 Images)
-          </label>
-
-         <input
-  type="file"
-  multiple
-  accept="image/*"
-  className="w-full border rounded-lg p-3"
-  onChange={(e) => {
-    const files = Array.from(
-      e.target.files || []
-    );
-
-    setGalleryImages(
-      files
-    );
-
-    setGalleryPreviews(
-      files.map((file) =>
-        URL.createObjectURL(
-          file
-        )
-      )
-    );
-  }}
-/>
-
-{galleryPreviews.length >
-  0 && (
-  <div className="grid grid-cols-4 gap-3 mt-4">
-    {galleryPreviews.map(
-      (
-        image,
-        index
-      ) => (
-        <img
-          key={index}
-          src={image}
-          alt={`Preview ${index}`}
-          className="w-28 h-28 object-cover border rounded-lg"
+        <textarea
+          rows={3}
+          value={form.shortDesc}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              shortDesc: e.target.value,
+            })
+          }
+          className="
+          w-full
+          px-4
+          py-3
+          rounded-2xl
+          bg-white/5
+          border
+          border-white/10
+          text-white
+          "
         />
-      )
-    )}
-  </div>
-)}
-        </div>
+      </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700"
-        >
-          {loading
-            ? "Saving..."
-            : "Save Product"}
-        </button>
-      </form>
-    </div>
-  );
+      {/* Full Description */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Full Description
+        </label>
+
+        <textarea
+          rows={6}
+          value={form.description}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              description: e.target.value,
+            })
+          }
+          className="
+          w-full
+          px-4
+          py-3
+          rounded-2xl
+          bg-white/5
+          border
+          border-white/10
+          text-white
+          "
+        />
+      </div>
+
+      {/* Tags */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Tags
+        </label>
+
+        <input
+          type="text"
+          placeholder="human hair, lace front, curly"
+          value={form.tags}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              tags: e.target.value,
+            })
+          }
+          className="
+          w-full
+          px-4
+          py-3
+          rounded-2xl
+          bg-white/5
+          border
+          border-white/10
+          text-white
+          "
+        />
+      </div>
+
+      {/* Main Image */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Main Product Image
+        </label>
+
+        <input
+          type="file"
+          accept="image/*"
+          className="
+          w-full
+          px-4
+          py-3
+          rounded-2xl
+          bg-white/5
+          border
+          border-white/10
+          text-slate-300
+          "
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+
+            if (!file) return;
+
+            setMainImage(file);
+
+            setMainPreview(
+              URL.createObjectURL(file)
+            );
+          }}
+        />
+
+        {mainPreview && (
+          <img
+            src={mainPreview}
+            alt="Preview"
+            className="
+            mt-4
+            w-40
+            h-40
+            object-cover
+            rounded-2xl
+            border
+            border-white/10
+            "
+          />
+        )}
+      </div>
+
+      {/* Gallery Images */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          360 Product Images
+        </label>
+
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          className="
+          w-full
+          px-4
+          py-3
+          rounded-2xl
+          bg-white/5
+          border
+          border-white/10
+          text-slate-300
+          "
+          onChange={(e) => {
+            const files = Array.from(
+              e.target.files || []
+            );
+
+            setGalleryImages(files);
+
+            setGalleryPreviews(
+              files.map((file) =>
+                URL.createObjectURL(file)
+              )
+            );
+          }}
+        />
+
+        {galleryPreviews.length > 0 && (
+          <div className="grid grid-cols-4 gap-4 mt-4">
+            {galleryPreviews.map(
+              (image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`Preview ${index}`}
+                  className="
+                  w-28
+                  h-28
+                  object-cover
+                  rounded-2xl
+                  border
+                  border-white/10
+                  "
+                />
+              )
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Submit */}
+      <button
+        type="submit"
+        disabled={loading}
+        className="
+        px-8
+        py-3
+        rounded-2xl
+        bg-gradient-to-r
+        from-cyan-500
+        to-purple-600
+        text-white
+        font-medium
+        transition-all
+        duration-300
+        hover:scale-105
+        disabled:opacity-50
+        shadow-[0_0_25px_rgba(56,189,248,0.35)]
+        "
+      >
+        {loading
+          ? "Saving..."
+          : "Save Product"}
+      </button>
+    </form>
+  </div>
+);
 }

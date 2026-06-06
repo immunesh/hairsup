@@ -44,278 +44,327 @@ Order Not Found </h1> </div>
 );
 }
 
-return ( <div> <div className="flex justify-between items-center mb-6"> <div> <h1 className="text-4xl font-bold">
-Order Details </h1>
+return (
+  <div className="p-8">
+    {/* Header */}
+    <div className="flex items-center justify-between mb-8">
+      <div>
+        <h1 className="text-4xl font-bold text-white">
+          Order Details
+        </h1>
 
-
-      <p className="text-gray-500 mt-1">
-        {
-          order.orderNumber
-        }
-      </p>
-    </div>
-
-    <Link
-      href="/admin/orders"
-      className="bg-gray-200 px-4 py-2 rounded"
-    >
-      Back
-    </Link>
-  </div>
-
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-    <div className="bg-white p-6 rounded-xl shadow border">
-      <h2 className="text-xl font-semibold mb-4">
-        Customer Information
-      </h2>
-
-      <p>
-        <strong>Name:</strong>{" "}
-        {order.user.firstName}{" "}
-        {order.user.lastName}
-      </p>
-
-      <p>
-        <strong>Email:</strong>{" "}
-        {order.user.email}
-      </p>
-
-      <p>
-        <strong>Phone:</strong>{" "}
-        {order.user.phone ||
-          "-"}
-      </p>
-    </div>
-
-    <div className="bg-white p-6 rounded-xl shadow border">
-      <h2 className="text-xl font-semibold mb-4">
-        Shipping Address
-      </h2>
-
-      <p>
-        {
-          order.address
-            .fullName
-        }
-      </p>
-
-      <p>
-        {
-          order.address
-            .line1
-        }
-      </p>
-
-      {order.address
-        .line2 && (
-        <p>
-          {
-            order.address
-              .line2
-          }
+        <p className="text-slate-400 mt-2">
+          {order.orderNumber}
         </p>
-      )}
+      </div>
 
-      <p>
-        {
-          order.address
-            .city
-        }
-        ,{" "}
-        {
-          order.address
-            .state
-        }
-      </p>
+      <Link
+        href="/admin/orders"
+        className="
+        px-5
+        py-3
 
-      <p>
-        {
-          order.address
-            .pincode
-        }
-      </p>
+        rounded-2xl
 
-      <p>
-        {
-          order.address
-            .country
-        }
-      </p>
+        bg-white/5
+        border
+        border-white/10
+
+        text-slate-300
+
+        hover:bg-white/10
+        hover:text-white
+
+        transition-all
+        duration-300
+        "
+      >
+        ← Back
+      </Link>
     </div>
-  </div>
 
-  <div className="bg-white p-6 rounded-xl shadow border mt-6">
-    <h2 className="text-xl font-semibold mb-4">
-      Ordered Products
-    </h2>
+    {/* Top Cards */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Customer */}
+      <div
+        className="
+        rounded-3xl
+        bg-white/5
+        backdrop-blur-xl
+        border
+        border-white/10
+        p-6
+        "
+      >
+        <h2 className="text-xl font-semibold text-white mb-5">
+          Customer Information
+        </h2>
 
-    <table className="w-full">
-      <thead>
-        <tr className="border-b">
-          <th className="text-left p-3">
-            Product
-          </th>
+        <div className="space-y-3 text-slate-300">
+          <p>
+            <span className="text-white font-medium">
+              Name:
+            </span>{" "}
+            {order.user.firstName}{" "}
+            {order.user.lastName}
+          </p>
 
-          <th className="text-left p-3">
-            Qty
-          </th>
+          <p>
+            <span className="text-white font-medium">
+              Email:
+            </span>{" "}
+            {order.user.email}
+          </p>
 
-          <th className="text-left p-3">
-            Price
-          </th>
+          <p>
+            <span className="text-white font-medium">
+              Phone:
+            </span>{" "}
+            {order.user.phone || "-"}
+          </p>
+        </div>
+      </div>
 
-          <th className="text-left p-3">
-            Total
-          </th>
-        </tr>
-      </thead>
+      {/* Shipping */}
+      <div
+        className="
+        rounded-3xl
+        bg-white/5
+        backdrop-blur-xl
+        border
+        border-white/10
+        p-6
+        "
+      >
+        <h2 className="text-xl font-semibold text-white mb-5">
+          Shipping Address
+        </h2>
 
-      <tbody>
-        {order.items.map(
-          (item: any) => (
+        <div className="space-y-2 text-slate-300">
+          <p>{order.address.fullName}</p>
+          <p>{order.address.line1}</p>
+
+          {order.address.line2 && (
+            <p>{order.address.line2}</p>
+          )}
+
+          <p>
+            {order.address.city},{" "}
+            {order.address.state}
+          </p>
+
+          <p>{order.address.pincode}</p>
+
+          <p>{order.address.country}</p>
+        </div>
+      </div>
+    </div>
+
+    {/* Ordered Products */}
+    <div
+      className="
+      mt-6
+
+      rounded-3xl
+      bg-white/5
+      backdrop-blur-xl
+      border
+      border-white/10
+
+      overflow-x-auto
+      "
+    >
+      <div className="p-6 border-b border-white/10">
+        <h2 className="text-xl font-semibold text-white">
+          Ordered Products
+        </h2>
+      </div>
+
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-white/10">
+            <th className="text-left p-5 text-slate-300">
+              Product
+            </th>
+
+            <th className="text-left p-5 text-slate-300">
+              Qty
+            </th>
+
+            <th className="text-left p-5 text-slate-300">
+              Price
+            </th>
+
+            <th className="text-left p-5 text-slate-300">
+              Total
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {order.items.map((item: any) => (
             <tr
               key={item.id}
-              className="border-b"
+              className="
+              border-b
+              border-white/5
+
+              hover:bg-white/5
+              "
             >
-              <td className="p-3">
+              <td className="p-5 text-white">
                 {item.name}
               </td>
 
-              <td className="p-3">
-                {
-                  item.quantity
-                }
+              <td className="p-5 text-slate-300">
+                {item.quantity}
               </td>
 
-              <td className="p-3">
+              <td className="p-5 text-slate-300">
                 ₹{item.price}
               </td>
 
-              <td className="p-3">
+              <td className="p-5 font-medium text-emerald-400">
                 ₹
                 {item.price *
                   item.quantity}
               </td>
             </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    {/* Summary */}
+    <div
+      className="
+      mt-6
+
+      rounded-3xl
+      bg-white/5
+      backdrop-blur-xl
+      border
+      border-white/10
+
+      p-6
+      "
+    >
+      <h2 className="text-xl font-semibold text-white mb-5">
+        Order Summary
+      </h2>
+
+      <div className="space-y-3 text-slate-300">
+        <p>
+          <span className="font-medium text-white">
+            Subtotal:
+          </span>{" "}
+          ₹{order.subtotal}
+        </p>
+
+        <p>
+          <span className="font-medium text-white">
+            Discount:
+          </span>{" "}
+          ₹{order.discount}
+        </p>
+
+        <p>
+          <span className="font-medium text-white">
+            Shipping:
+          </span>{" "}
+          ₹{order.shipping}
+        </p>
+
+        <p>
+          <span className="font-medium text-white">
+            Tax:
+          </span>{" "}
+          ₹{order.tax}
+        </p>
+
+        <div className="h-px bg-white/10 my-3" />
+
+        <p className="text-2xl font-bold text-emerald-400">
+          ₹{order.total}
+        </p>
+
+        <p>
+          <span className="font-medium text-white">
+            Payment Status:
+          </span>{" "}
+          <span className="text-cyan-400">
+            {order.paymentStatus}
+          </span>
+        </p>
+
+        <p>
+          <span className="font-medium text-white">
+            Order Status:
+          </span>{" "}
+          <span className="text-purple-400">
+            {order.status}
+          </span>
+        </p>
+
+        <div className="pt-4">
+          <UpdateOrderStatus
+            orderId={order.id}
+            currentStatus={
+              order.status
+            }
+          />
+        </div>
+      </div>
+    </div>
+
+    {/* Tracking */}
+    <div
+      className="
+      mt-6
+
+      rounded-3xl
+      bg-white/5
+      backdrop-blur-xl
+      border
+      border-white/10
+
+      p-6
+      "
+    >
+      <h2 className="text-xl font-semibold text-white mb-6">
+        Tracking History
+      </h2>
+
+      <div className="space-y-5">
+        {order.tracking.map(
+          (track: any) => (
+            <div
+              key={track.id}
+              className="
+              border-l-4
+              border-cyan-500
+
+              pl-5
+              "
+            >
+              <p className="font-semibold text-white">
+                {track.status}
+              </p>
+
+              <p className="text-slate-300 mt-1">
+                {track.message}
+              </p>
+
+              <p className="text-sm text-slate-500 mt-2">
+                {new Date(
+                  track.createdAt
+                ).toLocaleString()}
+              </p>
+            </div>
           )
         )}
-      </tbody>
-    </table>
-  </div>
-
-  <div className="bg-white p-6 rounded-xl shadow border mt-6">
-    <h2 className="text-xl font-semibold mb-4">
-      Order Summary
-    </h2>
-
-    <div className="space-y-2">
-      <p>
-        <strong>
-          Subtotal:
-        </strong>{" "}
-        ₹
-        {
-          order.subtotal
-        }
-      </p>
-
-      <p>
-        <strong>
-          Discount:
-        </strong>{" "}
-        ₹
-        {
-          order.discount
-        }
-      </p>
-
-      <p>
-        <strong>
-          Shipping:
-        </strong>{" "}
-        ₹
-        {
-          order.shipping
-        }
-      </p>
-
-      <p>
-        <strong>
-          Tax:
-        </strong>{" "}
-        ₹{order.tax}
-      </p>
-
-      <p className="text-lg font-bold">
-        Total: ₹
-        {order.total}
-      </p>
-
-      <p>
-        <strong>
-          Payment Status:
-        </strong>{" "}
-        {
-          order.paymentStatus
-        }
-      </p>
-
-      <p>
-        <strong>
-          Order Status:
-        </strong>{" "}
-        {order.status}
-      </p>
-      <div className="mt-4">
-  <UpdateOrderStatus
-    orderId={order.id}
-    currentStatus={
-      order.status
-    }
-  />
-</div>
+      </div>
     </div>
   </div>
-
-  <div className="bg-white p-6 rounded-xl shadow border mt-6">
-    <h2 className="text-xl font-semibold mb-4">
-      Tracking History
-    </h2>
-
-    <div className="space-y-4">
-      {order.tracking.map(
-        (track: any) => (
-          <div
-            key={
-              track.id
-            }
-            className="border-l-4 border-purple-500 pl-4"
-          >
-            <p className="font-semibold">
-              {
-                track.status
-              }
-            </p>
-
-            <p className="text-gray-600">
-              {
-                track.message
-              }
-            </p>
-
-            <p className="text-sm text-gray-400">
-              {new Date(
-                track.createdAt
-              ).toLocaleString()}
-            </p>
-          </div>
-        )
-      )}
-    </div>
-  </div>
-</div>
-
-
 );
 }

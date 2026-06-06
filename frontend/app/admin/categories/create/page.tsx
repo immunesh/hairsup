@@ -44,20 +44,45 @@ export default function CreateCategoryPage() {
       alert("Server error");
     }
   }
-
-  return (
-    <div>
-      <h1 className="text-4xl font-bold mb-8">
+return (
+  <div className="p-8">
+    {/* Header */}
+    <div className="mb-8">
+      <h1 className="text-4xl font-bold text-white">
         Add Category
       </h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-xl shadow max-w-3xl"
-      >
+      <p className="mt-2 text-slate-400">
+        Create a new category for your products
+      </p>
+    </div>
+
+    {/* Form Card */}
+    <form
+      onSubmit={handleSubmit}
+      className="
+      max-w-4xl
+
+      rounded-3xl
+
+      bg-white/5
+      backdrop-blur-xl
+
+      border
+      border-white/10
+
+      p-8
+
+      space-y-6
+      "
+    >
+      {/* Category Name */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Category Name
+        </label>
+
         <input
-          placeholder="Category Name"
-          className="w-full border p-3 mb-4 rounded"
           value={form.name}
           onChange={(e) =>
             setForm({
@@ -65,11 +90,37 @@ export default function CreateCategoryPage() {
               name: e.target.value,
             })
           }
+          placeholder="Human Hair Wigs"
+          className="
+          w-full
+
+          px-4
+          py-3
+
+          rounded-2xl
+
+          bg-white/5
+
+          border
+          border-white/10
+
+          text-white
+
+          placeholder:text-slate-500
+
+          focus:outline-none
+          focus:border-cyan-500/50
+          "
         />
+      </div>
+
+      {/* Slug */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Slug
+        </label>
 
         <input
-          placeholder="Slug"
-          className="w-full border p-3 mb-4 rounded"
           value={form.slug}
           onChange={(e) =>
             setForm({
@@ -77,12 +128,38 @@ export default function CreateCategoryPage() {
               slug: e.target.value,
             })
           }
+          placeholder="human-hair-wigs"
+          className="
+          w-full
+
+          px-4
+          py-3
+
+          rounded-2xl
+
+          bg-white/5
+
+          border
+          border-white/10
+
+          text-white
+
+          placeholder:text-slate-500
+
+          focus:outline-none
+          focus:border-cyan-500/50
+          "
         />
+      </div>
+
+      {/* Description */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Description
+        </label>
 
         <textarea
-          placeholder="Description"
-          className="w-full border p-3 mb-4 rounded"
-          rows={4}
+          rows={5}
           value={form.description}
           onChange={(e) =>
             setForm({
@@ -90,10 +167,37 @@ export default function CreateCategoryPage() {
               description: e.target.value,
             })
           }
+          placeholder="Category description..."
+          className="
+          w-full
+
+          px-4
+          py-3
+
+          rounded-2xl
+
+          bg-white/5
+
+          border
+          border-white/10
+
+          text-white
+
+          placeholder:text-slate-500
+
+          focus:outline-none
+          focus:border-cyan-500/50
+          "
         />
+      </div>
+
+      {/* Gender */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Gender
+        </label>
 
         <select
-          className="w-full border p-3 mb-4 rounded"
           value={form.gender}
           onChange={(e) =>
             setForm({
@@ -101,20 +205,72 @@ export default function CreateCategoryPage() {
               gender: e.target.value,
             })
           }
-        >
-          <option value="">Select Gender</option>
-          <option value="MEN">MEN</option>
-          <option value="WOMEN">WOMEN</option>
-          <option value="UNISEX">UNISEX</option>
-        </select>
+          className="
+          w-full
 
+          px-4
+          py-3
+
+          rounded-2xl
+
+          bg-[#131827]
+
+          border
+          border-white/10
+
+          text-white
+
+          focus:outline-none
+          focus:border-cyan-500/50
+          "
+        >
+          <option value="">
+            Select Gender
+          </option>
+
+          <option value="MEN">
+            MEN
+          </option>
+
+          <option value="WOMEN">
+            WOMEN
+          </option>
+
+          <option value="UNISEX">
+            UNISEX
+          </option>
+        </select>
+      </div>
+
+      {/* Submit Button */}
+      <div className="pt-2">
         <button
           type="submit"
-          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl"
+          className="
+          px-8
+          py-3
+
+          rounded-2xl
+
+          bg-gradient-to-r
+          from-cyan-500
+          to-purple-600
+
+          text-white
+          font-medium
+
+          transition-all
+          duration-300
+
+          hover:scale-105
+
+          shadow-[0_0_25px_rgba(56,189,248,0.35)]
+          "
         >
           Save Category
         </button>
-      </form>
-    </div>
-  );
+      </div>
+    </form>
+  </div>
+);
 }

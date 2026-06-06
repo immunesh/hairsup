@@ -40,3 +40,40 @@ export const removeFromWishlist = async (req: AuthRequest, res: Response): Promi
   });
   res.json({ success: true, message: 'Removed from wishlist' });
 };
+
+export const getAllWishlists = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  const wishlists = await prisma.wishlistItem.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          role: true,
+        },
+      },
+      product: {
+        include: {
+          images: {
+            where: {
+              isPrimary: true,
+            },
+            take: 1,
+          },
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  res.json({
+    success: true,
+    data: wishlists,
+  });
+};

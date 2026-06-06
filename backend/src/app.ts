@@ -14,15 +14,22 @@ import wishlistRoutes from "./routes/wishlist.routes";
 import reviewRoutes from "./routes/review.routes";
 import categoryRoutes from "./routes/category.routes";
 import uploadRoutes from "./routes/upload.routes";
-
+import couponRoutes from "./routes/coupon.routes";
 import {
   errorHandler,
   notFound,
 } from "./middleware/error.middleware";
-
+import blogRoutes from "./routes/blog.routes";
+import storeRoutes from "./routes/store.routes";
 const app = express();
 
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: {
+      policy: "cross-origin",
+    },
+  })
+);
 
 const allowedOrigins = (
   process.env.FRONTEND_URL ||
@@ -118,7 +125,10 @@ app.use(
   "/api/categories",
   categoryRoutes
 );
-
+app.use(
+  "/api/coupons",
+  couponRoutes
+);
 /* ---------------- UPLOAD ROUTES ---------------- */
 
 app.use(
@@ -131,6 +141,14 @@ app.use(
   uploadRoutes
 );
 
+app.use(
+  "/api/blogs",
+  blogRoutes
+);
+app.use(
+  "/api/stores",
+  storeRoutes
+);
 /* ---------------- ERROR HANDLER ---------------- */
 
 app.use(notFound);

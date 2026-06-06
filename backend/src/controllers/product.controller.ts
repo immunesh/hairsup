@@ -261,6 +261,7 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
+    console.log(req.body);
 const {
   name,
   slug,
@@ -276,7 +277,8 @@ const {
   brand,
   images,
 } = req.body;
-
+console.log("IMAGES RECEIVED:");
+console.log(images);
     const product =
       await prisma.product.create({
        data: {
@@ -312,6 +314,7 @@ const {
                 images
               )
                 ? images.map(
+                  
                     (
                       url: string,
                       index: number
@@ -319,10 +322,12 @@ const {
                       url,
                       isPrimary:
                         index === 0,
+                        
                     })
                   )
                 : [],
           },
+          
         },
 
         include: {
@@ -357,34 +362,46 @@ export const updateProduct = async (
   const { id } = req.params;
 
   const {
+  name,
+  slug,
+  shortDesc,
+  description,
+  categoryId,
+  gender,
+  basePrice,
+  salePrice,
+  stock,
+  sku,
+  brand,
+  tags,
+} = req.body;
+
+const product = await prisma.product.update({
+  where: { id },
+
+  data: {
     name,
     slug,
+    shortDesc,
     description,
     categoryId,
     gender,
-    basePrice,
-    salePrice,
-    stock,
+    basePrice: Number(basePrice),
+    salePrice: Number(salePrice),
+    stock: Number(stock),
     sku,
     brand,
-  } = req.body;
-
-  const product = await prisma.product.update({
-    where: { id },
-    data: {
-      name,
-      slug,
-      description,
-      categoryId,
-      gender,
-      basePrice: Number(basePrice),
-      salePrice: Number(salePrice),
-      stock: Number(stock),
-      sku,
-      brand,
-    },
-  });
-
+ tags: JSON.stringify(
+  Array.isArray(tags)
+    ? tags
+    : typeof tags === "string"
+    ? tags
+        .split(",")
+        .map((t) => t.trim())
+    : []
+),
+  },
+});
   res.json({
     success: true,
     data: product,
