@@ -103,22 +103,26 @@ export default function AdminUsersPage() {
   }
 
 return (
-  <div className="p-8">
+  <div className="p-4 sm:p-6 lg:p-8">
     {/* Header */}
-    <div className="flex items-center justify-between mb-8">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
       <div>
-        <h1 className="text-4xl font-bold text-white">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
           User Management
         </h1>
 
-        <p className="text-slate-400 mt-2">
+        <p className="text-sm sm:text-base text-slate-400 mt-2">
           Manage all registered users
         </p>
       </div>
 
       <div
         className="
-        px-5
+        w-full
+        sm:w-auto
+        text-center
+
+        px-4 sm:px-5
         py-3
 
         rounded-2xl
@@ -146,7 +150,6 @@ return (
         }
         className="
         w-full
-        max-w-md
 
         px-4
         py-3
@@ -179,51 +182,51 @@ return (
       border
       border-white/10
 
-      overflow-x-auto
+      overflow-hidden
       "
     >
-      <table className="w-full min-w-[900px]">
-        <thead>
-          <tr className="border-b border-white/10 bg-white/5">
-            <th className="text-left p-5 text-slate-300">
-              Name
-            </th>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[900px]">
+          <thead>
+            <tr className="border-b border-white/10 bg-white/5">
+              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                Name
+              </th>
 
-            <th className="text-left p-5 text-slate-300">
-              Email
-            </th>
+              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                Email
+              </th>
 
-            <th className="text-left p-5 text-slate-300">
-              Role
-            </th>
+              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                Role
+              </th>
 
-            <th className="text-left p-5 text-slate-300">
-              Joined
-            </th>
+              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                Joined
+              </th>
 
-            <th className="text-left p-5 text-slate-300">
-              Actions
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {filteredUsers.length === 0 ? (
-            <tr>
-              <td
-                colSpan={5}
-                className="
-                p-10
-                text-center
-                text-slate-500
-                "
-              >
-                No users found
-              </td>
+              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                Actions
+              </th>
             </tr>
-          ) : (
-            filteredUsers.map(
-              (user) => (
+          </thead>
+
+          <tbody>
+            {filteredUsers.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="
+                  p-8 sm:p-10
+                  text-center
+                  text-slate-500
+                  "
+                >
+                  No users found
+                </td>
+              </tr>
+            ) : (
+              filteredUsers.map((user) => (
                 <tr
                   key={user.id}
                   className="
@@ -237,7 +240,7 @@ return (
                   "
                 >
                   {/* Name */}
-                  <td className="p-5">
+                  <td className="p-3 sm:p-5">
                     <div className="font-medium text-white">
                       {user.firstName}{" "}
                       {user.lastName}
@@ -245,12 +248,12 @@ return (
                   </td>
 
                   {/* Email */}
-                  <td className="p-5 text-slate-300">
+                  <td className="p-3 sm:p-5 text-slate-300">
                     {user.email}
                   </td>
 
                   {/* Role */}
-                  <td className="p-5">
+                  <td className="p-3 sm:p-5">
                     <select
                       value={user.role}
                       onChange={(e) =>
@@ -260,8 +263,12 @@ return (
                         )
                       }
                       className="
-                      px-4
+                      min-w-[130px]
+
+                      px-3 sm:px-4
                       py-2
+
+                      text-sm
 
                       rounded-xl
 
@@ -287,14 +294,14 @@ return (
                   </td>
 
                   {/* Joined */}
-                  <td className="p-5 text-slate-400">
+                  <td className="p-3 sm:p-5 text-slate-400">
                     {new Date(
                       user.createdAt
                     ).toLocaleDateString()}
                   </td>
 
                   {/* Actions */}
-                  <td className="p-5">
+                  <td className="p-3 sm:p-5">
                     <button
                       onClick={() =>
                         handleDelete(
@@ -302,8 +309,10 @@ return (
                         )
                       }
                       className="
-                      px-4
+                      px-3 sm:px-4
                       py-2
+
+                      text-sm
 
                       rounded-xl
 
@@ -324,11 +333,11 @@ return (
                     </button>
                   </td>
                 </tr>
-              )
-            )
-          )}
-        </tbody>
-      </table>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 );

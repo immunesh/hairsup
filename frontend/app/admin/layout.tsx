@@ -60,44 +60,39 @@ export default function AdminLayout({
   }
 
   return (
+  <div
+    className="
+    min-h-screen
+    flex
+
+    bg-gradient-to-br
+    from-[#0b1020]
+    via-[#131827]
+    to-[#1b1634]
+    "
+  >
+    <Sidebar />
+
     <div
       className="
-      h-screen
+      flex-1
       flex
-      overflow-hidden
-
-      bg-gradient-to-br
-      from-[#0b1020]
-      via-[#131827]
-      to-[#1b1634]
+      flex-col
+      min-w-0
       "
     >
-      {/* Sidebar */}
-      <Sidebar />
+      <AdminHeader />
 
-      {/* Right Side */}
-      <div
+      <main
         className="
         flex-1
-        flex
-        flex-col
-        overflow-hidden
+        overflow-y-auto
+        overflow-x-hidden
         "
       >
-        {/* Header */}
-        <AdminHeader />
-
-        {/* Only Content Scrolls */}
-        <main
-          className="
-          flex-1
-          overflow-y-auto
-          overflow-x-hidden
-          "
-        >
-          {children}
-        </main>
-      </div>
+        {children}
+      </main>
     </div>
-  );
+  </div>
+);
 }

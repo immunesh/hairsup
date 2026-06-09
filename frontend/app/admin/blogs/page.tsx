@@ -86,15 +86,15 @@ export default function BlogsPage() {
 }
 
 return (
-  <div className="p-8">
+  <div className="p-4 sm:p-6 lg:p-8">
     {/* Header */}
-    <div className="flex items-center justify-between mb-8">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
       <div>
-        <h1 className="text-4xl font-bold text-white">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
           Blog Management
         </h1>
 
-        <p className="text-slate-400 mt-2">
+        <p className="text-sm sm:text-base text-slate-400 mt-2">
           Create and manage blog posts
         </p>
       </div>
@@ -102,6 +102,11 @@ return (
       <Link
         href="/admin/blogs/create"
         className="
+        w-full
+        sm:w-auto
+
+        text-center
+
         px-6
         py-3
 
@@ -140,190 +145,192 @@ return (
       overflow-hidden
       "
     >
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-white/10 bg-white/5">
-            <th className="p-5 text-left text-slate-300">
-              Title
-            </th>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[850px]">
+          <thead>
+            <tr className="border-b border-white/10 bg-white/5">
+              <th className="p-3 sm:p-5 text-left text-slate-300 text-sm">
+                Title
+              </th>
 
-            <th className="p-5 text-left text-slate-300">
-              Author
-            </th>
+              <th className="p-3 sm:p-5 text-left text-slate-300 text-sm">
+                Author
+              </th>
 
-            <th className="p-5 text-left text-slate-300">
-              Status
-            </th>
+              <th className="p-3 sm:p-5 text-left text-slate-300 text-sm">
+                Status
+              </th>
 
-            <th className="p-5 text-left text-slate-300">
-              Published
-            </th>
+              <th className="p-3 sm:p-5 text-left text-slate-300 text-sm">
+                Published
+              </th>
 
-            <th className="p-5 text-left text-slate-300">
-              Actions
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {blogs.length === 0 ? (
-            <tr>
-              <td
-                colSpan={5}
-                className="
-                p-12
-                text-center
-                text-slate-500
-                "
-              >
-                No blogs found
-              </td>
+              <th className="p-3 sm:p-5 text-left text-slate-300 text-sm">
+                Actions
+              </th>
             </tr>
-          ) : (
-            blogs.map((blog) => (
-              <tr
-                key={blog.id}
-                className="
-                border-b
-                border-white/5
+          </thead>
 
-                hover:bg-white/5
-
-                transition-all
-                duration-300
-                "
-              >
-                {/* Title */}
-                <td className="p-5">
-                  <div className="font-medium text-white">
-                    {blog.title}
-                  </div>
-                </td>
-
-                {/* Author */}
-                <td className="p-5 text-slate-300">
-                  {blog.author}
-                </td>
-
-                {/* Status */}
-                <td className="p-5">
-                  {blog.isPublished ? (
-                    <span
-                      className="
-                      px-3
-                      py-1
-
-                      rounded-full
-
-                      text-xs
-                      font-semibold
-
-                      bg-emerald-500/20
-                      text-emerald-300
-
-                      border
-                      border-emerald-500/20
-                      "
-                    >
-                      Published
-                    </span>
-                  ) : (
-                    <span
-                      className="
-                      px-3
-                      py-1
-
-                      rounded-full
-
-                      text-xs
-                      font-semibold
-
-                      bg-orange-500/20
-                      text-orange-300
-
-                      border
-                      border-orange-500/20
-                      "
-                    >
-                      Draft
-                    </span>
-                  )}
-                </td>
-
-                {/* Published Date */}
-                <td className="p-5 text-slate-400">
-                  {blog.publishedAt
-                    ? new Date(
-                        blog.publishedAt
-                      ).toLocaleDateString()
-                    : "-"}
-                </td>
-
-                {/* Actions */}
-                <td className="p-5">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() =>
-                        handlePublish(
-                          blog.id
-                        )
-                      }
-                      className="
-                      px-4
-                      py-2
-
-                      rounded-xl
-
-                      bg-blue-500/20
-                      border
-                      border-blue-500/30
-
-                      text-blue-300
-
-                      hover:bg-blue-500/30
-                      hover:text-white
-
-                      transition-all
-                      duration-300
-                      "
-                    >
-                      Toggle
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        handleDelete(
-                          blog.id
-                        )
-                      }
-                      className="
-                      px-4
-                      py-2
-
-                      rounded-xl
-
-                      bg-red-500/20
-                      border
-                      border-red-500/30
-
-                      text-red-300
-
-                      hover:bg-red-500/30
-                      hover:text-white
-
-                      transition-all
-                      duration-300
-                      "
-                    >
-                      Delete
-                    </button>
-                  </div>
+          <tbody>
+            {blogs.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="
+                  p-8 sm:p-12
+                  text-center
+                  text-slate-500
+                  "
+                >
+                  No blogs found
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              blogs.map((blog) => (
+                <tr
+                  key={blog.id}
+                  className="
+                  border-b
+                  border-white/5
+
+                  hover:bg-white/5
+
+                  transition-all
+                  duration-300
+                  "
+                >
+                  {/* Title */}
+                  <td className="p-3 sm:p-5">
+                    <div className="font-medium text-white">
+                      {blog.title}
+                    </div>
+                  </td>
+
+                  {/* Author */}
+                  <td className="p-3 sm:p-5 text-slate-300">
+                    {blog.author}
+                  </td>
+
+                  {/* Status */}
+                  <td className="p-3 sm:p-5">
+                    {blog.isPublished ? (
+                      <span
+                        className="
+                        px-2 sm:px-3
+                        py-1
+
+                        rounded-full
+
+                        text-[10px] sm:text-xs
+                        font-semibold
+
+                        bg-emerald-500/20
+                        text-emerald-300
+
+                        border
+                        border-emerald-500/20
+                        "
+                      >
+                        Published
+                      </span>
+                    ) : (
+                      <span
+                        className="
+                        px-2 sm:px-3
+                        py-1
+
+                        rounded-full
+
+                        text-[10px] sm:text-xs
+                        font-semibold
+
+                        bg-orange-500/20
+                        text-orange-300
+
+                        border
+                        border-orange-500/20
+                        "
+                      >
+                        Draft
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Published Date */}
+                  <td className="p-3 sm:p-5 text-slate-400">
+                    {blog.publishedAt
+                      ? new Date(
+                          blog.publishedAt
+                        ).toLocaleDateString()
+                      : "-"}
+                  </td>
+
+                  {/* Actions */}
+                  <td className="p-3 sm:p-5">
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() =>
+                          handlePublish(blog.id)
+                        }
+                        className="
+                        px-3 sm:px-4
+                        py-2
+
+                        text-sm
+
+                        rounded-xl
+
+                        bg-blue-500/20
+                        border
+                        border-blue-500/30
+
+                        text-blue-300
+
+                        hover:bg-blue-500/30
+                        hover:text-white
+
+                        transition-all
+                        duration-300
+                        "
+                      >
+                        Toggle
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          handleDelete(blog.id)
+                        }
+                        className="
+                        px-3 sm:px-4
+                        py-2
+
+                        text-sm
+
+                        rounded-xl
+
+                        bg-red-500/20
+                        border
+                        border-red-500/30
+
+                        text-red-300
+
+                        hover:bg-red-500/30
+                        hover:text-white
+
+                        transition-all
+                        duration-300
+                        "
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 );

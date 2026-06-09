@@ -1,7 +1,9 @@
 {
-  "/admin/coupons/page": "app/admin/coupons/page.js",
-  "/admin/reviews/page": "app/admin/reviews/page.js",
-  "/admin/blogs/create/page": "app/admin/blogs/create/page.js",
-  "/admin/stores/page": "app/admin/stores/page.js",
-  "/admin/blogs/page": "app/admin/blogs/page.js"
+  "/admin/products/page": "app/admin/products/page.js",
+  "/(shop)/stores/page": "app/(shop)/stores/page.js",
+  "/admin/carts/page": "app/admin/carts/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/(shop)/page": "app/(shop)/page.js",
+  "/admin/categories/page": "app/admin/categories/page.js",
+  "/(shop)/blog/page": "app/(shop)/blog/page.js"
 }

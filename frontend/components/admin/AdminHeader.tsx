@@ -1,31 +1,31 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 export default function AdminHeader() {
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('admin');
-    localStorage.removeItem('token');
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("admin");
+    localStorage.removeItem("token");
 
-    router.replace('/admin/login');
+    router.replace("/admin/login");
   };
 
   return (
     <header
       className="
-      h-16
+      h-16 sm:h-20
       sticky
       top-0
-      z-50
+      z-40
 
       flex
       items-center
       justify-between
 
-      px-6
+      px-4 sm:px-6
 
       border-b
       border-white/10
@@ -35,10 +35,11 @@ export default function AdminHeader() {
       "
     >
       {/* Left */}
-      <div>
+      <div className="min-w-0">
         <h1
           className="
-          text-xl
+          text-base
+          sm:text-xl
           font-bold
 
           bg-gradient-to-r
@@ -48,26 +49,28 @@ export default function AdminHeader() {
 
           bg-clip-text
           text-transparent
+
+          truncate
           "
         >
           HairsUp Admin
         </h1>
 
-        <p className="text-xs text-slate-400">
+        <p className="hidden sm:block text-xs text-slate-400">
           Management Dashboard
         </p>
       </div>
 
       {/* Right */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         {/* Profile Card */}
         <div
           className="
           flex
           items-center
-          gap-3
+          gap-2 sm:gap-3
 
-          px-4
+          px-2 sm:px-4
           py-2
 
           rounded-2xl
@@ -81,8 +84,11 @@ export default function AdminHeader() {
         >
           <div
             className="
-            w-10
-            h-10
+            w-8
+            h-8
+            sm:w-10
+            sm:h-10
+
             rounded-full
 
             bg-gradient-to-br
@@ -103,7 +109,7 @@ export default function AdminHeader() {
             A
           </div>
 
-          <div>
+          <div className="hidden sm:block">
             <p className="text-sm font-medium text-white">
               Admin
             </p>
@@ -118,8 +124,10 @@ export default function AdminHeader() {
         <button
           onClick={handleLogout}
           className="
-          px-5
-          py-2.5
+          px-3 sm:px-5
+          py-2 sm:py-2.5
+
+          text-sm
 
           rounded-2xl
 
@@ -139,7 +147,13 @@ export default function AdminHeader() {
           hover:shadow-[0_0_25px_rgba(239,68,68,0.35)]
           "
         >
-          Logout
+          <span className="hidden sm:inline">
+            Logout
+          </span>
+
+          <span className="sm:hidden">
+            Logout
+          </span>
         </button>
       </div>
     </header>

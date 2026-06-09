@@ -18,16 +18,16 @@ async function getCategories() {
 export default async function CategoriesPage() {
   const categories = await getCategories();
 
- return (
-  <div className="p-8">
+return (
+  <div className="p-4 sm:p-6 lg:p-8">
     {/* Header */}
-    <div className="flex items-center justify-between mb-8">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
       <div>
-        <h1 className="text-4xl font-bold text-white">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
           Categories
         </h1>
 
-        <p className="text-slate-400 mt-2">
+        <p className="text-slate-400 mt-2 text-sm sm:text-base">
           Manage product categories
         </p>
       </div>
@@ -35,6 +35,10 @@ export default async function CategoriesPage() {
       <Link
         href="/admin/categories/create"
         className="
+        w-full
+        sm:w-auto
+        text-center
+
         px-6
         py-3
 
@@ -63,175 +67,177 @@ export default async function CategoriesPage() {
     <div
       className="
       rounded-3xl
-
       border
       border-white/10
-
       bg-white/5
       backdrop-blur-xl
-
-      overflow-x-auto
+      overflow-hidden
       "
     >
-      <table className="w-full min-w-[700px]">
-        <thead>
-          <tr className="border-b border-white/10 bg-white/5">
-            <th className="text-left p-5 text-slate-300">
-              Name
-            </th>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[700px]">
+          <thead>
+            <tr className="border-b border-white/10 bg-white/5">
+              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                Name
+              </th>
 
-            <th className="text-left p-5 text-slate-300">
-              Slug
-            </th>
+              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                Slug
+              </th>
 
-            <th className="text-left p-5 text-slate-300">
-              Gender
-            </th>
+              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                Gender
+              </th>
 
-            <th className="text-left p-5 text-slate-300">
-              Products
-            </th>
+              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                Products
+              </th>
 
-            <th className="text-left p-5 text-slate-300">
-              Actions
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {categories.length === 0 ? (
-            <tr>
-              <td
-                colSpan={5}
-                className="
-                p-12
-                text-center
-                text-slate-500
-                "
-              >
-                No categories found
-              </td>
+              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                Actions
+              </th>
             </tr>
-          ) : (
-            categories.map((category: any) => (
-              <tr
-                key={category.id}
-                className="
-                border-b
-                border-white/5
+          </thead>
 
-                hover:bg-white/5
-
-                transition-all
-                duration-300
-                "
-              >
-                {/* Name */}
-                <td className="p-5">
-                  <div className="font-medium text-white">
-                    {category.name}
-                  </div>
+          <tbody>
+            {categories.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="
+                  p-8 sm:p-12
+                  text-center
+                  text-slate-500
+                  "
+                >
+                  No categories found
                 </td>
+              </tr>
+            ) : (
+              categories.map((category: any) => (
+                <tr
+                  key={category.id}
+                  className="
+                  border-b
+                  border-white/5
 
-                {/* Slug */}
-                <td className="p-5 text-slate-400">
-                  {category.slug}
-                </td>
+                  hover:bg-white/5
 
-                {/* Gender */}
-                <td className="p-5">
-                  {category.gender ? (
+                  transition-all
+                  duration-300
+                  "
+                >
+                  {/* Name */}
+                  <td className="p-3 sm:p-5">
+                    <div className="font-medium text-white">
+                      {category.name}
+                    </div>
+                  </td>
+
+                  {/* Slug */}
+                  <td className="p-3 sm:p-5 text-slate-400">
+                    {category.slug}
+                  </td>
+
+                  {/* Gender */}
+                  <td className="p-3 sm:p-5">
+                    {category.gender ? (
+                      <span
+                        className="
+                        inline-flex
+                        items-center
+
+                        px-2 sm:px-3
+                        py-1
+
+                        rounded-full
+
+                        text-[10px] sm:text-xs
+                        font-semibold
+
+                        bg-purple-500/20
+                        text-purple-300
+
+                        border
+                        border-purple-500/20
+                        "
+                      >
+                        {category.gender}
+                      </span>
+                    ) : (
+                      <span className="text-slate-500">
+                        —
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Product Count */}
+                  <td className="p-3 sm:p-5">
                     <span
                       className="
                       inline-flex
                       items-center
 
-                      px-3
+                      px-2 sm:px-3
                       py-1
 
                       rounded-full
 
-                      text-xs
+                      text-[10px] sm:text-xs
                       font-semibold
 
-                      bg-purple-500/20
-                      text-purple-300
+                      bg-cyan-500/20
+                      text-cyan-300
 
                       border
-                      border-purple-500/20
+                      border-cyan-500/20
                       "
                     >
-                      {category.gender}
+                      {category._count?.products ?? 0}
                     </span>
-                  ) : (
-                    <span className="text-slate-500">
-                      —
-                    </span>
-                  )}
-                </td>
+                  </td>
 
-                {/* Product Count */}
-                <td className="p-5">
-                  <span
-                    className="
-                    inline-flex
-                    items-center
+                  {/* Actions */}
+                  <td className="p-3 sm:p-5">
+                    <Link
+                      href={`/admin/categories/edit/${category.id}`}
+                      className="
+                      inline-flex
+                      items-center
+                      justify-center
 
-                    px-3
-                    py-1
+                      px-3 sm:px-4
+                      py-2
 
-                    rounded-full
+                      text-sm
 
-                    text-xs
-                    font-semibold
+                      rounded-xl
 
-                    bg-cyan-500/20
-                    text-cyan-300
+                      bg-cyan-500/20
+                      border
+                      border-cyan-500/30
 
-                    border
-                    border-cyan-500/20
-                    "
-                  >
-                    {category._count?.products ?? 0}
-                  </span>
-                </td>
+                      text-cyan-300
 
-                {/* Actions */}
-                <td className="p-5">
-                  <Link
-                    href={`/admin/categories/edit/${category.id}`}
-                    className="
-                    inline-flex
-                    items-center
+                      hover:bg-cyan-500/30
+                      hover:text-white
 
-                    px-4
-                    py-2
+                      transition-all
+                      duration-300
 
-                    rounded-xl
-
-                    bg-cyan-500/20
-                    border
-                    border-cyan-500/30
-
-                    text-cyan-300
-
-                    hover:bg-cyan-500/30
-                    hover:text-white
-
-                    transition-all
-                    duration-300
-
-                    hover:shadow-[0_0_15px_rgba(34,211,238,0.25)]
-                    "
-                  >
-                    Edit
-                  </Link>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+                      hover:shadow-[0_0_15px_rgba(34,211,238,0.25)]
+                      "
+                    >
+                      Edit
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 );

@@ -17,26 +17,39 @@ import {
 const router = Router();
 
 /*
-  Admin Only
+  Public Routes
 */
-
-router.use(
-  authenticate,
-  authorize("ADMIN")
-);
-
 router.get("/", getAllStores);
-
 router.get("/:id", getStoreById);
 
-router.post("/", createStore);
+/*
+  Admin Routes
+*/
+router.post(
+  "/",
+  authenticate,
+  authorize("ADMIN"),
+  createStore
+);
 
-router.put("/:id", updateStore);
+router.put(
+  "/:id",
+  authenticate,
+  authorize("ADMIN"),
+  updateStore
+);
 
-router.delete("/:id", deleteStore);
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("ADMIN"),
+  deleteStore
+);
 
 router.patch(
   "/:id/toggle",
+  authenticate,
+  authorize("ADMIN"),
   toggleStoreStatus
 );
 

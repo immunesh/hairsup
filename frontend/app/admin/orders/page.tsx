@@ -41,15 +41,15 @@ export default function OrdersPage() {
     return <p>Loading orders...</p>;
   }
 
-  return (
-  <div className="p-8">
+return (
+  <div className="p-4 sm:p-6 lg:p-8">
     {/* Header */}
-    <div className="mb-8">
-      <h1 className="text-4xl font-bold text-white">
+    <div className="mb-6 sm:mb-8">
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
         Order Management
       </h1>
 
-      <p className="mt-2 text-slate-400">
+      <p className="mt-2 text-sm sm:text-base text-slate-400">
         Manage customer orders and update status
       </p>
     </div>
@@ -63,7 +63,7 @@ export default function OrdersPage() {
         border
         border-white/10
         backdrop-blur-xl
-        p-10
+        p-8 sm:p-10
         text-center
         text-slate-400
         "
@@ -74,147 +74,149 @@ export default function OrdersPage() {
       <div
         className="
         rounded-3xl
-
         border
         border-white/10
-
         bg-white/5
         backdrop-blur-xl
-
-        overflow-x-auto
+        overflow-hidden
         "
       >
-        <table className="w-full min-w-[1000px]">
-          <thead>
-            <tr className="border-b border-white/10 bg-white/5">
-              <th className="text-left p-5 text-slate-300">
-                Order No
-              </th>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[900px]">
+            <thead>
+              <tr className="border-b border-white/10 bg-white/5">
+                <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                  Order No
+                </th>
 
-              <th className="text-left p-5 text-slate-300">
-                Customer
-              </th>
+                <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                  Customer
+                </th>
 
-              <th className="text-left p-5 text-slate-300">
-                Email
-              </th>
+                <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                  Email
+                </th>
 
-              <th className="text-left p-5 text-slate-300">
-                Total
-              </th>
+                <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                  Total
+                </th>
 
-              <th className="text-left p-5 text-slate-300">
-                Status
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {orders.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="
-                  text-center
-                  p-10
-                  text-slate-500
-                  "
-                >
-                  No orders found
-                </td>
+                <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                  Status
+                </th>
               </tr>
-            ) : (
-              orders.map((order) => (
-                <tr
-                  key={order.id}
-                  className="
-                  border-b
-                  border-white/5
+            </thead>
 
-                  hover:bg-white/5
-
-                  transition-all
-                  duration-300
-                  "
-                >
-                  {/* Order Number */}
-                  <td className="p-5">
-                    <span className="font-medium text-white">
-                      {order.orderNumber}
-                    </span>
-                  </td>
-
-                  {/* Customer */}
-                  <td className="p-5 text-white">
-                    {order.user?.firstName}{" "}
-                    {order.user?.lastName}
-                  </td>
-
-                  {/* Email */}
-                  <td className="p-5 text-slate-400">
-                    {order.user?.email}
-                  </td>
-
-                  {/* Total */}
-                  <td className="p-5">
-                    <span className="font-semibold text-emerald-400">
-                      ₹{order.total}
-                    </span>
-                  </td>
-
-                  {/* Status */}
-                  <td className="p-5">
-                    <select
-                      value={order.status}
-                      onChange={(e) =>
-                        handleStatusChange(
-                          order.id,
-                          e.target.value
-                        )
-                      }
-                      className="
-                      px-4
-                      py-2
-
-                      rounded-xl
-
-                      bg-[#131827]
-
-                      border
-                      border-white/10
-
-                      text-white
-
-                      focus:outline-none
-                      focus:border-cyan-500/50
-                      "
-                    >
-                      <option value="PENDING">
-                        PENDING
-                      </option>
-
-                      <option value="PROCESSING">
-                        PROCESSING
-                      </option>
-
-                      <option value="SHIPPED">
-                        SHIPPED
-                      </option>
-
-                      <option value="DELIVERED">
-                        DELIVERED
-                      </option>
-
-                      <option value="CANCELLED">
-                        CANCELLED
-                      </option>
-                    </select>
+            <tbody>
+              {orders.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="
+                    text-center
+                    p-8 sm:p-10
+                    text-slate-500
+                    "
+                  >
+                    No orders found
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                orders.map((order) => (
+                  <tr
+                    key={order.id}
+                    className="
+                    border-b
+                    border-white/5
+                    hover:bg-white/5
+                    transition-all
+                    duration-300
+                    "
+                  >
+                    {/* Order Number */}
+                    <td className="p-3 sm:p-5">
+                      <span className="font-medium text-white">
+                        {order.orderNumber}
+                      </span>
+                    </td>
+
+                    {/* Customer */}
+                    <td className="p-3 sm:p-5 text-white">
+                      {order.user?.firstName}{" "}
+                      {order.user?.lastName}
+                    </td>
+
+                    {/* Email */}
+                    <td className="p-3 sm:p-5 text-slate-400">
+                      {order.user?.email}
+                    </td>
+
+                    {/* Total */}
+                    <td className="p-3 sm:p-5">
+                      <span className="font-semibold text-emerald-400">
+                        ₹{order.total}
+                      </span>
+                    </td>
+
+                    {/* Status */}
+                    <td className="p-3 sm:p-5">
+                      <select
+                        value={order.status}
+                        onChange={(e) =>
+                          handleStatusChange(
+                            order.id,
+                            e.target.value
+                          )
+                        }
+                        className="
+                        w-full
+                        min-w-[140px]
+
+                        px-3 sm:px-4
+                        py-2
+
+                        text-sm
+
+                        rounded-xl
+
+                        bg-[#131827]
+
+                        border
+                        border-white/10
+
+                        text-white
+
+                        focus:outline-none
+                        focus:border-cyan-500/50
+                        "
+                      >
+                        <option value="PENDING">
+                          PENDING
+                        </option>
+
+                        <option value="PROCESSING">
+                          PROCESSING
+                        </option>
+
+                        <option value="SHIPPED">
+                          SHIPPED
+                        </option>
+
+                        <option value="DELIVERED">
+                          DELIVERED
+                        </option>
+
+                        <option value="CANCELLED">
+                          CANCELLED
+                        </option>
+                      </select>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     )}
   </div>

@@ -5,11 +5,15 @@ export const getAllStores = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const stores = await prisma.storeLocation.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const stores =
+    await prisma.storeLocation.findMany({
+      where: {
+        isActive: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
   res.json({
     success: true,

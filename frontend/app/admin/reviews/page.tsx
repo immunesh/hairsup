@@ -80,22 +80,26 @@ export default function AdminReviewsPage() {
 }
 
 return (
-  <div className="p-8">
+  <div className="p-4 sm:p-6 lg:p-8">
     {/* Header */}
-    <div className="flex items-center justify-between mb-8">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
       <div>
-        <h1 className="text-4xl font-bold text-white">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
           Review Management
         </h1>
 
-        <p className="text-slate-400 mt-2">
+        <p className="text-sm sm:text-base text-slate-400 mt-2">
           Manage customer product reviews
         </p>
       </div>
 
       <div
         className="
-        px-5
+        w-full
+        sm:w-auto
+        text-center
+
+        px-4 sm:px-5
         py-3
 
         rounded-2xl
@@ -126,148 +130,152 @@ return (
       overflow-hidden
       "
     >
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-white/10 bg-white/5">
-            <th className="p-5 text-left text-slate-300">
-              Customer
-            </th>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[1000px]">
+          <thead>
+            <tr className="border-b border-white/10 bg-white/5">
+              <th className="p-3 sm:p-5 text-left text-slate-300 text-sm">
+                Customer
+              </th>
 
-            <th className="p-5 text-left text-slate-300">
-              Product
-            </th>
+              <th className="p-3 sm:p-5 text-left text-slate-300 text-sm">
+                Product
+              </th>
 
-            <th className="p-5 text-left text-slate-300">
-              Rating
-            </th>
+              <th className="p-3 sm:p-5 text-left text-slate-300 text-sm">
+                Rating
+              </th>
 
-            <th className="p-5 text-left text-slate-300">
-              Review
-            </th>
+              <th className="p-3 sm:p-5 text-left text-slate-300 text-sm">
+                Review
+              </th>
 
-            <th className="p-5 text-left text-slate-300">
-              Date
-            </th>
+              <th className="p-3 sm:p-5 text-left text-slate-300 text-sm">
+                Date
+              </th>
 
-            <th className="p-5 text-left text-slate-300">
-              Action
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {reviews.length === 0 ? (
-            <tr>
-              <td
-                colSpan={6}
-                className="
-                p-12
-                text-center
-                text-slate-500
-                "
-              >
-                No reviews found
-              </td>
+              <th className="p-3 sm:p-5 text-left text-slate-300 text-sm">
+                Action
+              </th>
             </tr>
-          ) : (
-            reviews.map((review) => (
-              <tr
-                key={review.id}
-                className="
-                border-b
-                border-white/5
+          </thead>
 
-                hover:bg-white/5
-
-                transition-all
-                duration-300
-                "
-              >
-                {/* Customer */}
-                <td className="p-5">
-                  <div className="font-medium text-white">
-                    {review.user?.firstName}{" "}
-                    {review.user?.lastName}
-                  </div>
-                </td>
-
-                {/* Product */}
-                <td className="p-5 text-white">
-                  {review.product?.name}
-                </td>
-
-                {/* Rating */}
-                <td className="p-5">
-                  <span
-                    className="
-                    px-3
-                    py-1
-
-                    rounded-full
-
-                    text-xs
-                    font-semibold
-
-                    bg-yellow-500/20
-                    text-yellow-300
-
-                    border
-                    border-yellow-500/20
-                    "
-                  >
-                    ⭐ {review.rating}/5
-                  </span>
-                </td>
-
-                {/* Review */}
-                <td className="p-5 max-w-md">
-                  <p className="text-slate-300 truncate">
-                    {review.body}
-                  </p>
-                </td>
-
-                {/* Date */}
-                <td className="p-5 text-slate-400">
-                  {new Date(
-                    review.createdAt
-                  ).toLocaleDateString()}
-                </td>
-
-                {/* Action */}
-                <td className="p-5">
-                  <button
-                    onClick={() =>
-                      handleDelete(
-                        review.id
-                      )
-                    }
-                    className="
-                    px-4
-                    py-2
-
-                    rounded-xl
-
-                    bg-red-500/20
-                    border
-                    border-red-500/30
-
-                    text-red-300
-
-                    hover:bg-red-500/30
-                    hover:text-white
-
-                    transition-all
-                    duration-300
-                    "
-                  >
-                    Delete
-                  </button>
+          <tbody>
+            {reviews.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="
+                  p-8 sm:p-12
+                  text-center
+                  text-slate-500
+                  "
+                >
+                  No reviews found
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              reviews.map((review) => (
+                <tr
+                  key={review.id}
+                  className="
+                  border-b
+                  border-white/5
+
+                  hover:bg-white/5
+
+                  transition-all
+                  duration-300
+                  "
+                >
+                  {/* Customer */}
+                  <td className="p-3 sm:p-5">
+                    <div className="font-medium text-white">
+                      {review.user?.firstName}{" "}
+                      {review.user?.lastName}
+                    </div>
+                  </td>
+
+                  {/* Product */}
+                  <td className="p-3 sm:p-5 text-white">
+                    {review.product?.name}
+                  </td>
+
+                  {/* Rating */}
+                  <td className="p-3 sm:p-5">
+                    <span
+                      className="
+                      px-2 sm:px-3
+                      py-1
+
+                      rounded-full
+
+                      text-[10px] sm:text-xs
+                      font-semibold
+
+                      bg-yellow-500/20
+                      text-yellow-300
+
+                      border
+                      border-yellow-500/20
+                      "
+                    >
+                      ⭐ {review.rating}/5
+                    </span>
+                  </td>
+
+                  {/* Review */}
+                  <td className="p-3 sm:p-5 max-w-[250px] sm:max-w-md">
+                    <p className="text-slate-300 truncate">
+                      {review.body}
+                    </p>
+                  </td>
+
+                  {/* Date */}
+                  <td className="p-3 sm:p-5 text-slate-400">
+                    {new Date(
+                      review.createdAt
+                    ).toLocaleDateString()}
+                  </td>
+
+                  {/* Action */}
+                  <td className="p-3 sm:p-5">
+                    <button
+                      onClick={() =>
+                        handleDelete(
+                          review.id
+                        )
+                      }
+                      className="
+                      px-3 sm:px-4
+                      py-2
+
+                      text-sm
+
+                      rounded-xl
+
+                      bg-red-500/20
+                      border
+                      border-red-500/30
+
+                      text-red-300
+
+                      hover:bg-red-500/30
+                      hover:text-white
+
+                      transition-all
+                      duration-300
+                      "
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 );
