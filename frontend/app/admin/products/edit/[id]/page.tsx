@@ -10,7 +10,13 @@ const router = useRouter();
 
 const [loading, setLoading] = useState(true);
 const [categories, setCategories] = useState<any[]>([]);
+const [mainImage, setMainImage] = useState<File | null>(null);
+const [galleryImages, setGalleryImages] = useState<File[]>([]);
 
+const [mainPreview, setMainPreview] = useState("");
+const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
+
+const [existingImages, setExistingImages] = useState<string[]>([]);
 const [form, setForm] = useState({
 name: "",
 slug: "",
@@ -40,7 +46,11 @@ const res = await fetch(
 
   const data = await res.json();
 
-  setCategories(data.data || []);
+  setCategories(
+  Array.isArray(data)
+    ? data
+    : data.data || []
+);
 } catch (error) {
   console.error(error);
 }
@@ -50,6 +60,7 @@ const res = await fetch(
 
 async function fetchProduct() {
 try {
+  
 const res = await fetch(
 `http://localhost:5000/api/products/${params.id}`
 );
@@ -57,7 +68,13 @@ const res = await fetch(
 
   const data = await res.json();
   const product = data.data;
+setExistingImages(
+  product.images?.map((img: any) => img.url) || []
+);
 
+if (product.images?.length) {
+  setMainPreview(product.images[0].url);
+}
   setForm({
     name: product.name || "",
     slug: product.slug || "",
@@ -91,6 +108,47 @@ e.preventDefault();
 
 
 try {
+  let imageUrls = [...existingImages];
+  // Upload main image
+if (mainImage) {
+  const fd = new FormData();
+
+  fd.append("image", mainImage);
+
+  const uploadRes = await fetch(
+    "http://localhost:5000/api/upload/image",
+    {
+      method: "POST",
+      body: fd,
+    }
+  );
+
+  const uploadData = await uploadRes.json();
+
+  if (uploadRes.ok) {
+    imageUrls = [uploadData.url];
+  }
+}
+// Upload gallery images
+for (const image of galleryImages) {
+  const fd = new FormData();
+
+  fd.append("image", image);
+
+  const uploadRes = await fetch(
+    "http://localhost:5000/api/upload/image",
+    {
+      method: "POST",
+      body: fd,
+    }
+  );
+
+  const uploadData = await uploadRes.json();
+
+  if (uploadRes.ok) {
+    imageUrls.push(uploadData.url);
+  }
+}
   const res = await fetch(
     `http://localhost:5000/api/products/${params.id}`,
     {
@@ -99,18 +157,20 @@ try {
         "Content-Type":
           "application/json",
       },
-      body: JSON.stringify({
-        ...form,
-        basePrice: Number(form.basePrice),
-        salePrice: form.salePrice
-          ? Number(form.salePrice)
-          : null,
-        stock: Number(form.stock),
-        tags: form.tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter(Boolean),
-      }),
+     body: JSON.stringify({
+  ...form,
+  basePrice: Number(form.basePrice),
+  salePrice: form.salePrice
+    ? Number(form.salePrice)
+    : null,
+  stock: Number(form.stock),
+  tags: form.tags
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean),
+
+  images: imageUrls,
+}),
     }
   );
 
@@ -413,7 +473,71 @@ return (
           className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
         />
       </div>
+{/* Main Image */}
+<div className="mt-6">
+  <label className="block mb-2 text-sm font-medium text-slate-300">
+    Main Product Image
+  </label>
 
+  <input
+    type="file"
+    accept="image/*"
+    className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-300"
+    onChange={(e) => {
+      const file = e.target.files?.[0];
+
+      if (!file) return;
+
+      setMainImage(file);
+      setMainPreview(URL.createObjectURL(file));
+    }}
+  />
+
+  {mainPreview && (
+    <img
+      src={mainPreview}
+      alt="Preview"
+      className="mt-4 w-40 h-40 object-cover rounded-2xl border border-white/10"
+    />
+  )}
+</div>
+
+{/* Gallery Images */}
+<div className="mt-6">
+  <label className="block mb-2 text-sm font-medium text-slate-300">
+    Gallery Images
+  </label>
+
+  <input
+    type="file"
+    multiple
+    accept="image/*"
+    className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-300"
+    onChange={(e) => {
+      const files = Array.from(e.target.files || []);
+
+      setGalleryImages(files);
+
+      setGalleryPreviews(
+        files.map((file) =>
+          URL.createObjectURL(file)
+        )
+      );
+    }}
+  />
+
+  {galleryPreviews.length > 0 && (
+    <div className="grid grid-cols-4 gap-4 mt-4">
+      {galleryPreviews.map((img, index) => (
+        <img
+          key={index}
+          src={img}
+          className="w-28 h-28 object-cover rounded-2xl border border-white/10"
+        />
+      ))}
+    </div>
+  )}
+</div>
       <button
         type="submit"
         className="

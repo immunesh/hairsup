@@ -265,9 +265,8 @@ export const createProduct = async (
 const {
   name,
   slug,
-  description,
   shortDesc,
-  tags,
+  description,
   categoryId,
   gender,
   basePrice,
@@ -275,6 +274,7 @@ const {
   stock,
   sku,
   brand,
+  tags,
   images,
 } = req.body;
 console.log("IMAGES RECEIVED:");
@@ -362,46 +362,77 @@ export const updateProduct = async (
   const { id } = req.params;
 
   const {
-  name,
-  slug,
-  shortDesc,
-  description,
-  categoryId,
-  gender,
-  basePrice,
-  salePrice,
-  stock,
-  sku,
-  brand,
-  tags,
-} = req.body;
-
-const product = await prisma.product.update({
-  where: { id },
-
-  data: {
     name,
     slug,
     shortDesc,
     description,
     categoryId,
     gender,
-    basePrice: Number(basePrice),
-    salePrice: Number(salePrice),
-    stock: Number(stock),
+    basePrice,
+    salePrice,
+    stock,
     sku,
     brand,
- tags: JSON.stringify(
-  Array.isArray(tags)
-    ? tags
-    : typeof tags === "string"
-    ? tags
-        .split(",")
-        .map((t) => t.trim())
-    : []
-),
-  },
-});
+    tags,
+    images,
+  } = req.body;
+
+  // Delete old images
+  await prisma.productImage.deleteMany({
+    where: {
+      productId: id,
+    },
+  });
+
+  const product = await prisma.product.update({
+    where: { id },
+
+    data: {
+      name,
+      slug,
+      shortDesc,
+      description,
+      categoryId,
+      gender,
+      basePrice: Number(basePrice),
+      salePrice: salePrice
+        ? Number(salePrice)
+        : null,
+      stock: Number(stock),
+      sku,
+      brand,
+
+      tags: JSON.stringify(
+        Array.isArray(tags)
+          ? tags
+          : typeof tags === "string"
+          ? tags
+              .split(",")
+              .map((t) => t.trim())
+          : []
+      ),
+
+      images: {
+        create: Array.isArray(images)
+          ? images.map(
+              (
+                url: string,
+                index: number
+              ) => ({
+                url,
+                isPrimary:
+                  index === 0,
+              })
+            )
+          : [],
+      },
+    },
+
+    include: {
+      images: true,
+    },
+  });
+
   res.json({
     success: true,
     data: product,

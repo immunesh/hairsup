@@ -68,7 +68,14 @@ export const cartApi = {
   remove: (id: string) => api.delete(`/cart/${id}`),
   clear: () => api.delete('/cart/clear'),
 };
-
+export const uploadApi = {
+  image: (formData: FormData) =>
+    api.post("/upload/image", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
+};
 // Orders
 export const ordersApi = {
   create: (data: Record<string, unknown>) => api.post('/orders', data),
@@ -97,9 +104,12 @@ export const wishlistApi = {
 
 // Reviews
 export const reviewsApi = {
-  getByProduct: (productId: string, params?: Record<string, unknown>) =>
-    api.get(`/reviews/product/${productId}`, { params }),
+  getMyReviews: () => api.get('/reviews/my'),
+   
   create: (data: Record<string, unknown>) => api.post('/reviews', data),
   update: (id: string, data: Record<string, unknown>) => api.put(`/reviews/${id}`, data),
   delete: (id: string) => api.delete(`/reviews/${id}`),
+};
+export const blogApi = {
+  getAll: () => api.get('/blogs/published'),
 };

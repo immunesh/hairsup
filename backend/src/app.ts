@@ -149,6 +149,7 @@ app.use(
   "/api/stores",
   storeRoutes
 );
+
 /* ---------------- ERROR HANDLER ---------------- */
 
 app.use(notFound);
@@ -156,3 +157,4 @@ app.use(notFound);
 app.use(errorHandler);
 
 export default app;
+

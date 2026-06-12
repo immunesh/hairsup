@@ -1,9 +1,7 @@
 {
-  "/admin/products/page": "app/admin/products/page.js",
-  "/(shop)/stores/page": "app/(shop)/stores/page.js",
-  "/admin/carts/page": "app/admin/carts/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/(shop)/page": "app/(shop)/page.js",
-  "/admin/categories/page": "app/admin/categories/page.js",
-  "/(shop)/blog/page": "app/(shop)/blog/page.js"
+  "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/(shop)/profile/page": "app/(shop)/profile/page.js",
+  "/(shop)/orders/page": "app/(shop)/orders/page.js",
+  "/admin/login/page": "app/admin/login/page.js",
+  "/(shop)/page": "app/(shop)/page.js"
 }

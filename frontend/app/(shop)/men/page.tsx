@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Grid, List, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import ProductCard from '@/components/ui/ProductCard';
 import FilterSidebar from '@/components/ui/FilterSidebar';
-import { DEMO_PRODUCTS } from '@/lib/utils';
+ 
 import { productsApi } from '@/lib/api';
 import { Product } from '@/types';
 import Image from 'next/image';
@@ -42,28 +42,208 @@ export default function MenPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [activeSubcat, setActiveSubcat] = useState('');
 
-  useEffect(() => {
-    let mounted = true;
-    const load = async () => {
-      try {
-        const res = await productsApi.getAll();
-        let list = (res.data.data || []) as Product[];
-        list = list.filter((p) => p.gender === 'MEN');
-        if (activeSubcat) {
-          const val = activeSubcat;
-          if (val === 'human-hair') list = list.filter((p) => String(p.material || '').toLowerCase().includes('human'));
-          else if (val === 'hair-system') list = list.filter((p) => String(p.name || '').toLowerCase().includes('system') || String(p.description || '').toLowerCase().includes('system'));
-          else if (val === 'toupee') list = list.filter((p) => String(p.name || '').toLowerCase().includes('toupee'));
-        }
-        if (mounted) setProducts(list);
-      } catch (e) {
-        const menProducts = DEMO_PRODUCTS.filter((p) => p.gender === 'MEN') as unknown as Product[];
-        if (mounted) setProducts(menProducts);
-      }
-    };
-    load();
-    return () => { mounted = false; };
-  }, [activeSubcat]);
+ useEffect(() => {
+  const loadProducts = async () => {
+    try {
+      const res = await productsApi.getAll();
+
+      let list = res.data.data || [];
+
+      console.log(
+        "ALL PRODUCTS",
+        list.map((p: any) => ({
+          name: p.name,
+          gender: p.gender,
+          category: p.category?.name,
+        }))
+      );
+
+      // MEN PRODUCTS
+      list = list.filter(
+        (p: any) =>
+          String(p.gender || "").toUpperCase() === "MEN"
+      );
+
+      // SUB CATEGORY FILTERS
+    // SUB CATEGORY FILTERS
+if (activeSubcat === "human-hair") {
+  list = list.filter((p: any) =>
+    String(p.material || "")
+      .toLowerCase()
+      .includes("human")
+  );
+}
+
+if (activeSubcat === "hair-system") {
+  list = list.filter(
+    (p: any) =>
+      String(p.name || "")
+        .toLowerCase()
+        .includes("system") ||
+      String(p.description || "")
+        .toLowerCase()
+        .includes("system")
+  );
+}
+
+if (activeSubcat === "toupee") {
+  list = list.filter((p: any) =>
+    String(p.name || "")
+      .toLowerCase()
+      .includes("toupee")
+  );
+}
+
+if (activeSubcat === "full-cap") {
+  list = list.filter((p: any) =>
+    String(p.name || "")
+      .toLowerCase()
+      .includes("full")
+  );
+}
+
+if (activeSubcat === "crown") {
+  list = list.filter((p: any) =>
+    String(p.name || "")
+      .toLowerCase()
+      .includes("crown")
+  );
+}
+
+// PRICE FILTER
+if (filters.price) {
+  const [min, max] = String(filters.price)
+    .split("-")
+    .map(Number);
+
+  list = list.filter((p: any) => {
+    const price = p.salePrice || p.basePrice;
+    return price >= min && price <= max;
+  });
+}
+
+// MATERIAL FILTER
+if (filters.material) {
+  const material = String(filters.material);
+
+  if (material === "human-hair") {
+    list = list.filter((p: any) =>
+      String(p.material || "")
+        .toLowerCase()
+        .includes("human")
+    );
+  }
+
+  if (material === "synthetic") {
+    list = list.filter((p: any) =>
+      String(p.material || "")
+        .toLowerCase()
+        .includes("synthetic")
+    );
+  }
+
+  if (material === "blend") {
+    list = list.filter((p: any) =>
+      String(p.material || "")
+        .toLowerCase()
+        .includes("blend")
+    );
+  }
+}
+
+// TEXTURE FILTER
+if (filters.texture) {
+  const textures = Array.isArray(filters.texture)
+    ? filters.texture
+    : [filters.texture];
+
+  list = list.filter((p: any) =>
+    textures.some((t) =>
+      String(p.texture || "")
+        .toLowerCase()
+        .includes(
+          String(t)
+            .replace("-", " ")
+            .toLowerCase()
+        )
+    )
+  );
+}
+if (filters.length) {
+  list = list.filter((p) => {
+    const inches = parseInt(
+      String(p.length || "").replace(/\D/g, "")
+    );
+
+    if (isNaN(inches)) return false;
+
+    switch (filters.length) {
+      case "short":
+        return inches < 12;
+
+      case "medium":
+        return inches >= 12 && inches <= 18;
+
+      case "long":
+        return inches > 18 && inches <= 24;
+
+      case "extra-long":
+        return inches > 24;
+
+      default:
+        return true;
+    }
+  });
+}
+// COLLECTION FILTER
+if (filters.collection) {
+  const collections = Array.isArray(filters.collection)
+    ? filters.collection
+    : [filters.collection];
+
+  list = list.filter((p: any) => {
+    if (collections.includes("featured") && p.isFeatured)
+      return true;
+
+    if (collections.includes("best") && p.isBestSeller)
+      return true;
+
+    if (collections.includes("new") && p.isNewArrival)
+      return true;
+
+    if (collections.includes("sale") && p.salePrice)
+      return true;
+
+    return false;
+  });
+} 
+
+if (sort === "price-desc") {
+  list.sort(
+    (a: any, b: any) =>
+      (b.salePrice || b.basePrice) -
+      (a.salePrice || a.basePrice)
+  );
+}
+
+if (sort === "rating-desc") {
+  list.sort(
+    (a: any, b: any) =>
+      (b.rating || 0) -
+      (a.rating || 0)
+  );
+}
+console.log("FILTERS", filters);
+console.log("RESULTS", list);
+      setProducts(list);
+    } catch (error) {
+      console.error(error);
+      setProducts([]);
+    }
+  };
+
+  loadProducts();
+}, [activeSubcat, filters, sort]);
 
   const handleFilterChange = (key: string, value: string | string[] | undefined) => {
     setFilters((prev) => ({ ...prev, [key]: value }));

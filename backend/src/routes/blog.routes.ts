@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import {
   getAllBlogs,
+  getPublishedBlogs,
   getBlogById,
   createBlog,
   updateBlog,
@@ -16,23 +17,43 @@ import {
 
 const router = Router();
 
-router.use(
-  authenticate,
-  authorize("ADMIN")
-);
-
-router.get("/", getAllBlogs);
-
+/* PUBLIC ROUTES */
+router.get("/published", getPublishedBlogs);
 router.get("/:id", getBlogById);
 
-router.post("/", createBlog);
+/* ADMIN ROUTES */
+router.get(
+  "/",
+  authenticate,
+  authorize("ADMIN"),
+  getAllBlogs
+);
 
-router.put("/:id", updateBlog);
+router.post(
+  "/",
+  authenticate,
+  authorize("ADMIN"),
+  createBlog
+);
 
-router.delete("/:id", deleteBlog);
+router.put(
+  "/:id",
+  authenticate,
+  authorize("ADMIN"),
+  updateBlog
+);
+
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("ADMIN"),
+  deleteBlog
+);
 
 router.patch(
   "/:id/publish",
+  authenticate,
+  authorize("ADMIN"),
   togglePublishBlog
 );
 

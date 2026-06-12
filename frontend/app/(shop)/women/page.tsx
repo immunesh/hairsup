@@ -45,8 +45,40 @@ export default function WomenPage() {
       try {
         const res = await productsApi.getAll();
         let list = (res.data.data || []) as Product[];
-        // filter women
-        list = list.filter((p) => p.gender === 'WOMEN');
+       console.log(
+  list.map((p) => ({
+    name: p.name,
+    gender: p.gender,
+    category: p.category?.name,
+  }))
+);
+list = list.filter((p) => {
+  const gender =
+    String(p.gender || "")
+      .trim()
+      .toUpperCase();
+
+  const category =
+    String(p.category?.name || "")
+      .toLowerCase();
+
+  return (
+    gender === "WOMEN" ||
+    category.includes("women")
+  );
+});
+     // filter women FIRST
+list = list.filter(
+  (p) =>
+    String(p.gender || "")
+      .trim()
+      .toUpperCase() === "WOMEN"
+);
+
+console.log(
+  "Women Products After Filter",
+  list
+);
 
         // apply active subcategory heuristics
         if (activeSubcat) {
@@ -57,6 +89,128 @@ export default function WomenPage() {
           else if (val === 'curly') list = list.filter((p) => String(p.texture || '').toLowerCase().includes('curly'));
           else if (val === 'straight') list = list.filter((p) => String(p.texture || '').toLowerCase().includes('straight'));
         }
+  if (filters.material) {
+  const materialMap: Record<string, string> = {
+    "human-hair": "human hair",
+    "synthetic": "synthetic",
+    "blend": "blend",
+  };
+
+  const target =
+    materialMap[String(filters.material)];
+
+  list = list.filter((p) =>
+    String(p.material || "")
+      .toLowerCase()
+      .includes(target)
+  );
+}
+
+if (filters.texture) {
+  const selected = Array.isArray(filters.texture)
+    ? filters.texture
+    : [filters.texture];
+
+  list = list.filter((p) =>
+    selected.some((t) =>
+      String(p.texture || "")
+        .toLowerCase()
+        .includes(
+          String(t)
+            .replace("-", " ")
+            .toLowerCase()
+        )
+    )
+  );
+}
+if (filters.length) {
+  list = list.filter((p) => {
+    const inches = parseInt(
+      String(p.length || "").replace(/\D/g, "")
+    );
+
+    if (isNaN(inches)) return false;
+
+    switch (filters.length) {
+      case "short":
+        return inches < 12;
+
+      case "medium":
+        return inches >= 12 && inches <= 18;
+
+      case "long":
+        return inches > 18 && inches <= 24;
+
+      case "extra-long":
+        return inches > 24;
+
+      default:
+        return true;
+    }
+  });
+}
+console.log(
+  list.map((p) => ({
+    name: p.name,
+    length: p.length,
+  }))
+);
+if (filters.price) {
+  const [min, max] = String(filters.price)
+    .split("-")
+    .map(Number);
+
+  list = list.filter((p) => {
+    const price =
+      p.salePrice || p.basePrice;
+
+    return price >= min && price <= max;
+  });
+}
+if (filters.collection) {
+  const selected = Array.isArray(filters.collection)
+    ? filters.collection
+    : [filters.collection];
+
+  list = list.filter((p) => {
+    if (
+      selected.includes("featured") &&
+      p.isFeatured
+    )
+      return true;
+
+    if (
+      selected.includes("best") &&
+      p.isBestSeller
+    )
+      return true;
+
+    if (
+      selected.includes("new") &&
+      p.isNewArrival
+    )
+      return true;
+
+    if (
+      selected.includes("sale") &&
+      p.salePrice
+    )
+      return true;
+
+    return false;
+  });
+}
+
+if (filters.color) {
+  list = list.filter((p) =>
+    String(p.color || "")
+      .toLowerCase()
+      .includes(
+        String(filters.color)
+          .toLowerCase()
+      )
+  );
+}
 
         if (mounted) setProducts(list);
       } catch (e) {
@@ -67,7 +221,7 @@ export default function WomenPage() {
     };
     load();
     return () => { mounted = false; };
-  }, [activeSubcat]);
+ }, [activeSubcat, filters]);
 
   const handleFilterChange = (key: string, value: string | string[] | undefined) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -79,7 +233,46 @@ export default function WomenPage() {
   };
 
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
+let sortedProducts = [...products];
 
+switch (sort) {
+  case "price-asc":
+    sortedProducts.sort(
+      (a, b) =>
+        (a.salePrice || a.basePrice) -
+        (b.salePrice || b.basePrice)
+    );
+    break;
+
+  case "price-desc":
+    sortedProducts.sort(
+      (a, b) =>
+        (b.salePrice || b.basePrice) -
+        (a.salePrice || a.basePrice)
+    );
+    break;
+
+  case "rating-desc":
+    sortedProducts.sort(
+      (a, b) => b.rating - a.rating
+    );
+    break;
+
+  case "reviews-desc":
+    sortedProducts.sort(
+      (a, b) => b.reviewCount - a.reviewCount
+    );
+    break;
+
+  case "createdAt-desc":
+  default:
+    sortedProducts.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() -
+        new Date(a.createdAt).getTime()
+    );
+    break;
+}
   return (
     <div>
       {/* Hero banner */}
@@ -201,7 +394,7 @@ export default function WomenPage() {
 
             {/* Products */}
             <div className={`grid gap-4 md:gap-6 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'}`}>
-              {products.map((product) => (
+        {sortedProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>

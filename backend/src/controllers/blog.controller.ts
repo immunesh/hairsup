@@ -17,6 +17,24 @@ export const getAllBlogs = async (
   });
 };
 
+export const getPublishedBlogs = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const blogs = await prisma.blogPost.findMany({
+    where: {
+      isPublished: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  res.json({
+    success: true,
+    data: blogs,
+  });
+};
 export const getBlogById = async (
   req: Request,
   res: Response

@@ -22,10 +22,34 @@ export default function ProductCard({ product, className }: ProductCardProps) {
   const { addItem: addToCart } = useCartStore();
   const { items: wishlistItems, addItem: addToWishlist, removeItem: removeFromWishlist } = useWishlistStore();
   const { showToast } = useUIStore();
+console.log("CARD", {
+  name: product.name,
+  images: product.images,
+});
+ const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ||
+  "http://localhost:5000";
 
-  const primaryImage = product.images?.find((img) => img.isPrimary) || product.images?.[0];
-  const hoverImage = product.images?.find((img) => !img.isPrimary) || primaryImage;
-  const isWishlisted = wishlistItems.some((i) => i.productId === product.id);
+const primaryImage =
+  product.images?.find((img) => img.isPrimary) ||
+  product.images?.[0];
+
+const hoverImage =
+  product.images?.find((img) => !img.isPrimary) ||
+  primaryImage;
+
+const imageUrl = primaryImage?.url
+  ? primaryImage.url.startsWith("http")
+    ? primaryImage.url
+    : `${API_BASE}${primaryImage.url}`
+  : "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800";
+
+const hoverUrl = hoverImage?.url
+  ? hoverImage.url.startsWith("http")
+    ? hoverImage.url
+    : `${API_BASE}${hoverImage.url}`
+  : imageUrl;
+    const isWishlisted = wishlistItems.some((i) => i.productId === product.id);
   const discountPct = product.salePrice ? getDiscountPercent(product.basePrice, product.salePrice) : 0;
 
   const handleAddToCart = async (e: React.MouseEvent) => {
@@ -60,7 +84,10 @@ export default function ProductCard({ product, className }: ProductCardProps) {
       showToast('Something went wrong', 'error');
     }
   };
-
+console.log("CARD", {
+  name: product.name,
+  imageUrl,
+});
   return (
     <Link href={`/products/${product.slug}`}>
       <div
@@ -72,12 +99,15 @@ export default function ProductCard({ product, className }: ProductCardProps) {
         <div className="relative aspect-product bg-gray-50 overflow-hidden">
           {primaryImage && (
             <Image
-              src={isHovered && hoverImage ? hoverImage.url : primaryImage.url}
-              alt={product.name}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-            />
+  src={
+    primaryImage?.url ||
+    "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800"
+  }
+  alt={product.name}
+  fill
+  className="object-cover transition-transform duration-500 group-hover:scale-105"
+  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+/>
           )}
 
           {/* Badges */}

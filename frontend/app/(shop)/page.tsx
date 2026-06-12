@@ -9,9 +9,9 @@ import {
 } from 'lucide-react';
 import ProductCard from '@/components/ui/ProductCard';
 import { formatPrice } from '@/lib/utils';
-import { DEMO_PRODUCTS } from '@/lib/utils';
+ 
 import { Product } from '@/types';
-import { productsApi } from '@/lib/api';
+import { productsApi, blogApi } from '@/lib/api';
 
 const HERO_SLIDES = [
   {
@@ -138,37 +138,12 @@ const TESTIMONIALS = [
   },
 ];
 
-const BLOG_POSTS = [
-  {
-    title: 'The Ultimate Guide to Choosing Your First Wig',
-    excerpt: 'Everything you need to know before buying your first wig — from cap construction to hair types and styling tips.',
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80',
-    slug: 'ultimate-guide-choosing-first-wig',
-    tag: 'Beginner Guide',
-    readTime: '8 min read',
-  },
-  {
-    title: 'How to Maintain Your Human Hair Wig',
-    excerpt: 'Expert tips to keep your human hair wig looking flawless and extend its life for years of beautiful wear.',
-    image: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=400&q=80',
-    slug: 'how-to-maintain-human-hair-wig',
-    tag: 'Care Tips',
-    readTime: '6 min read',
-  },
-  {
-    title: "Men's Hair Systems: Breaking the Stigma",
-    excerpt: "Hair loss affects millions of men. Here's why modern hair systems are changing the game and restoring confidence.",
-    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80',
-    slug: 'mens-hair-systems-breaking-stigma',
-    tag: "Men's Hair",
-    readTime: '5 min read',
-  },
-];
+ 
 
 export default function HomePage() {
   const [heroSlide, setHeroSlide] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
-
+const [blogs, setBlogs] = useState<any[]>([]);
   useEffect(() => {
     const interval = setInterval(() => {
       setIsSliding(true);
@@ -190,27 +165,96 @@ export default function HomePage() {
   const [newArrivals, setNewArrivals] = useState<Product[]>([]);
   const [bestSellers, setBestSellers] = useState<Product[]>([]);
 
-  useEffect(() => {
-    let mounted = true;
-    const load = async () => {
-      try {
-        const res = await productsApi.getAll();
-        const list = (res.data.data || []) as Product[];
-        if (!mounted) return;
-        setFeaturedProducts(list.filter((p) => p.isFeatured).slice(0, 8));
-        setNewArrivals(list.filter((p) => p.isNewArrival).slice(0, 4));
-        setBestSellers(list.filter((p) => p.isBestSeller).slice(0, 4));
-      } catch (e) {
-        // fallback to demo products
-        setFeaturedProducts(DEMO_PRODUCTS.filter((p) => p.isFeatured).slice(0, 8) as unknown as Product[]);
-        setNewArrivals(DEMO_PRODUCTS.filter((p) => p.isNewArrival).slice(0, 4) as unknown as Product[]);
-        setBestSellers(DEMO_PRODUCTS.filter((p) => p.isBestSeller).slice(0, 4) as unknown as Product[]);
-      }
-    };
-    load();
-    return () => { mounted = false; };
-  }, []);
+useEffect(() => {
+  const loadProducts = async () => {
+    
+    try {
+      const res = await productsApi.getAll();
 
+      const list =
+        res?.data?.data || [];
+
+      console.log(
+        "HOME PRODUCTS",
+        list
+      );
+
+      setFeaturedProducts(
+        list
+          .filter(
+            (p: Product) =>
+              p.isFeatured
+          )
+          .slice(0, 8)
+      );
+
+      setNewArrivals(
+        list
+          .filter(
+            (p: Product) =>
+              p.isNewArrival
+          )
+          .slice(0, 4)
+      );
+
+      setBestSellers(
+        list
+          .filter(
+            (p: Product) =>
+              p.isBestSeller
+          )
+          .slice(0, 4)
+      );
+      
+    } catch (error) {
+      console.error(
+        "Homepage products error:",
+        error
+      );
+
+      setFeaturedProducts([]);
+      setNewArrivals([]);
+      setBestSellers([]);
+    }
+  };
+
+  loadProducts();
+}, []);
+console.log(
+  "FEATURED",
+  featuredProducts
+);
+
+console.log(
+  "NEW",
+  newArrivals
+);
+
+console.log(
+  "BEST",
+  bestSellers
+);
+useEffect(() => {
+  const loadBlogs = async () => {
+    try {
+      const res = await blogApi.getAll();
+
+      console.log("BLOG RESPONSE", res.data);
+
+      const blogList =
+        res.data?.data ||
+        res.data?.blogs ||
+        [];
+
+      setBlogs(blogList);
+    } catch (error) {
+      console.error("Blog fetch error", error);
+      setBlogs([]);
+    }
+  };
+
+  loadBlogs();
+}, []);
   return (
     <div>
       {/* ─── HERO SLIDER ─────────────────────────────────────────── */}
@@ -352,7 +396,7 @@ export default function HomePage() {
               <h2 className="section-title">Featured Collection</h2>
               <p className="text-gray-500">Handpicked by our style experts</p>
             </div>
-            <Link href="/products" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
+            <Link href="/women" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -364,7 +408,7 @@ export default function HomePage() {
           </div>
 
           <div className="text-center mt-8 sm:hidden">
-            <Link href="/products" className="btn-secondary inline-flex items-center gap-2">
+            <Link href="/women" className="btn-secondary inline-flex items-center gap-2">
               View All Products <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -420,7 +464,7 @@ export default function HomePage() {
               <h2 className="section-title">New Arrivals</h2>
               <p className="text-gray-500">Fresh styles just landed</p>
             </div>
-            <Link href="/products?newArrival=true" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
+            <Link href="/women" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
               See All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -481,7 +525,7 @@ export default function HomePage() {
               <h2 className="section-title">Best Sellers</h2>
               <p className="text-gray-500">Customer favourites, tried and loved</p>
             </div>
-            <Link href="/products?bestSeller=true" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
+            <Link href="/women" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -559,31 +603,55 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {BLOG_POSTS.map((post) => (
-              <Link key={post.slug} href={`/blog/${post.slug}`} className="card group overflow-hidden">
-                <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={post.image}
-                    alt={post.title}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <span className="badge bg-brand-600 text-white text-xs">{post.tag}</span>
-                  </div>
-                </div>
-                <div className="p-5">
-                  <p className="text-xs text-gray-400 mb-2">{post.readTime}</p>
-                  <h3 className="font-display font-bold text-gray-900 mb-2 group-hover:text-brand-600 transition-colors leading-snug">
-                    {post.title}
-                  </h3>
-                  <p className="text-sm text-gray-500 line-clamp-2">{post.excerpt}</p>
-                  <div className="flex items-center gap-1 mt-4 text-brand-600 text-sm font-semibold">
-                    Read More <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </Link>
-            ))}
+     {blogs.map((post: any) => (
+  <Link
+    key={post.id}
+    href={`/blog/${post.slug}`}
+    className="card group overflow-hidden"
+  >
+    <div className="relative h-48 overflow-hidden">
+      <Image
+        src={
+          post.featuredImage ||
+          post.image ||
+          "/placeholder-blog.jpg"
+        }
+        alt={post.title}
+        fill
+        className="object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+
+      <div className="absolute top-3 left-3">
+        <span className="badge bg-brand-600 text-white text-xs">
+          {post.category || "Blog"}
+        </span>
+      </div>
+    </div>
+
+    <div className="p-5">
+      <p className="text-xs text-gray-400 mb-2">
+        {post.createdAt
+          ? new Date(post.createdAt).toLocaleDateString()
+          : "Latest Article"}
+      </p>
+
+      <h3 className="font-display font-bold text-gray-900 mb-2 group-hover:text-brand-600 transition-colors leading-snug">
+        {post.title}
+      </h3>
+
+      <p className="text-sm text-gray-500 line-clamp-2">
+        {post.excerpt ||
+          post.shortDescription ||
+          post.content?.slice(0, 120)}
+      </p>
+
+      <div className="flex items-center gap-1 mt-4 text-brand-600 text-sm font-semibold">
+        Read More
+        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+      </div>
+    </div>
+  </Link>
+))}
           </div>
         </div>
       </section>

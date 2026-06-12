@@ -8,12 +8,17 @@ import { useAuthStore, useUIStore } from '@/lib/store';
 import { userApi } from '@/lib/api';
 import { Address } from '@/types';
 import { getInitials } from '@/lib/utils';
-
+import { ordersApi } from '@/lib/api';
+import {  wishlistApi} from "@/lib/api";
+import {uploadApi} from "@/lib/api";
+import { reviewsApi } from "@/lib/api";
 const SIDEBAR_ITEMS = [
   { id: 'profile', icon: User, label: 'My Profile' },
   { id: 'addresses', icon: MapPin, label: 'My Addresses' },
   { id: 'security', icon: Lock, label: 'Password & Security' },
   { id: 'notifications', icon: Bell, label: 'Notifications' },
+  { id: 'orders', icon: Package, label: 'My Orders' },
+    { id: 'reviews', icon: Heart, label: 'My Reviews' },
 ];
 
 export default function ProfilePage() {
@@ -22,26 +27,110 @@ export default function ProfilePage() {
   const { showToast } = useUIStore();
   const [activeTab, setActiveTab] = useState('profile');
   const [addresses, setAddresses] = useState<Address[]>([]);
-  const [form, setForm] = useState({ firstName: '', lastName: '', phone: '' });
+  const [reviews, setReviews] = useState<any[]>([]);
+const [form, setForm] = useState({
+  firstName: '',
+  lastName: '',
+  phone: '',
+  avatar: '',
+});
   const [passwordForm, setPasswordForm] = useState({ current: '', new: '', confirm: '' });
   const [saving, setSaving] = useState(false);
+const [orders, setOrders] = useState<any[]>([]);
+const [wishlist, setWishlist] = useState<any[]>([]);
+  const [showAddressModal, setShowAddressModal] =
+  useState(false);
+
+const [editingAddress, setEditingAddress] =
+  useState<Address | null>(null);
+
+const [addressForm, setAddressForm] =
+  useState({
+    fullName: "",
+    phone: "",
+    line1: "",
+    city: "",
+    state: "",
+    pincode: "",
+    type: "HOME",
+  });
 
   useEffect(() => {
     if (!isAuthenticated) { router.push('/login'); return; }
-    if (user) setForm({ firstName: user.firstName, lastName: user.lastName, phone: user.phone || '' });
+if (user)
+  setForm({
+    firstName: user.firstName,
+    lastName: user.lastName,
+    phone: user.phone || '',
+    avatar: user.avatar || '',
+  });
     userApi.getAddresses().then(({ data }) => setAddresses(data.data)).catch(() => {});
+
+      ordersApi
+    .getAll()
+    .then(({ data }) =>
+      setOrders(data.data || [])
+    )
+    .catch(() => {});
+reviewsApi
+  .getMyReviews()
+  .then(({ data }) =>
+    setReviews(data.data || [])
+  )
+  .catch(() => {});
+  
+    wishlistApi
+  .get()
+  .then(({ data }) =>
+    setWishlist(data.data || [])
+  )
+  .catch(() => {});
+  
   }, [isAuthenticated, user, router]);
 
-  const handleSaveProfile = async () => {
-    setSaving(true);
-    try {
-      const { data } = await userApi.updateProfile(form);
-      updateUser(data.data);
-      showToast('Profile updated successfully!');
-    } catch { showToast('Failed to update profile', 'error'); }
-    finally { setSaving(false); }
-  };
+const handleSaveProfile = async () => {
+  const phone = form.phone.trim();
 
+  // Only numbers allowed
+  if (phone && !/^\d+$/.test(phone)) {
+    showToast(
+      "Phone number must contain numbers only",
+      "error"
+    );
+    return;
+  }
+
+  // Must be exactly 10 digits
+  if (phone && phone.length !== 10) {
+    showToast(
+      "Phone number must be 10 digits",
+      "error"
+    );
+    return;
+  }
+
+  setSaving(true);
+
+  try {
+    const { data } = await userApi.updateProfile({
+      ...form,
+      phone,
+    });
+
+    updateUser(data.data);
+
+    showToast(
+      "Profile updated successfully!"
+    );
+  } catch {
+    showToast(
+      "Failed to update profile",
+      "error"
+    );
+  } finally {
+    setSaving(false);
+  }
+};
   const handleChangePassword = async () => {
     if (passwordForm.new !== passwordForm.confirm) { showToast('Passwords do not match', 'error'); return; }
     setSaving(true);
@@ -69,7 +158,95 @@ export default function ProfilePage() {
   };
 
   if (!isAuthenticated || !user) return null;
+const handleAddAddress = async () => {
+  try {
+    const { data } =
+      await userApi.addAddress(addressForm);
 
+    setAddresses((prev) => [
+      ...prev,
+      data.data,
+    ]);
+
+    showToast(
+      "Address added successfully"
+    );
+
+    setShowAddressModal(false);
+
+    setAddressForm({
+      fullName: "",
+      phone: "",
+      line1: "",
+      city: "",
+      state: "",
+      pincode: "",
+      type: "HOME",
+    });
+  } catch {
+    showToast(
+      "Failed to add address",
+      "error"
+    );
+  }
+};
+
+const handleUpdateAddress =
+  async () => {
+    if (!editingAddress) return;
+
+    try {
+      const { data } =
+        await userApi.updateAddress(
+          editingAddress.id,
+          addressForm
+        );
+
+      setAddresses((prev) =>
+        prev.map((a) =>
+          a.id === editingAddress.id
+            ? data.data
+            : a
+        )
+      );
+
+      showToast(
+        "Address updated successfully"
+      );
+
+      setShowAddressModal(false);
+      setEditingAddress(null);
+    } catch {
+      showToast(
+        "Failed to update address",
+        "error"
+      );
+    }
+  };
+  const handleAvatarUpload = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0];
+
+  if (!file) return;
+
+  try {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const { data } =
+      await uploadApi.image(formData);
+
+ setForm((prev) => ({
+  ...prev,
+  avatar: data.url,
+}));
+
+  } catch (error) {
+    console.error(error);
+    alert("Upload failed");
+  }
+};
   return (
     <div className="container-custom py-10">
       <h1 className="text-2xl font-display font-bold mb-8">My Account</h1>
@@ -80,20 +257,59 @@ export default function ProfilePage() {
           {/* Avatar card */}
           <div className="card p-5 text-center">
             <div className="relative w-20 h-20 mx-auto mb-3">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white text-2xl font-bold">
-                {getInitials(user.firstName, user.lastName)}
-              </div>
-              <button className="absolute bottom-0 right-0 w-7 h-7 bg-brand-600 text-white rounded-full flex items-center justify-center hover:bg-brand-700 transition-colors">
-                <Camera className="w-3.5 h-3.5" />
-              </button>
+            {form.avatar ? (
+  <img
+    src={form.avatar}
+    alt="Profile"
+    className="w-20 h-20 rounded-full object-cover"
+  />
+) : (
+  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white text-2xl font-bold">
+    {getInitials(user.firstName, user.lastName)}
+  </div>
+)}
+           <label className="absolute bottom-0 right-0 w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center cursor-pointer">
+  <Camera className="w-4 h-4 text-white" />
+
+  <input
+    type="file"
+    accept="image/*"
+    className="hidden"
+    onChange={handleAvatarUpload}
+  />
+</label>
             </div>
             <p className="font-bold text-gray-900">{user.firstName} {user.lastName}</p>
             <p className="text-sm text-gray-500 truncate">{user.email}</p>
-            <div className="mt-3 pt-3 border-t border-gray-100 grid grid-cols-3 gap-2 text-center text-xs">
-              <div><p className="font-bold text-gray-900">3</p><p className="text-gray-500">Orders</p></div>
-              <div><p className="font-bold text-gray-900">5</p><p className="text-gray-500">Wishlist</p></div>
-              <div><p className="font-bold text-gray-900">2</p><p className="text-gray-500">Reviews</p></div>
-            </div>
+       <div className="mt-3 pt-3 border-t border-gray-100 grid grid-cols-3 gap-2 text-center text-xs">
+  <div>
+    <p className="font-bold text-gray-900">
+      {orders.length}
+    </p>
+    <p className="text-gray-500">
+      Orders
+    </p>
+  </div>
+
+  <div>
+<p className="font-bold text-gray-900">
+  {wishlist.length}
+</p>
+    <p className="text-gray-500">
+      Wishlist
+    </p>
+  </div>
+
+  <div>
+<p className="font-bold text-gray-900">
+  {reviews.length}
+</p>
+    <p className="text-gray-500">
+      Reviews
+    </p>
+  </div>
+</div>
+            
           </div>
 
           {/* Nav */}
@@ -143,7 +359,18 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label>
-                  <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="9876543210" className="input-field" />
+                <input
+  value={form.phone}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      phone: e.target.value.replace(/\D/g, ""),
+    })
+  }
+  maxLength={10}
+  placeholder="eg.1234567890"
+  className="input-field"
+/>
                 </div>
               </div>
               <button onClick={handleSaveProfile} disabled={saving} className="btn-primary flex items-center gap-2">
@@ -157,7 +384,24 @@ export default function ProfilePage() {
             <div className="card p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="font-bold text-lg">Saved Addresses</h2>
-                <button className="btn-primary text-sm py-2 flex items-center gap-1.5">
+               <button
+  onClick={() => {
+    setEditingAddress(null);
+
+    setAddressForm({
+      fullName: "",
+      phone: "",
+      line1: "",
+      city: "",
+      state: "",
+      pincode: "",
+      type: "HOME",
+    });
+
+    setShowAddressModal(true);
+  }}
+  className="btn-primary text-sm py-2 flex items-center gap-1.5"
+>
                   <Plus className="w-4 h-4" /> Add New
                 </button>
               </div>
@@ -182,7 +426,26 @@ export default function ProfilePage() {
                           <p className="text-xs text-gray-500 mt-1">{addr.phone}</p>
                         </div>
                         <div className="flex gap-2">
-                          <button className="text-sm text-brand-600 hover:underline">Edit</button>
+<button
+  onClick={() => {
+    setEditingAddress(addr);
+
+    setAddressForm({
+      fullName: addr.fullName,
+      phone: addr.phone,
+      line1: addr.line1,
+      city: addr.city,
+      state: addr.state,
+      pincode: addr.pincode,
+      type: addr.type,
+    });
+
+    setShowAddressModal(true);
+  }}
+  className="text-sm text-brand-600 hover:underline"
+>
+  Edit
+</button>
                           <button onClick={() => handleDeleteAddress(addr.id)} className="text-gray-400 hover:text-red-500 transition-colors">
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -195,32 +458,110 @@ export default function ProfilePage() {
             </div>
           )}
 
-          {activeTab === 'security' && (
-            <div className="card p-6">
-              <h2 className="font-bold text-lg mb-6">Change Password</h2>
-              <div className="space-y-4 max-w-md">
-                {[
-                  { label: 'Current Password', key: 'current' },
-                  { label: 'New Password', key: 'new' },
-                  { label: 'Confirm New Password', key: 'confirm' },
-                ].map(({ label, key }) => (
-                  <div key={key}>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
-                    <input
-                      type="password"
-                      value={passwordForm[key as keyof typeof passwordForm]}
-                      onChange={(e) => setPasswordForm({ ...passwordForm, [key]: e.target.value })}
-                      className="input-field"
-                    />
-                  </div>
-                ))}
-                <button onClick={handleChangePassword} disabled={saving} className="btn-primary flex items-center gap-2">
-                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-                  {saving ? 'Updating…' : 'Update Password'}
-                </button>
+         {activeTab === 'security' && (
+  <div className="card p-6">
+    <h2 className="font-bold text-lg mb-6">
+      Change Password
+    </h2>
+
+    <div className="space-y-4 max-w-md">
+      {[
+        {
+          label: 'Current Password',
+          key: 'current',
+        },
+        {
+          label: 'New Password',
+          key: 'new',
+        },
+        {
+          label: 'Confirm New Password',
+          key: 'confirm',
+        },
+      ].map(({ label, key }) => (
+        <div key={key}>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            {label}
+          </label>
+
+          <input
+            type="password"
+            value={
+              passwordForm[
+                key as keyof typeof passwordForm
+              ]
+            }
+            onChange={(e) =>
+              setPasswordForm({
+                ...passwordForm,
+                [key]: e.target.value,
+              })
+            }
+            className="input-field"
+          />
+        </div>
+      ))}
+
+      <button
+        onClick={handleChangePassword}
+        disabled={saving}
+        className="btn-primary flex items-center gap-2"
+      >
+        {saving ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          <Lock className="w-4 h-4" />
+        )}
+
+        {saving
+          ? 'Updating...'
+          : 'Update Password'}
+      </button>
+    </div>
+  </div>
+)}
+
+{activeTab === 'orders' && (
+  <div className="card p-6">
+    <h2 className="font-bold text-lg mb-6">
+      My Orders
+    </h2>
+
+    {orders.length === 0 ? (
+      <div className="text-center py-10">
+        <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+        <p className="text-gray-500">
+          No orders yet
+        </p>
+      </div>
+    ) : (
+      <div className="space-y-4">
+        {orders.map((order) => (
+          <div
+            key={order.id}
+            className="border border-gray-200 rounded-xl p-4"
+          >
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="font-semibold">
+                  Order #{order.id.slice(0, 8)}
+                </p>
+
+                <p className="text-sm text-gray-500">
+                  ₹{order.totalAmount}
+                </p>
               </div>
+
+              <span className="badge bg-green-100 text-green-700">
+                {order.status}
+              </span>
             </div>
-          )}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
 
           {activeTab === 'notifications' && (
             <div className="card p-6">
@@ -249,6 +590,117 @@ export default function ProfilePage() {
           )}
         </div>
       </div>
+
+      {showAddressModal && (
+  <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div className="bg-white rounded-2xl p-6 w-full max-w-lg">
+      <h3 className="text-lg font-bold mb-4">
+        {editingAddress
+          ? "Edit Address"
+          : "Add Address"}
+      </h3>
+
+      <div className="space-y-3">
+        <input
+          placeholder="Full Name"
+          value={addressForm.fullName}
+          onChange={(e) =>
+            setAddressForm({
+              ...addressForm,
+              fullName: e.target.value,
+            })
+          }
+          className="input-field"
+        />
+
+        <input
+          placeholder="Phone"
+          value={addressForm.phone}
+          onChange={(e) =>
+            setAddressForm({
+              ...addressForm,
+              phone: e.target.value,
+            })
+          }
+          className="input-field"
+        />
+
+        <input
+          placeholder="Address"
+          value={addressForm.line1}
+          onChange={(e) =>
+            setAddressForm({
+              ...addressForm,
+              line1: e.target.value,
+            })
+          }
+          className="input-field"
+        />
+
+        <input
+          placeholder="City"
+          value={addressForm.city}
+          onChange={(e) =>
+            setAddressForm({
+              ...addressForm,
+              city: e.target.value,
+            })
+          }
+          className="input-field"
+        />
+
+        <input
+          placeholder="State"
+          value={addressForm.state}
+          onChange={(e) =>
+            setAddressForm({
+              ...addressForm,
+              state: e.target.value,
+            })
+          }
+          className="input-field"
+        />
+
+        <input
+          placeholder="Pincode"
+          value={addressForm.pincode}
+          onChange={(e) =>
+            setAddressForm({
+              ...addressForm,
+              pincode: e.target.value,
+            })
+          }
+          className="input-field"
+        />
+        
+      </div>
+
+      <div className="flex gap-3 mt-5">
+        <button
+          onClick={() =>
+            setShowAddressModal(false)
+          }
+          className="btn-secondary flex-1"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={
+            editingAddress
+              ? handleUpdateAddress
+              : handleAddAddress
+          }
+          className="btn-primary flex-1"
+        >
+          {editingAddress
+            ? "Update"
+            : "Save"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }

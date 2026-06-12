@@ -325,7 +325,7 @@ for (const image of galleryImages) {
       </div>
 
       {/* Grid */}
-      <div className="grid md:grid-cols-4 gap-6">
+    <div className="grid md:grid-cols-5 gap-6">
         <div>
           <label className="block mb-2 text-sm font-medium text-slate-300">
             Category
@@ -364,7 +364,36 @@ for (const image of galleryImages) {
             ))}
           </select>
         </div>
+<div>
+  <label className="block mb-2 text-sm font-medium text-slate-300">
+    Gender
+  </label>
 
+  <select
+    value={form.gender}
+    onChange={(e) =>
+      setForm({
+        ...form,
+        gender: e.target.value,
+      })
+    }
+    className="
+      w-full
+      px-4
+      py-3
+      rounded-2xl
+      bg-[#131827]
+      border
+      border-white/10
+      text-white
+    "
+  >
+    <option value="">Select Gender</option>
+    <option value="Men">Men</option>
+    <option value="Women">Women</option>
+    <option value="Unisex">Unisex</option>
+  </select>
+</div>
         <div>
           <label className="block mb-2 text-sm font-medium text-slate-300">
             Base Price
