@@ -80,6 +80,31 @@ export interface Product {
   variants?: ProductVariant[];
   reviews?: Review[];
   createdAt: string;
+  includedItems?: {
+  id: string;
+  text: string;
+}[];
+  faqs?: {
+    id: string;
+    question: string;
+    answer: string;
+  }[];
+  careGuides?: CareGuide[];
+  features?: {
+  id: string;
+  title: string;
+  subtitle: string;
+}[];
+highlights?: {
+  id: string;
+  text: string;
+}[];
+}
+export interface CareGuide {
+  id: string;
+  icon: string;
+  title: string;
+  steps: string;
 }
 
 export interface CartItem {

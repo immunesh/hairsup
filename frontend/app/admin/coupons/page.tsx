@@ -438,9 +438,72 @@ export default function AdminCouponsPage() {
       "
     >
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[950px]">
-          {/* keep your existing thead and tbody exactly the same */}
-        </table>
+    <table className="w-full min-w-[950px]">
+  <thead>
+    <tr className="border-b border-white/10">
+      <th className="p-4 text-left text-white">Code</th>
+      <th className="p-4 text-left text-white">Type</th>
+      <th className="p-4 text-left text-white">Value</th>
+      <th className="p-4 text-left text-white">Status</th>
+      <th className="p-4 text-left text-white">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {coupons.map((coupon) => (
+      <tr
+        key={coupon.id}
+        className="border-b border-white/10"
+      >
+        <td className="p-4 text-white">
+          {coupon.code}
+        </td>
+
+        <td className="p-4 text-slate-300">
+          {coupon.type}
+        </td>
+
+        <td className="p-4 text-slate-300">
+          {coupon.value}
+        </td>
+
+        <td className="p-4">
+          <span
+            className={
+              coupon.isActive
+                ? "text-green-400"
+                : "text-red-400"
+            }
+          >
+            {coupon.isActive
+              ? "Active"
+              : "Inactive"}
+          </span>
+        </td>
+
+        <td className="p-4 flex gap-2">
+          <button
+            onClick={() =>
+              handleToggle(coupon.id)
+            }
+            className="px-3 py-1 rounded bg-yellow-600 text-white"
+          >
+            Toggle
+          </button>
+
+          <button
+            onClick={() =>
+              handleDelete(coupon.id)
+            }
+            className="px-3 py-1 rounded bg-red-600 text-white"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
       </div>
     </div>
   </div>

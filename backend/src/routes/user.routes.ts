@@ -11,6 +11,8 @@ import {
   getAllUsers,
   updateUserRole,
   deleteUser,
+  getNotificationPreferences,
+  updateNotificationPreferences,
 } from "../controllers/user.controller";
 
 import {
@@ -80,6 +82,15 @@ router.put(
 router.delete(
   "/addresses/:id",
   deleteAddress
+);
+router.get(
+  "/notification-preferences",
+  getNotificationPreferences
+);
+
+router.put(
+  "/notification-preferences",
+  updateNotificationPreferences
 );
 
 export default router;

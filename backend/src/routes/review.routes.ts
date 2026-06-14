@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import {
   getProductReviews,
+  getMyReviews,
   createReview,
   updateReview,
   deleteReview,
@@ -55,6 +56,11 @@ router.delete(
   "/:id",
   authenticate,
   deleteReview
+);
+router.get(
+  "/my",
+  authenticate,
+  getMyReviews
 );
 
 export default router;

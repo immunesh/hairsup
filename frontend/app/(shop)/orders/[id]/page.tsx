@@ -11,7 +11,7 @@ import {
 import { Order } from '@/types';
 import { formatPrice, formatDate, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/utils';
 import { cn } from '@/lib/utils';
-
+import { ordersApi } from '@/lib/api';
 const MOCK_ORDER: Order = {
   id: '1',
   orderNumber: 'HU-DEMO-001',
@@ -49,13 +49,47 @@ const STATUS_TIMELINE = ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'OUT_F
 
 export default function OrderDetailPage() {
   const params = useParams();
-  const [order, setOrder] = useState<Order>(MOCK_ORDER);
+const [order, setOrder] = useState<Order | null>(null);
+const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // In production: fetch from API using params.id
-    setOrder({ ...MOCK_ORDER, orderNumber: params.id as string });
-  }, [params.id]);
+  const loadOrder = async () => {
+    try {
+      setLoading(true);
 
+      const { data } =
+        await ordersApi.getById(
+          params.id as string
+        );
+
+      setOrder(data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (params.id) {
+    loadOrder();
+  }
+}, [params.id]);
+
+if (loading) {
+  return (
+    <div className="container-custom py-10">
+      Loading...
+    </div>
+  );
+}
+
+if (!order) {
+  return (
+    <div className="container-custom py-10">
+      Order not found
+    </div>
+  );
+}
   const currentStatusIdx = STATUS_TIMELINE.indexOf(order.status);
 
   return (

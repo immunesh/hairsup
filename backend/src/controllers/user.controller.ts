@@ -137,3 +137,67 @@ export const deleteUser = async (
     message: "User deleted",
   });
 };
+export const getNotificationPreferences = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+
+  console.log("REQ USER =>", req.user);
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: req.user!.userId,
+    },
+    select: {
+      emailNotifications: true,
+      offerNotifications: true,
+      newArrivalNotifications: true,
+      blogNotifications: true,
+      restockNotifications: true,
+    },
+  });
+
+  res.json({
+    success: true,
+    data: user,
+  });
+};
+
+export const updateNotificationPreferences = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  const updatedUser = await prisma.user.update({
+    where: {
+      id: req.user!.userId,
+    },
+    data: {
+      emailNotifications:
+        req.body.emailNotifications,
+
+      offerNotifications:
+        req.body.offerNotifications,
+
+      newArrivalNotifications:
+        req.body.newArrivalNotifications,
+
+      blogNotifications:
+        req.body.blogNotifications,
+
+      restockNotifications:
+        req.body.restockNotifications,
+    },
+    select: {
+      emailNotifications: true,
+      offerNotifications: true,
+      newArrivalNotifications: true,
+      blogNotifications: true,
+      restockNotifications: true,
+    },
+  });
+
+  res.json({
+    success: true,
+    data: updatedUser,
+  });
+};

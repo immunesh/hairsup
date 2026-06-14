@@ -16,7 +16,7 @@ import { Product } from '@/types';
 import { useCartStore, useWishlistStore, useAuthStore, useUIStore } from '@/lib/store';
 import { cartApi, wishlistApi, productsApi } from '@/lib/api';
 import { cn } from '@/lib/utils';
-
+import { reviewsApi } from '@/lib/api';
 const PRODUCT_TABS = ['Description', 'Care Guide', 'Reviews', 'FAQ'];
 
 export default function ProductDetailPage() {
@@ -32,8 +32,9 @@ export default function ProductDetailPage() {
   const [viewMode, setViewMode] = useState<'gallery' | '360'>('gallery');
   const [activeImage, setActiveImage] = useState(0);
   const [userRating, setUserRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
   const [loadError, setLoadError] = useState<string | null>(null);
-
+const [reviews, setReviews] = useState<any[]>([]);
   const { isAuthenticated } = useAuthStore();
   const { addItem: addToCart } = useCartStore();
   const { items: wishlistItems, addItem: addToWishlist, removeItem: removeFromWishlist } = useWishlistStore();
@@ -47,6 +48,29 @@ export default function ProductDetailPage() {
 
       setProduct(productData);
       setActiveImage(0);
+      try {
+  const reviewResponse =
+    await reviewsApi.getByProduct(
+      productData.id
+    );
+
+  console.log(
+    "Reviews API:",
+    reviewResponse.data
+  );
+console.log(
+  "Reviews Data",
+  reviewResponse.data.data
+);
+  setReviews(
+    reviewResponse.data.data || []
+  );
+} catch (error) {
+  console.error(
+    "Review Error:",
+    error
+  );
+}
 
       const relatedResponse = await productsApi.getRelated(productData.id);
       setRelatedProducts(relatedResponse.data.data.slice(0, 4));
@@ -158,12 +182,49 @@ export default function ProductDetailPage() {
     }
   };
 
-  const MOCK_REVIEWS = [
-    { id: '1', rating: 5, title: 'Absolutely stunning!', body: 'I was blown away by the quality. The hair is so soft and natural-looking. Multiple people complimented me thinking it was my real hair!', user: { firstName: 'Priya', lastName: 'S.', avatar: undefined }, isVerified: true, helpfulCount: 24, createdAt: '2024-01-15', images: [] },
-    { id: '2', rating: 4, title: 'Great quality, fast delivery', body: 'Very happy with this purchase. The lace front is practically invisible and the hair texture is exactly as described. Would definitely recommend!', user: { firstName: 'Meera', lastName: 'K.', avatar: undefined }, isVerified: true, helpfulCount: 18, createdAt: '2024-01-10', images: [] },
-    { id: '3', rating: 5, title: 'Life-changing product', body: "After my chemo treatment, I was looking for something that would make me feel like myself again. This wig gave me back my confidence. Thank you HairsUp!", user: { firstName: 'Lakshmi', lastName: 'R.', avatar: undefined }, isVerified: true, helpfulCount: 67, createdAt: '2023-12-28', images: [] },
-  ];
+ const totalReviews = reviews.length;
 
+const ratingBreakdown = [5, 4, 3, 2, 1].map((star) => {
+  const count = reviews.filter(
+    (review) => review.rating === star
+  ).length;
+
+  return {
+    star,
+    pct:
+      totalReviews > 0
+        ? Math.round((count / totalReviews) * 100)
+        : 0,
+  };
+});
+
+const handleSubmitReview = async () => {
+  try {
+    if (!userRating) {
+      alert("Please select rating");
+      return;
+    }
+
+    if (!reviewText.trim()) {
+      alert("Please write review");
+      return;
+    }
+
+    await reviewsApi.create({
+      productId: product.id,
+      rating: userRating,
+      body: reviewText,
+    });
+
+    alert("Review submitted!");
+
+    setReviewText("");
+    setUserRating(0);
+
+  } catch (error) {
+    console.error(error);
+  }
+};
   return (
     <div>
       {/* Breadcrumb */}
@@ -289,8 +350,7 @@ export default function ProductDetailPage() {
                 </>
               )}
             </div>
-            <p className="text-xs text-gray-500">MRP inclusive of all taxes. Free shipping on this order.</p>
-
+            
             {/* Key specs */}
             <div className="grid grid-cols-2 gap-3">
               {[
@@ -369,24 +429,44 @@ export default function ProductDetailPage() {
 
             {/* Delivery / Returns strip */}
             <div className="grid grid-cols-3 gap-3">
-              {[
-                { icon: Truck, label: 'Free Delivery', sub: 'Above ₹999', color: 'text-green-600' },
-                { icon: RotateCcw, label: '7-Day Return', sub: 'Easy exchanges', color: 'text-blue-600' },
-                { icon: Shield, label: 'Authentic', sub: '100% genuine', color: 'text-brand-600' },
-              ].map(({ icon: Icon, label, sub, color }) => (
-                <div key={label} className="flex flex-col items-center text-center p-3 bg-gray-50 rounded-xl">
-                  <Icon className={cn('w-5 h-5 mb-1', color)} />
-                  <p className="text-xs font-semibold text-gray-900">{label}</p>
-                  <p className="text-xs text-gray-500">{sub}</p>
-                </div>
-              ))}
-            </div>
+  {product.features?.map((feature, index) => {
+    const icons = [Truck, RotateCcw, Shield];
+    const colors = [
+      "text-green-600",
+      "text-blue-600",
+      "text-brand-600",
+    ];
+
+    const Icon = icons[index] || Shield;
+    const color = colors[index] || "text-brand-600";
+
+    return (
+      <div
+        key={feature.id}
+        className="flex flex-col items-center text-center p-3 bg-gray-50 rounded-xl"
+      >
+        <Icon className={cn("w-5 h-5 mb-1", color)} />
+
+        <p className="text-xs font-semibold text-gray-900">
+          {feature.title}
+        </p>
+
+        <p className="text-xs text-gray-500">
+          {feature.subtitle}
+        </p>
+      </div>
+    );
+  })}
+</div>
 
             {/* Certifications */}
-            <div className="flex items-center gap-2 text-xs text-gray-500 pt-2">
-              <Award className="w-4 h-4 text-brand-600" />
-              <span>Clinically endorsed · ISO certified · PETA-friendly materials</span>
-            </div>
+          <div className="flex items-center gap-2 text-xs text-gray-500 pt-2">
+  <Award className="w-4 h-4 text-brand-600" />
+
+  <span>
+    {product.highlights?.map((h) => h.text).join(" · ")}
+  </span>
+</div>
           </div>
         </div>
 
@@ -415,12 +495,16 @@ export default function ProductDetailPage() {
                 <p className="text-gray-700 text-base leading-relaxed mb-6">{product.description}</p>
                 <h3 className="text-lg font-semibold mb-3">What&apos;s Included</h3>
                 <ul className="space-y-2">
-                  {['1x Premium Hair Wig', 'Wig cap/net for comfort', 'Care instruction booklet', 'HairsUp branded gift box', 'Styling pins and clips'].map((item) => (
-                    <li key={item} className="flex items-center gap-2 text-gray-700">
-                      <Check className="w-4 h-4 text-green-500 flex-shrink-0" /> {item}
-                    </li>
-                  ))}
-                </ul>
+  {product.includedItems?.map((item) => (
+    <li
+      key={item.id}
+      className="flex items-center gap-2 text-gray-700"
+    >
+      <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+      {item.text}
+    </li>
+  ))}
+</ul>
                 {product.tags && product.tags.length > 0 && (
                   <div className="mt-6">
                     <h3 className="text-lg font-semibold mb-3">Tags</h3>
@@ -434,43 +518,64 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {selectedTab === 'Care Guide' && (
-              <div className="grid md:grid-cols-2 gap-6">
-                {[
-                  { icon: '🧴', title: 'Washing', steps: ['Use sulphate-free, moisturising shampoo', 'Wash in cool to lukewarm water', 'Gently detangle with wide-tooth comb before washing', 'Rinse thoroughly, avoiding tangling', 'Apply a deep conditioning mask for 10–15 minutes'] },
-                  { icon: '💨', title: 'Drying', steps: ['Pat gently with a microfibre towel', 'Never wring or twist the hair', 'Air dry on a wig stand for best shape retention', 'If blow drying, use lowest heat setting + heat protectant', 'Style once 80% dry'] },
-                  { icon: '🪮', title: 'Styling', steps: ['Always detangle from tips to roots with wide-tooth comb', 'Use heat protectant spray before any heat styling', 'Ideal temperature: max 150°C for human hair', 'Synthetic wigs: avoid heat tools unless heat-resistant', 'Store flat or on a wig stand'] },
-                  { icon: '🛍️', title: 'Storage', steps: ['Store in the original silk bag provided', 'Keep on a wig stand to maintain shape', 'Avoid direct sunlight and humidity', 'Keep away from sharp objects', 'Wash before long-term storage'] },
-                ].map(({ icon, title, steps }) => (
-                  <div key={title} className="bg-gray-50 rounded-2xl p-5">
-                    <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <span className="text-xl">{icon}</span> {title}
-                    </h3>
-                    <ul className="space-y-2">
-                      {steps.map((step, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                          <span className="w-5 h-5 rounded-full bg-brand-100 text-brand-700 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
-                          {step}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            )}
+  {selectedTab === 'Care Guide' && (
+  <div className="grid md:grid-cols-2 gap-6">
+    {product.careGuides?.map((guide) => (
+      <div
+        key={guide.id}
+        className="bg-gray-50 rounded-2xl p-5"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-2xl">
+            {guide.icon}
+          </span>
+
+          <h3 className="font-semibold text-lg">
+            {guide.title}
+          </h3>
+        </div>
+
+        <ul className="space-y-2">
+          {guide.steps
+            .split("|")
+            .map((step: string, index: number) => (
+              <li
+                key={index}
+                className="text-gray-700 flex gap-2"
+              >
+                <span>•</span>
+                <span>{step}</span>
+              </li>
+            ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+)}
 
             {selectedTab === 'Reviews' && (
               <div id="reviews">
                 {/* Rating summary */}
                 <div className="grid md:grid-cols-3 gap-8 mb-8">
                   <div className="flex flex-col items-center justify-center bg-gray-50 rounded-2xl p-6">
-                    <div className="text-5xl font-bold text-gray-900 mb-2">{product.rating.toFixed(1)}</div>
+               <div className="text-5xl font-bold text-gray-900 mb-2">
+  {reviews.length
+    ? (
+        reviews.reduce(
+          (sum, r) => sum + r.rating,
+          0
+        ) / reviews.length
+      ).toFixed(1)
+    : "0.0"}
+</div>
                     <StarRating rating={product.rating} size="lg" />
-                    <p className="text-sm text-gray-500 mt-2">{product.reviewCount} verified reviews</p>
+                  <p className="text-sm text-gray-500 mt-2">
+  {reviews.length} verified reviews
+</p>
                   </div>
                   <div className="md:col-span-2 space-y-2">
-                    {[5, 4, 3, 2, 1].map((star) => {
-                      const pct = star === 5 ? 68 : star === 4 ? 22 : star === 3 ? 7 : star === 2 ? 2 : 1;
+                  {ratingBreakdown.map(({ star, pct }) => {
+                      
                       return (
                         <div key={star} className="flex items-center gap-3">
                           <span className="text-sm text-gray-600 w-4">{star}</span>
@@ -487,7 +592,7 @@ export default function ProductDetailPage() {
 
                 {/* Reviews list */}
                 <div className="space-y-5">
-                  {MOCK_REVIEWS.map((review) => (
+                 {reviews.map((review) => (
                     <div key={review.id} className="border border-gray-100 rounded-2xl p-5">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
@@ -527,11 +632,18 @@ export default function ProductDetailPage() {
                       <p className="text-sm text-gray-600 mb-2">Your Rating</p>
                       <StarRating rating={userRating} size="lg" interactive onRate={setUserRating} />
                     </div>
-                    <textarea
-                      placeholder="Share your experience with this product..."
-                      className="input-field resize-none h-28 mb-3"
-                    />
-                    <button className="btn-primary text-sm py-2.5 px-6">Submit Review</button>
+                  <textarea
+  value={reviewText}
+  onChange={(e) => setReviewText(e.target.value)}
+  placeholder="Share your experience with this product..."
+  className="input-field resize-none h-28 mb-3"
+/>
+                   <button
+  onClick={handleSubmitReview}
+  className="btn-primary text-sm py-2.5 px-6"
+>
+  Submit Review
+</button>
                   </div>
                 )}
               </div>
@@ -539,20 +651,21 @@ export default function ProductDetailPage() {
 
             {selectedTab === 'FAQ' && (
               <div className="space-y-4 max-w-2xl">
-                {[
-                  { q: 'Can this wig be dyed or bleached?', a: `${product.material?.includes('Human') ? 'Yes! Human hair wigs can be dyed or bleached, but we recommend visiting a professional colourist for best results.' : 'No, synthetic wigs cannot be chemically treated. The fibres would be permanently damaged.'}` },
-                  { q: 'How long will this wig last?', a: 'With proper care, human hair wigs last 12–24 months. Synthetic wigs typically last 4–6 months. Store on a wig stand, wash every 8–10 wears, and always use heat protectant.' },
-                  { q: 'Is this wig suitable for medical hair loss (alopecia/chemotherapy)?', a: 'Absolutely. All our wigs are gentle enough for sensitive scalps. We recommend our monofilament or lace cap options for maximum comfort. Contact our team for a personalised consultation.' },
-                  { q: 'What cap size should I order?', a: 'Measure the circumference of your head from your forehead hairline, around the back, to your starting point. Most of our wigs fit 53–58cm (average), with adjustable straps for a secure fit.' },
-                  { q: 'Can I return this wig if it doesn\'t suit me?', a: 'Yes! We offer a 7-day return policy on all unworn wigs in original condition with tags attached. Worn wigs cannot be returned for hygiene reasons, but we offer exchanges for sizing issues.' },
-                ].map(({ q, a }, i) => (
-                  <div key={i} className="bg-gray-50 rounded-2xl p-5">
-                    <h4 className="font-semibold text-gray-900 mb-2 flex items-start gap-2">
-                      <Info className="w-4 h-4 text-brand-600 flex-shrink-0 mt-0.5" /> {q}
-                    </h4>
-                    <p className="text-gray-700 text-sm leading-relaxed pl-6">{a}</p>
-                  </div>
-                ))}
+            {product.faqs?.map((faq) => (
+  <div
+    key={faq.id}
+    className="bg-gray-50 rounded-2xl p-5"
+  >
+    <h4 className="font-semibold text-gray-900 mb-2 flex items-start gap-2">
+      <Info className="w-4 h-4 text-brand-600 flex-shrink-0 mt-0.5" />
+      {faq.question}
+    </h4>
+
+    <p className="text-gray-700 text-sm leading-relaxed pl-6">
+      {faq.answer}
+    </p>
+  </div>
+))}            
               </div>
             )}
           </div>

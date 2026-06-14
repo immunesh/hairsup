@@ -1,6 +1,5 @@
 'use client';
-
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, ShoppingBag, Trash2, ArrowRight } from 'lucide-react';
@@ -10,15 +9,28 @@ import { formatPrice, getDiscountPercent } from '@/lib/utils';
 
 export default function WishlistPage() {
   const { items, setItems, removeItem } = useWishlistStore();
+  const [loading, setLoading] = useState(true);
   const { addItem: addToCart } = useCartStore();
   const { isAuthenticated } = useAuthStore();
   const { showToast } = useUIStore();
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      wishlistApi.get().then(({ data }) => setItems(data.data)).catch(() => {});
-    }
-  }, [isAuthenticated, setItems]);
+ useEffect(() => {
+  if (isAuthenticated) {
+    setLoading(true);
+
+    wishlistApi
+      .get()
+      .then(({ data }) => {
+        setItems(data.data);
+      })
+      .catch(() => {})
+      .finally(() => {
+        setLoading(false);
+      });
+  } else {
+    setLoading(false);
+  }
+}, [isAuthenticated, setItems]);
 
   const handleRemove = async (productId: string) => {
     try {
@@ -38,6 +50,27 @@ export default function WishlistPage() {
       showToast('Moved to cart!');
     } catch { showToast('Failed to move to cart', 'error'); }
   };
+  const handleMoveAllToCart = async () => {
+  try {
+    for (const item of items) {
+      await handleMoveToCart(item.productId);
+    }
+
+    showToast('All items moved to cart!');
+  } catch {
+    showToast('Failed to move all items', 'error');
+  }
+};
+
+  if (loading) {
+  return (
+    <div className="container-custom py-20 text-center">
+      <h2 className="text-xl font-semibold">
+        Loading Wishlist...
+      </h2>
+    </div>
+  );
+}
 
   if (!isAuthenticated) {
     return (
@@ -57,12 +90,13 @@ export default function WishlistPage() {
           {items.length > 0 && <span className="text-lg font-normal text-gray-500">({items.length} items)</span>}
         </h1>
         {items.length > 0 && (
-          <button
-            onClick={() => items.forEach((i) => handleMoveToCart(i.productId))}
-            className="btn-primary text-sm py-2 flex items-center gap-2"
-          >
-            <ShoppingBag className="w-4 h-4" /> Move All to Bag
-          </button>
+        <button
+  onClick={handleMoveAllToCart}
+  className="btn-primary text-sm py-2 flex items-center gap-2"
+>
+  <ShoppingBag className="w-4 h-4" />
+  Move All to Bag
+</button>
         )}
       </div>
 

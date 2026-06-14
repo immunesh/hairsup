@@ -115,15 +115,22 @@ export const getProductById = async (
       OR: [{ id }, { slug: id }],
       isActive: true,
     },
+
     include: {
       images: {
         orderBy: {
           angle: "asc",
         },
       },
+       includedItems: true,
+       faqs: true,
+       careGuides: true,
       category: true,
       variants: true,
+      highlights: true,
+        features: true,
       reviews: {
+
         include: {
           user: {
             select: {

@@ -87,14 +87,40 @@ export const ordersApi = {
 // User
 export const userApi = {
   getProfile: () => api.get('/users/profile'),
-  updateProfile: (data: Record<string, unknown>) => api.put('/users/profile', data),
-  changePassword: (data: Record<string, string>) => api.patch('/users/password', data),
-  getAddresses: () => api.get('/users/addresses'),
-  addAddress: (data: Record<string, unknown>) => api.post('/users/addresses', data),
-  updateAddress: (id: string, data: Record<string, unknown>) => api.put(`/users/addresses/${id}`, data),
-  deleteAddress: (id: string) => api.delete(`/users/addresses/${id}`),
-};
 
+  updateProfile: (data: Record<string, unknown>) =>
+    api.put('/users/profile', data),
+
+  changePassword: (data: Record<string, string>) =>
+    api.patch('/users/password', data),
+
+  getAddresses: () =>
+    api.get('/users/addresses'),
+
+  addAddress: (data: Record<string, unknown>) =>
+    api.post('/users/addresses', data),
+
+  updateAddress: (
+    id: string,
+    data: Record<string, unknown>
+  ) =>
+    api.put(`/users/addresses/${id}`, data),
+
+  deleteAddress: (id: string) =>
+    api.delete(`/users/addresses/${id}`),
+
+  // NOTIFICATIONS
+  getNotificationPreferences: () =>
+    api.get('/users/notification-preferences'),
+
+  updateNotificationPreferences: (
+    data: Record<string, boolean>
+  ) =>
+    api.put(
+      '/users/notification-preferences',
+      data
+    ),
+};
 // Wishlist
 export const wishlistApi = {
   get: () => api.get('/wishlist'),
@@ -105,11 +131,23 @@ export const wishlistApi = {
 // Reviews
 export const reviewsApi = {
   getMyReviews: () => api.get('/reviews/my'),
-   
-  create: (data: Record<string, unknown>) => api.post('/reviews', data),
-  update: (id: string, data: Record<string, unknown>) => api.put(`/reviews/${id}`, data),
-  delete: (id: string) => api.delete(`/reviews/${id}`),
+
+  getByProduct: (productId: string) =>
+    api.get(`/reviews/product/${productId}`),
+
+create: (data: Record<string, unknown>) =>
+  api.post('/reviews', data),
+
+update: (
+  id: string,
+  data: Record<string, unknown>
+) =>
+  api.put(`/reviews/${id}`, data),
+
+delete: (id: string) =>
+  api.delete(`/reviews/${id}`),
 };
+
 export const blogApi = {
   getAll: () => api.get('/blogs/published'),
 };

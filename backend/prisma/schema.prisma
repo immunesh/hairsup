@@ -27,6 +27,12 @@ model User {
   reviews       Review[]
   refreshTokens RefreshToken[]
 
+emailNotifications      Boolean @default(true)
+offerNotifications      Boolean @default(true)
+newArrivalNotifications Boolean @default(false)
+blogNotifications       Boolean @default(true)
+restockNotifications    Boolean @default(true)
+
   @@map("users")
 }
 
@@ -115,8 +121,98 @@ model Product {
   reviews       Review[]
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-
+ 
+includedItems IncludedItem[]
+ faqs ProductFAQ[]
+ careGuides CareGuide[]
+ features ProductFeature[]
+ highlights ProductHighlight[]
   @@map("products")
+}
+
+model ProductImage {
+  id        String @id @default(uuid())
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  url       String
+
+  angle     Int @default(0)
+
+  isPrimary Boolean @default(false)
+
+  isTryOn   Boolean @default(false)
+}
+
+
+model ProductHighlight {
+  id        String   @id @default(uuid())
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  text      String
+
+  createdAt DateTime @default(now())
+
+  @@map("product_highlights")
+}
+
+model IncludedItem {
+  id        String   @id @default(uuid())
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  text      String
+
+  createdAt DateTime @default(now())
+
+  @@map("included_items")
+}
+
+model ProductFAQ {
+  id        String   @id @default(uuid())
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  question  String
+  answer    String
+
+  createdAt DateTime @default(now())
+
+  @@map("product_faqs")
+}
+
+model CareGuide {
+  id        String   @id @default(uuid())
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  icon      String
+  title     String
+  steps     String
+
+  createdAt DateTime @default(now())
+
+  @@map("care_guides")
+}
+
+model ProductFeature {
+  id        String   @id @default(uuid())
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  title     String
+  subtitle  String
+
+  createdAt DateTime @default(now())
+
+  @@map("product_features")
 }
 
 model ProductImage {

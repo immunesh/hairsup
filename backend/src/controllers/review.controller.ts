@@ -114,7 +114,41 @@ export const getAllReviews = async (
     data: reviews,
   });
 };
-
+export const getMyReviews = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  const reviews = await prisma.review.findMany({
+  where: {
+    userId: req.user!.userId,
+  },
+  include: {
+    product: {
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        images: {
+          where: {
+            isPrimary: true,
+          },
+          select: {
+            url: true,
+          },
+          take: 1,
+        },
+      },
+    },
+  },
+  orderBy: {
+    createdAt: "desc",
+  },
+});
+  res.json({
+    success: true,
+    data: reviews,
+  });
+};
 export const adminDeleteReview = async (
   req: AuthRequest,
   res: Response

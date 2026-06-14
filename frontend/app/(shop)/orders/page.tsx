@@ -36,7 +36,7 @@ const MOCK_ORDERS: Order[] = [
 
 export default function OrdersPage() {
   const { isAuthenticated } = useAuthStore();
-  const [orders, setOrders] = useState<Order[]>(MOCK_ORDERS);
+const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState('ALL');
 
@@ -61,6 +61,27 @@ export default function OrdersPage() {
 
   const STATUS_FILTERS = ['ALL', 'PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
   const filtered = filter === 'ALL' ? orders : orders.filter((o) => o.status === filter);
+
+  const handleCancelOrder = async (
+  orderId: string
+) => {
+  try {
+    await ordersApi.cancel(orderId);
+
+    setOrders((prev) =>
+      prev.map((order) =>
+        order.id === orderId
+          ? {
+              ...order,
+              status: "CANCELLED",
+            }
+          : order
+      )
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
     <div className="container-custom py-10">
@@ -144,7 +165,14 @@ export default function OrdersPage() {
                     <button className="text-xs btn-secondary py-1.5 px-4">Write Review</button>
                   )}
                   {['PENDING', 'CONFIRMED'].includes(order.status) && (
-                    <button className="text-xs border border-red-200 text-red-600 hover:bg-red-50 py-1.5 px-4 rounded-full transition-colors">Cancel</button>
+                  <button
+  onClick={() =>
+    handleCancelOrder(order.id)
+  }
+  className="text-xs border border-red-200 text-red-600 hover:bg-red-50 py-1.5 px-4 rounded-full transition-colors"
+>
+  Cancel
+</button>
                   )}
                   <Link href={`/orders/${order.orderNumber}`} className="text-xs btn-primary py-1.5 px-4">
                     {['SHIPPED', 'OUT_FOR_DELIVERY'].includes(order.status) ? 'Track' : 'Details'}

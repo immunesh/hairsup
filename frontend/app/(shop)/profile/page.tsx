@@ -43,7 +43,14 @@ const [wishlist, setWishlist] = useState<any[]>([]);
 
 const [editingAddress, setEditingAddress] =
   useState<Address | null>(null);
-
+const [notifications, setNotifications] =
+  useState({
+    emailNotifications: true,
+    offerNotifications: true,
+    newArrivalNotifications: false,
+    blogNotifications: true,
+    restockNotifications: true,
+  });
 const [addressForm, setAddressForm] =
   useState({
     fullName: "",
@@ -71,6 +78,7 @@ if (user)
     .then(({ data }) =>
       setOrders(data.data || [])
     )
+    
     .catch(() => {});
 reviewsApi
   .getMyReviews()
@@ -84,6 +92,14 @@ reviewsApi
   .then(({ data }) =>
     setWishlist(data.data || [])
   )
+  .catch(() => {});
+  userApi
+  .getNotificationPreferences()
+  .then(({ data }) => {
+    if (data?.data) {
+      setNotifications(data.data);
+    }
+  })
   .catch(() => {});
   
   }, [isAuthenticated, user, router]);
@@ -247,6 +263,23 @@ const handleUpdateAddress =
     alert("Upload failed");
   }
 };
+const handleSaveNotifications =
+  async () => {
+    try {
+      await userApi.updateNotificationPreferences(
+        notifications
+      );
+
+      showToast(
+        "Preferences saved successfully"
+      );
+    } catch {
+      showToast(
+        "Failed to save preferences",
+        "error"
+      );
+    }
+  };
   return (
     <div className="container-custom py-10">
       <h1 className="text-2xl font-display font-bold mb-8">My Account</h1>
@@ -563,29 +596,150 @@ const handleUpdateAddress =
   </div>
 )}
 
+{activeTab === 'reviews' && (
+  <div className="card p-6">
+    <h2 className="font-bold text-lg mb-6">
+      My Reviews
+    </h2>
+
+  {reviews.length === 0 ? (
+  <div className="text-center py-10">
+    <Heart className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+    <p className="text-gray-500">
+      No reviews yet
+    </p>
+  </div>
+) : (
+  <div className="space-y-4">
+    {reviews.map((review) => (
+      <Link
+        key={review.id}
+        href={`/products/${review.product?.slug}`}
+        className="block border rounded-xl p-4 hover:shadow-md transition-all duration-200"
+      >
+        <div className="flex gap-4">
+
+          {/* Product Image */}
+          <img
+            src={
+              review.product?.images?.[0]?.url ||
+              "/placeholder.jpg"
+            }
+            alt={review.product?.name}
+            className="w-24 h-24 rounded-lg object-cover border"
+          />
+
+          {/* Review Details */}
+          <div className="flex-1">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-semibold text-lg">
+                  {review.product?.name}
+                </h3>
+
+                <p className="text-yellow-500">
+                  {"★".repeat(review.rating)}
+                </p>
+
+                {review.title && (
+                  <p className="font-medium mt-2">
+                    {review.title}
+                  </p>
+                )}
+
+                <p className="text-gray-600 mt-1">
+                  {review.body}
+                </p>
+              </div>
+
+              <div className="text-sm text-gray-500 whitespace-nowrap">
+                {new Date(
+                  review.createdAt
+                ).toLocaleDateString()}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </Link>
+    ))}
+  </div>
+)}
+  </div>
+)}
           {activeTab === 'notifications' && (
             <div className="card p-6">
               <h2 className="font-bold text-lg mb-6">Notification Preferences</h2>
               <div className="space-y-4">
                 {[
-                  { label: 'Order Updates', desc: 'Get notified on order status changes', enabled: true },
-                  { label: 'Offers & Promotions', desc: 'Exclusive deals and discounts', enabled: true },
-                  { label: 'New Arrivals', desc: 'Be first to know about new products', enabled: false },
-                  { label: 'Blog & Style Tips', desc: 'Weekly hair care and styling guides', enabled: true },
-                  { label: 'Restock Alerts', desc: 'Notify when wishlist items are back', enabled: true },
-                ].map(({ label, desc, enabled }) => (
+  {
+    key: "emailNotifications",
+    label: "Order Updates",
+    desc: "Get notified on order status changes",
+  },
+  {
+    key: "offerNotifications",
+    label: "Offers & Promotions",
+    desc: "Exclusive deals and discounts",
+  },
+  {
+    key: "newArrivalNotifications",
+    label: "New Arrivals",
+    desc: "Be first to know about new products",
+  },
+  {
+    key: "blogNotifications",
+    label: "Blog & Style Tips",
+    desc: "Weekly hair care and styling guides",
+  },
+  {
+    key: "restockNotifications",
+    label: "Restock Alerts",
+    desc: "Notify when wishlist items are back",
+  },
+].map(({ key, label, desc }) => (
                   <div key={label} className="flex items-start justify-between p-4 bg-gray-50 rounded-xl">
                     <div>
                       <p className="font-medium text-sm text-gray-900">{label}</p>
                       <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
                     </div>
-                    <div className={`w-11 h-6 rounded-full transition-colors cursor-pointer ${enabled ? 'bg-brand-600' : 'bg-gray-300'} relative flex-shrink-0`}>
-                      <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all ${enabled ? 'left-6' : 'left-1'}`} />
-                    </div>
+                 <div
+  onClick={() =>
+    setNotifications((prev) => ({
+      ...prev,
+      [key]:
+        !prev[
+          key as keyof typeof prev
+        ],
+    }))
+  }
+  className={`w-11 h-6 rounded-full transition-colors cursor-pointer ${
+    notifications[
+      key as keyof typeof notifications
+    ]
+      ? "bg-brand-600"
+      : "bg-gray-300"
+  } relative flex-shrink-0`}
+>
+  <div
+    className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all ${
+      notifications[
+        key as keyof typeof notifications
+      ]
+        ? "left-6"
+        : "left-1"
+    }`}
+  />
+</div>
                   </div>
                 ))}
               </div>
-              <button className="btn-primary mt-6 text-sm py-2.5 px-6">Save Preferences</button>
+      <button
+  onClick={handleSaveNotifications}
+  className="btn-primary mt-6 text-sm py-2.5 px-6"
+>
+  Save Preferences
+</button>
             </div>
           )}
         </div>
