@@ -15,7 +15,31 @@ const HOW_IT_WORKS = [
   { step: '04', icon: Star, title: 'Capture & Share', desc: 'Capture your look, download it, or add directly to your cart.' },
 ];
 
-export default function TryOnPage() {
+
+export default async function TryOnPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ wig?: string }>;
+}) {
+  const { wig } = await searchParams;
+
+  let selectedProduct = null;
+
+  if (wig) {
+    const res = await fetch(
+      `http://localhost:5000/api/products/${wig}`,
+      {
+        cache: "no-store",
+      }
+    );
+
+    const data = await res.json();
+
+    selectedProduct = data.data;
+  }
+
+  console.log(selectedProduct);
+
   return (
     <div>
       {/* Hero */}
@@ -44,7 +68,7 @@ export default function TryOnPage() {
       {/* Main try-on tool */}
       <section className="py-12 bg-gray-50">
         <div className="container-custom">
-          <VirtualTryOn />
+      <VirtualTryOn selectedProductId={wig} />
         </div>
       </section>
 

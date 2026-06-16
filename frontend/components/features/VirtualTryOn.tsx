@@ -11,19 +11,50 @@ import { FaceLandmarker } from "@mediapipe/tasks-vision";
 interface VirtualTryOnProps {
   products?: Product[];
   selectedProduct?: Product;
+  selectedProductId?: string;
 }
+function getNearestAngle(
+  headAngle: number
+) {
+  const angles = [
+    0,
+    45,
+    90,
+    135,
+    180,
+    225,
+    270,
+    315,
+  ];
 
-const WIG_OVERLAYS = [
-  { id: '1', name: 'Straight Black', color: '#1a1a1a', style: 'straight' },
-  { id: '2', name: 'Wavy Brown', color: '#4a2c0a', style: 'wavy' },
-  { id: '3', name: 'Curly Auburn', color: '#8B2500', style: 'curly' },
-  { id: '4', name: 'Blonde Straight', color: '#c8a96e', style: 'straight' },
-  { id: '5', name: 'Dark Ombre', color: '#2d1b0e', style: 'wavy' },
-];
+  let nearest = angles[0];
 
-export default function VirtualTryOn({ products = [], selectedProduct }: VirtualTryOnProps) {
+  let minDiff = Infinity;
+
+  angles.forEach((a) => {
+    const diff = Math.abs(
+      headAngle - a
+    );
+
+    if (diff < minDiff) {
+      minDiff = diff;
+      nearest = a;
+    }
+  });
+
+  return nearest;
+}
+ 
+export default function VirtualTryOn({
+  products = [],
+  selectedProduct,
+  selectedProductId,
+}: VirtualTryOnProps)
+ {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const uploadCanvasRef =
+  useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const animFrameRef = useRef<number>(0);
 
@@ -33,10 +64,11 @@ const faceLandmarkerRef =
 const wigImagesRef = useRef<Record<string, HTMLImageElement>>({});
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [selectedOverlay, setSelectedOverlay] = useState(0);
+ 
   const [selectedProductIdx, setSelectedProductIdx] = useState(0);
   const [processing, setProcessing] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  
  const faceDetectedRef =
   useRef(false);
 
@@ -61,6 +93,7 @@ const [faceDetected, setFaceDetected] =
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
 
+        
 faceLandmarkerRef.current =
   await getFaceLandmarker();
 
@@ -192,28 +225,27 @@ setFaceDetected(false);
         leftTemple.x
     );
 
-    const spriteIndex =
-      getAngleIndex(angle);
-
-    const wigIndex =
-      selectedOverlay + 1;
-
-    const wigImage =
-      wigImagesRef.current[
-        `${wigIndex}-${spriteIndex}`
-      ];
-      if (wigImage && wigImage.complete) {
-  drawWig(
-    ctx,
-    wigImage,
-    foreheadX,
-    foreheadY,
-    headWidth,
-    angle
+ const degrees =
+  Math.round(
+    (angle * 180) / Math.PI
   );
-}
-   
-if (wigImage) {
+
+const nearestAngle =
+  getNearestAngle(
+    Math.abs(degrees)
+  );
+
+const wigImage =
+  wigImagesRef.current[
+    nearestAngle
+  ];
+  console.log({
+  degrees,
+  nearestAngle,
+});
+
+
+      if (wigImage && wigImage.complete) {
   drawWig(
     ctx,
     wigImage,
@@ -235,7 +267,7 @@ if (wigImage) {
 };
 
     animFrameRef.current = requestAnimationFrame(render);
-  }, [selectedOverlay]);
+}, []);
 
   useEffect(() => {
     return () => {
@@ -244,40 +276,169 @@ if (wigImage) {
   }, [stopCamera]);
 
   useEffect(() => {
-  const images: Record<string, HTMLImageElement> = {};
+  if (!uploadedImage) return;
 
-  for (let wig = 1; wig <= 6; wig++) {
-    for (let angle = 1; angle <= 8; angle++) {
-      const key = `${wig}-${angle}`;
+  const processImage = async () => {
+    const canvas =
+      uploadCanvasRef.current;
 
-const img = new window.Image();
+    if (!canvas) return;
 
-      img.src = `/wigs/wig${wig}/wig_no_label_${angle}.png`;
+    const ctx =
+      canvas.getContext("2d");
 
-      img.onload = () => {
-        console.log("Loaded:", key);
-      };
+    if (!ctx) return;
 
-      img.onerror = () => {
-        console.error("Failed:", key, img.src);
-      };
+    const img =
+      new window.Image();
 
-      images[key] = img;
-    }
+    img.src = uploadedImage;
+
+    img.onload = async () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+      const detector =
+        await getFaceLandmarker();
+
+      const result =
+        detector.detect(img);
+
+      if (
+        !result.faceLandmarks ||
+        result.faceLandmarks.length === 0
+      ) {
+        return;
+      }
+
+      const landmarks =
+        result.faceLandmarks[0];
+
+      const forehead =
+        landmarks[10];
+
+      const leftTemple =
+        landmarks[234];
+
+      const rightTemple =
+        landmarks[454];
+
+      const foreheadX =
+        forehead.x * canvas.width;
+
+      const foreheadY =
+        forehead.y * canvas.height;
+
+      const headWidth =
+        Math.abs(
+          rightTemple.x -
+            leftTemple.x
+        ) * canvas.width;
+
+      const angle =
+        Math.atan2(
+          rightTemple.y -
+            leftTemple.y,
+          rightTemple.x -
+            leftTemple.x
+        );
+
+      const degrees =
+        Math.round(
+          (angle * 180) /
+            Math.PI
+        );
+
+      const nearestAngle =
+        getNearestAngle(
+          Math.abs(degrees)
+        );
+
+      const wigImage =
+        wigImagesRef.current[
+          nearestAngle
+        ];
+
+      if (
+        wigImage &&
+        wigImage.complete
+      ) {
+        drawWig(
+          ctx,
+          wigImage,
+          foreheadX,
+          foreheadY,
+          headWidth,
+          angle
+        );
+      }
+    };
+  };
+
+  processImage();
+}, [uploadedImage]);
+
+  useEffect(() => {
+  if (!selectedProductId) return;
+
+  const loadProductImages = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/products/${selectedProductId}`
+      );
+
+      const data = await res.json();
+
+      console.log("PRODUCT DATA", data);
+
+      const images = data.data.images || [];
+
+      setProductImages(
+        images.map((img: any) => img.url)
+      );
+
+      const loadedImages: Record<
+        string,
+        HTMLImageElement
+      > = {};
+
+images.forEach(
+  (img: any, index: number) => {
+    const image = new window.Image();
+
+    image.src = img.url;
+
+  loadedImages[
+  img.angle
+] = image;
   }
-
-  wigImagesRef.current = images;
-console.log(
-  "1-1",
-  wigImagesRef.current["1-1"]
 );
+console.log(wigImagesRef.current);
+      wigImagesRef.current =
+        loadedImages;
 
-console.log(
-  "1-8",
-  wigImagesRef.current["1-8"]
-);
-  console.log("ALL WIGS LOADED", images);
-}, []);
+      console.log(
+        "Loaded Images",
+        loadedImages
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  loadProductImages();
+}, [selectedProductId]);
+  
+
+
   const capturePhoto = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -302,9 +463,13 @@ console.log(
     setMode('upload');
   };
 
+  const [productImages, setProductImages] = useState<string[]>([]);
+
+  
+
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">``
         {/* Camera / Preview panel */}
         <div className="lg:col-span-2 space-y-4">
           {/* Mode tabs */}
@@ -362,25 +527,31 @@ console.log(
                     </button>
                   </div>
                 )}
-              </>
+              </> 
             )}
 
             {mode === 'upload' && (
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 {uploadedImage ? (
                   <div className="relative w-full h-full">
-                    <Image src={uploadedImage} alt="Uploaded photo" fill className="object-cover" />
-                    {/* Simulated wig overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div
-                        className="w-32 h-40 rounded-t-full opacity-70"
-                        style={{ background: WIG_OVERLAYS[selectedOverlay].color }}
-                      />
-                    </div>
-                    <div className="absolute bottom-3 left-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                      Wig applied ✓
-                    </div>
-                  </div>
+
+  <img
+    src={uploadedImage}
+    alt="Uploaded"
+    className="hidden"
+    id="upload-preview"
+  />
+
+  <canvas
+    ref={uploadCanvasRef}
+    className="w-full h-full object-cover"
+  />
+
+  <div className="absolute bottom-3 left-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+    Wig applied ✓
+  </div>
+
+</div>
                 ) : (
                   <label className="flex flex-col items-center gap-4 cursor-pointer text-white">
                     <div className="w-16 h-16 bg-brand-600/20 rounded-full flex items-center justify-center border-2 border-dashed border-brand-500/50">
@@ -453,35 +624,23 @@ console.log(
               <Zap className="w-4 h-4 text-brand-600" /> Style & Color
             </h3>
             <div className="space-y-2">
-              {WIG_OVERLAYS.map((wig, i) => (
-                <button
-                  key={wig.id}
-                  onClick={() => setSelectedOverlay(i)}
-                  className={cn(
-                    'w-full flex items-center gap-3 p-2.5 rounded-xl border-2 transition-all text-left',
-                    selectedOverlay === i
-                      ? 'border-brand-500 bg-brand-50'
-                      : 'border-gray-100 hover:border-brand-200'
-                  )}
-                >
-                  <div
-                    className={cn(
-                      'w-8 h-8 rounded-lg flex-shrink-0 ring-2 ring-offset-1',
-                      selectedOverlay === i ? 'ring-brand-500' : 'ring-transparent'
-                    )}
-                    style={{ background: wig.color }}
-                  />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{wig.name}</p>
-                    <p className="text-xs text-gray-500 capitalize">{wig.style}</p>
-                  </div>
-                  {selectedOverlay === i && (
-                    <div className="ml-auto w-5 h-5 rounded-full bg-brand-600 flex items-center justify-center">
-                      <span className="text-white text-xs">✓</span>
-                    </div>
-                  )}
-                </button>
-              ))}
+               {selectedProduct && (
+  <div className="border rounded-xl p-3">
+    <img
+      src={selectedProduct.images?.[0]?.url}
+      alt={selectedProduct.name}
+      className="w-full h-40 object-cover rounded-lg"
+    />
+
+    <h4 className="mt-3 font-semibold">
+      {selectedProduct.name}
+    </h4>
+
+    <p className="text-sm text-gray-500">
+      ₹{selectedProduct.salePrice || selectedProduct.basePrice}
+    </p>
+  </div>
+)}
             </div>
           </div>
 

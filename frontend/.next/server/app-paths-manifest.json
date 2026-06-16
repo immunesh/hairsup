@@ -1,11 +1,6 @@
 {
-  "/(shop)/try-on/page": "app/(shop)/try-on/page.js",
+  "/not-found": "app/not-found.js",
   "/(shop)/products/[id]/page": "app/(shop)/products/[id]/page.js",
-  "/admin/users/page": "app/admin/users/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/admin/coupons/page": "app/admin/coupons/page.js",
-  "/admin/categories/page": "app/admin/categories/page.js",
-  "/admin/login/page": "app/admin/login/page.js",
-  "/admin/products/page": "app/admin/products/page.js",
-  "/admin/products/create/page": "app/admin/products/create/page.js"
+  "/(shop)/women/page": "app/(shop)/women/page.js",
+  "/(shop)/try-on/page": "app/(shop)/try-on/page.js"
 }

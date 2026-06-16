@@ -8,17 +8,17 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  password      String
-  firstName     String
-  lastName      String
-  phone         String?
-  avatar        String?
-  role          String    @default("CUSTOMER")
-  isVerified    Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id         String   @id @default(uuid())
+  email      String   @unique
+  password   String
+  firstName  String
+  lastName   String
+  phone      String?
+  avatar     String?
+  role       String   @default("CUSTOMER")
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   addresses     Address[]
   orders        Order[]
@@ -27,11 +27,11 @@ model User {
   reviews       Review[]
   refreshTokens RefreshToken[]
 
-emailNotifications      Boolean @default(true)
-offerNotifications      Boolean @default(true)
-newArrivalNotifications Boolean @default(false)
-blogNotifications       Boolean @default(true)
-restockNotifications    Boolean @default(true)
+  emailNotifications      Boolean @default(true)
+  offerNotifications      Boolean @default(true)
+  newArrivalNotifications Boolean @default(false)
+  blogNotifications       Boolean @default(true)
+  restockNotifications    Boolean @default(true)
 
   @@map("users")
 }
@@ -48,111 +48,96 @@ model RefreshToken {
 }
 
 model Address {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type        String   @default("HOME")
-  fullName    String
-  phone       String
-  line1       String
-  line2       String?
-  city        String
-  state       String
-  pincode     String
-  country     String   @default("India")
-  isDefault   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   @default("HOME")
+  fullName  String
+  phone     String
+  line1     String
+  line2     String?
+  city      String
+  state     String
+  pincode   String
+  country   String   @default("India")
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  orders      Order[]
+  orders Order[]
 
   @@map("addresses")
 }
 
 model Category {
-  id          String    @id @default(uuid())
+  id          String     @id @default(uuid())
   name        String
-  slug        String    @unique
+  slug        String     @unique
   description String?
   image       String?
   gender      String?
   parentId    String?
-  parent      Category? @relation("CategoryParent", fields: [parentId], references: [id])
+  parent      Category?  @relation("CategoryParent", fields: [parentId], references: [id])
   children    Category[] @relation("CategoryParent")
   products    Product[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   @@map("categories")
 }
 
 model Product {
-  id            String        @id @default(uuid())
+  id            String           @id @default(uuid())
   name          String
-  slug          String        @unique
+  slug          String           @unique
   description   String
   shortDesc     String?
   categoryId    String
-  category      Category      @relation(fields: [categoryId], references: [id])
+  category      Category         @relation(fields: [categoryId], references: [id])
   gender        String
   basePrice     Float
   salePrice     Float?
-  stock         Int           @default(0)
-  sku           String        @unique
-  brand         String        @default("HairsUp")
+  stock         Int              @default(0)
+  sku           String           @unique
+  brand         String           @default("HairsUp")
   material      String?
   capSize       String?
   length        String?
   density       String?
   texture       String?
   color         String?
-  isActive      Boolean       @default(true)
-  isFeatured    Boolean       @default(false)
-  isBestSeller  Boolean       @default(false)
-  isNewArrival  Boolean       @default(false)
-  rating        Float         @default(0)
-  reviewCount   Int           @default(0)
-  tags          String        @default("[]")
+  isActive      Boolean          @default(true)
+  isFeatured    Boolean          @default(false)
+  isBestSeller  Boolean          @default(false)
+  isNewArrival  Boolean          @default(false)
+  rating        Float            @default(0)
+  reviewCount   Int              @default(0)
+  tags          String           @default("[]")
   images        ProductImage[]
   variants      ProductVariant[]
   cartItems     CartItem[]
   wishlistItems WishlistItem[]
   orderItems    OrderItem[]
   reviews       Review[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
- 
-includedItems IncludedItem[]
- faqs ProductFAQ[]
- careGuides CareGuide[]
- features ProductFeature[]
- highlights ProductHighlight[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  includedItems IncludedItem[]
+  faqs          ProductFAQ[]
+  careGuides    CareGuide[]
+  features      ProductFeature[]
+  highlights    ProductHighlight[]
+
   @@map("products")
 }
 
-model ProductImage {
-  id        String @id @default(uuid())
-
-  productId String
-  product   Product @relation(fields: [productId], references: [id])
-
-  url       String
-
-  angle     Int @default(0)
-
-  isPrimary Boolean @default(false)
-
-  isTryOn   Boolean @default(false)
-}
-
-
 model ProductHighlight {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  text      String
+  text String
 
   createdAt DateTime @default(now())
 
@@ -160,12 +145,12 @@ model ProductHighlight {
 }
 
 model IncludedItem {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  text      String
+  text String
 
   createdAt DateTime @default(now())
 
@@ -173,13 +158,13 @@ model IncludedItem {
 }
 
 model ProductFAQ {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  question  String
-  answer    String
+  question String
+  answer   String
 
   createdAt DateTime @default(now())
 
@@ -187,14 +172,14 @@ model ProductFAQ {
 }
 
 model CareGuide {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  icon      String
-  title     String
-  steps     String
+  icon  String
+  title String
+  steps String
 
   createdAt DateTime @default(now())
 
@@ -202,13 +187,13 @@ model CareGuide {
 }
 
 model ProductFeature {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  title     String
-  subtitle  String
+  title    String
+  subtitle String
 
   createdAt DateTime @default(now())
 
@@ -216,13 +201,18 @@ model ProductFeature {
 }
 
 model ProductImage {
-  id        String   @id @default(uuid())
+  id        String  @id @default(uuid())
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  url       String
-  alt       String?
-  angle     Int      @default(0)
-  isPrimary Boolean  @default(false)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  url String
+  alt String?
+
+  angle     Int     @default(0)
+  isPrimary Boolean @default(false)
+
+  isTryOn Boolean @default(false)
+
   createdAt DateTime @default(now())
 
   @@map("product_images")
@@ -270,29 +260,29 @@ model WishlistItem {
 }
 
 model Order {
-  id              String        @id @default(uuid())
-  orderNumber     String        @unique
-  userId          String
-  user            User          @relation(fields: [userId], references: [id])
-  addressId       String
-  address         Address       @relation(fields: [addressId], references: [id])
-  status          String        @default("PENDING")
-  paymentStatus   String        @default("PENDING")
-  paymentMethod   String?
-  paymentId       String?
-  subtotal        Float
-  discount        Float         @default(0)
-  shipping        Float         @default(0)
-  tax             Float         @default(0)
-  total           Float
-  couponCode      String?
-  notes           String?
+  id                String          @id @default(uuid())
+  orderNumber       String          @unique
+  userId            String
+  user              User            @relation(fields: [userId], references: [id])
+  addressId         String
+  address           Address         @relation(fields: [addressId], references: [id])
+  status            String          @default("PENDING")
+  paymentStatus     String          @default("PENDING")
+  paymentMethod     String?
+  paymentId         String?
+  subtotal          Float
+  discount          Float           @default(0)
+  shipping          Float           @default(0)
+  tax               Float           @default(0)
+  total             Float
+  couponCode        String?
+  notes             String?
   estimatedDelivery DateTime?
-  deliveredAt     DateTime?
-  items           OrderItem[]
-  tracking        OrderTracking[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  deliveredAt       DateTime?
+  items             OrderItem[]
+  tracking          OrderTracking[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   @@map("orders")
 }
@@ -379,18 +369,18 @@ model StoreLocation {
 }
 
 model BlogPost {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
-  slug        String   @unique
+  slug        String    @unique
   excerpt     String
   content     String
   image       String?
   author      String
-  tags        String   @default("[]")
-  isPublished Boolean  @default(false)
+  tags        String    @default("[]")
+  isPublished Boolean   @default(false)
   publishedAt DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@map("blog_posts")
 }
