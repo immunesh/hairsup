@@ -5,6 +5,7 @@ import {
   createCoupon,
   toggleCouponStatus,
   deleteCoupon,
+  applyCoupon,
 } from "../controllers/coupon.controller";
 
 import {
@@ -14,6 +15,13 @@ import {
 
 const router = Router();
 
+/* PUBLIC */
+router.post(
+  "/apply",
+  applyCoupon
+);
+
+/* ADMIN */
 router.use(
   authenticate,
   authorize("ADMIN")

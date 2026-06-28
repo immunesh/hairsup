@@ -52,23 +52,36 @@ const hoverUrl = hoverImage?.url
     const isWishlisted = wishlistItems.some((i) => i.productId === product.id);
   const discountPct = product.salePrice ? getDiscountPercent(product.basePrice, product.salePrice) : 0;
 
-  const handleAddToCart = async (e: React.MouseEvent) => {
-    e.preventDefault();
+ const handleAddToCart = async (e: React.MouseEvent) => {
+  e.preventDefault();
+  e.stopPropagation();
     if (!isAuthenticated) { showToast('Please sign in to add to cart', 'error'); return; }
     setAddingToCart(true);
-    try {
-      const { data } = await cartApi.add(product.id, 1);
+   try {
+  console.log("ADDING PRODUCT", product.id);
+
+  const { data } = await cartApi.add(product.id, 1);
+
+  console.log("CART RESPONSE", data);
       addToCart(data.data);
       showToast('Added to cart!', 'success');
-    } catch {
-      showToast('Failed to add to cart', 'error');
-    } finally {
+   } catch (error: any) {
+  console.error("ADD CART ERROR", error);
+  console.error("RESPONSE", error?.response?.data);
+
+  showToast(
+    error?.response?.data?.message ||
+    "Failed to add to cart",
+    "error"
+  );
+}finally {
       setAddingToCart(false);
     }
   };
 
-  const handleWishlist = async (e: React.MouseEvent) => {
-    e.preventDefault();
+const handleWishlist = async (e: React.MouseEvent) => {
+  e.preventDefault();
+  e.stopPropagation();
     if (!isAuthenticated) { showToast('Please sign in to save items', 'error'); return; }
     try {
       if (isWishlisted) {

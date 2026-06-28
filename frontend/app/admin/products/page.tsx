@@ -22,7 +22,7 @@ export default async function ProductsPage() {
   const products = await getProducts();
 
   return (
-    <div className="h-full overflow-auto p-8">
+    <div className="h-full p-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -71,10 +71,10 @@ export default async function ProductsPage() {
         bg-white/5
         backdrop-blur-xl
 
-        overflow-x-auto
+        overflow-x-auto 
         "
       >
-        <table className="w-full min-w-[1700px]">
+        <table className="w-full min-w-[2600px]">
           <thead>
             <tr className="border-b border-white/10 bg-white/5">
               <th className="text-left p-5 text-slate-300">
@@ -104,7 +104,41 @@ export default async function ProductsPage() {
               <th className="text-left p-5 text-slate-300">
                 Stock
               </th>
+              <th className="text-left p-5 text-slate-300">
+                Material
+              </th>
 
+              <th className="text-left p-5 text-slate-300">
+                Length
+              </th>
+
+              <th className="text-left p-5 text-slate-300">
+                Density
+              </th>
+
+              <th className="text-left p-5 text-slate-300">
+                Texture
+              </th>
+
+              <th className="text-left p-5 text-slate-300">
+                Color
+              </th>
+
+              <th className="text-left p-5 text-slate-300">
+                Rating
+              </th>
+
+              <th className="text-left p-5 text-slate-300">
+                Featured
+              </th>
+
+              <th className="text-left p-5 text-slate-300">
+                Best Seller
+              </th>
+
+              <th className="text-left p-5 text-slate-300">
+                New Arrival
+              </th>
               <th className="text-left p-5 text-slate-300">
                 Short Description
               </th>
@@ -116,10 +150,25 @@ export default async function ProductsPage() {
               <th className="text-left p-5 text-slate-300">
                 Tags
               </th>
+              <th className="text-left p-5 text-slate-300">
+                Features
+              </th>
 
+              <th className="text-left p-5 text-slate-300">
+                FAQs
+              </th>
+
+              <th className="text-left p-5 text-slate-300">
+                Care Guides
+              </th>
+
+              <th className="text-left p-5 text-slate-300">
+                Included Items
+              </th>
               <th className="text-left p-5 text-slate-300">
                 Actions
               </th>
+
             </tr>
           </thead>
 
@@ -127,7 +176,7 @@ export default async function ProductsPage() {
             {products.length === 0 ? (
               <tr>
                 <td
-                  colSpan={11}
+                  colSpan={24}
                   className="
                   text-center
                   p-10
@@ -220,16 +269,58 @@ export default async function ProductsPage() {
                   {/* Stock */}
                   <td className="p-5">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        product.stock > 0
-                          ? "bg-emerald-500/20 text-emerald-400"
-                          : "bg-red-500/20 text-red-400"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${product.stock > 0
+                        ? "bg-emerald-500/20 text-emerald-400"
+                        : "bg-red-500/20 text-red-400"
+                        }`}
                     >
                       {product.stock}
                     </span>
                   </td>
+                  {/* Material */}
+                  <td className="p-5 text-slate-300">
+                    {product.material || "-"}
+                  </td>
 
+                  {/* Length */}
+                  <td className="p-5 text-slate-300">
+                    {product.length || "-"}
+                  </td>
+
+                  {/* Density */}
+                  <td className="p-5 text-slate-300">
+                    {product.density || "-"}
+                  </td>
+
+                  {/* Texture */}
+                  <td className="p-5 text-slate-300">
+                    {product.texture || "-"}
+                  </td>
+
+                  {/* Color */}
+                  <td className="p-5 text-slate-300">
+                    {product.color || "-"}
+                  </td>
+
+                  {/* Rating */}
+                  <td className="p-5 text-yellow-400">
+                    ⭐ {product.rating || 0}
+                  </td>
+
+                  {/* Featured */}
+                  <td className="p-5">
+                    {product.isFeatured ? "✅" : "❌"}
+                  </td>
+
+                  {/* Best Seller */}
+                  <td className="p-5">
+                    {product.isBestSeller ? "✅" : "❌"}
+                  </td>
+
+                  {/* New Arrival */}
+                  <td className="p-5">
+                    {product.isNewArrival ? "✅" : "❌"}
+                  </td>
                   {/* Short Desc */}
                   <td
                     className="
@@ -266,7 +357,33 @@ export default async function ProductsPage() {
                       ? product.tags.join(", ")
                       : product.tags || "-"}
                   </td>
+                  {/* Features */}
+                  <td className="p-5 text-slate-300 max-w-[250px]">
+                    {product.features?.length
+                      ? product.features
+                        .map((f: any) => f.title)
+                        .join(", ")
+                      : "-"}
+                  </td>
 
+                  {/* FAQs */}
+                  <td className="p-5 text-slate-300">
+                    {product.faqs?.length || 0}
+                  </td>
+
+                  {/* Care Guides */}
+                  <td className="p-5 text-slate-300">
+                    {product.careGuides?.length || 0}
+                  </td>
+
+                  {/* Included Items */}
+                  <td className="p-5 text-slate-300 max-w-[250px]">
+                    {product.includedItems?.length
+                      ? product.includedItems
+                        .map((i: any) => i.text)
+                        .join(", ")
+                      : "-"}
+                  </td>
                   {/* Actions */}
                   <td className="p-5">
                     <div className="flex gap-2">

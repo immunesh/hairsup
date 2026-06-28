@@ -12,6 +12,7 @@ import { formatPrice } from '@/lib/utils';
  
 import { Product } from '@/types';
 import { productsApi, blogApi } from '@/lib/api';
+const image = "/women.avif";
 
 const HERO_SLIDES = [
   {
@@ -63,7 +64,7 @@ const CATEGORIES = [
     title: "Women's Wigs",
     subtitle: "Gorgeous styles for every occasion",
     href: '/women',
-    image: 'https://images.unsplash.com/photo-1519699047748-de8e44489ece?w=600&q=80',
+    image:'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&q=80',
     count: '200+ styles',
     badge: 'Most Popular',
     color: 'from-pink-900/80 to-brand-900/80',
@@ -359,34 +360,58 @@ useEffect(() => {
       </section>
 
       {/* ─── CATEGORIES ──────────────────────────────────────────────── */}
-      <section className="py-16 container-custom">
-        <div className="text-center mb-10">
-          <h2 className="section-title">Shop by Category</h2>
-          <p className="section-subtitle">Find the perfect wig for your lifestyle and personality</p>
-        </div>
+     <section className="py-16 container-custom">
+  <div className="text-center mb-10">
+    <h2 className="section-title">Shop by Category</h2>
+    <p className="section-subtitle">
+      Find the perfect wig for your lifestyle and personality
+    </p>
+  </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {CATEGORIES.map((cat) => (
-            <Link key={cat.title} href={cat.href} className="group relative overflow-hidden rounded-2xl aspect-[3/4]">
-              <Image src={cat.image} alt={cat.title} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
-              <div className={`absolute inset-0 bg-gradient-to-t ${cat.color} transition-opacity group-hover:opacity-90`} />
-              <div className="absolute inset-0 p-4 flex flex-col justify-between">
-                <span className="inline-flex self-start bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-                  {cat.badge}
-                </span>
-                <div>
-                  <p className="text-white/70 text-xs mb-1">{cat.count}</p>
-                  <h3 className="text-white font-display font-bold text-lg leading-tight">{cat.title}</h3>
-                  <p className="text-white/70 text-xs mt-1 hidden sm:block">{cat.subtitle}</p>
-                  <div className="flex items-center gap-1 mt-2 text-white/80 text-xs font-medium">
-                    Shop Now <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
+  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    {CATEGORIES.map((cat) => (
+      <Link
+        key={cat.title}
+        href={cat.href}
+        className="group relative overflow-hidden rounded-2xl aspect-[3/4]"
+      >
+        <Image
+          src={cat.image}
+          alt={cat.title}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-110"
+        />
+
+        <div
+          className={`absolute inset-0 bg-gradient-to-t ${cat.color} transition-opacity group-hover:opacity-90`}
+        />
+
+        <div className="absolute inset-0 p-4 flex flex-col justify-between">
+          <span className="inline-flex self-start bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+            {cat.badge}
+          </span>
+
+          <div>
+            <p className="text-white/70 text-xs mb-1">{cat.count}</p>
+
+            <h3 className="text-white font-display font-bold text-lg leading-tight">
+              {cat.title}
+            </h3>
+
+            <p className="text-white/70 text-xs mt-1 hidden sm:block">
+              {cat.subtitle}
+            </p>
+
+            <div className="flex items-center gap-1 mt-2 text-white/80 text-xs font-medium">
+              Shop Now
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
         </div>
-      </section>
+      </Link>
+    ))}
+  </div>
+</section>
 
       {/* ─── FEATURED PRODUCTS ──────────────────────────────────── */}
       <section className="py-16 bg-gray-50">
@@ -396,7 +421,7 @@ useEffect(() => {
               <h2 className="section-title">Featured Collection</h2>
               <p className="text-gray-500">Handpicked by our style experts</p>
             </div>
-            <Link href="/women" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
+            <Link href="/products" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -408,7 +433,7 @@ useEffect(() => {
           </div>
 
           <div className="text-center mt-8 sm:hidden">
-            <Link href="/women" className="btn-secondary inline-flex items-center gap-2">
+            <Link href="/products" className="btn-secondary inline-flex items-center gap-2">
               View All Products <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -464,7 +489,7 @@ useEffect(() => {
               <h2 className="section-title">New Arrivals</h2>
               <p className="text-gray-500">Fresh styles just landed</p>
             </div>
-            <Link href="/women" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
+            <Link href="/products" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
               See All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -480,7 +505,7 @@ useEffect(() => {
           {/* Women */}
           <Link href="/women" className="group relative overflow-hidden rounded-3xl min-h-[360px] cursor-pointer">
             <Image
-              src="https://images.unsplash.com/photo-1519699047748-de8e44489ece?w=800&q=80"
+              src='https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&q=80'
               alt="Women's Wigs"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -525,7 +550,7 @@ useEffect(() => {
               <h2 className="section-title">Best Sellers</h2>
               <p className="text-gray-500">Customer favourites, tried and loved</p>
             </div>
-            <Link href="/women" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
+            <Link href="/products" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

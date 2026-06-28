@@ -36,7 +36,7 @@ const MOCK_ORDERS: Order[] = [
 
 export default function OrdersPage() {
   const { isAuthenticated } = useAuthStore();
-const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState('ALL');
 
@@ -45,7 +45,7 @@ const [orders, setOrders] = useState<Order[]>([]);
       setLoading(true);
       ordersApi.getAll().then(({ data }) => {
         if (data.data.length > 0) setOrders(data.data);
-      }).catch(() => {}).finally(() => setLoading(false));
+      }).catch(() => { }).finally(() => setLoading(false));
     }
   }, [isAuthenticated]);
 
@@ -63,25 +63,25 @@ const [orders, setOrders] = useState<Order[]>([]);
   const filtered = filter === 'ALL' ? orders : orders.filter((o) => o.status === filter);
 
   const handleCancelOrder = async (
-  orderId: string
-) => {
-  try {
-    await ordersApi.cancel(orderId);
+    orderId: string
+  ) => {
+    try {
+      await ordersApi.cancel(orderId);
 
-    setOrders((prev) =>
-      prev.map((order) =>
-        order.id === orderId
-          ? {
+      setOrders((prev) =>
+        prev.map((order) =>
+          order.id === orderId
+            ? {
               ...order,
               status: "CANCELLED",
             }
-          : order
-      )
-    );
-  } catch (error) {
-    console.error(error);
-  }
-};
+            : order
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="container-custom py-10">
@@ -161,19 +161,8 @@ const [orders, setOrders] = useState<Order[]>([]);
                   Total: <span className="font-bold text-gray-900">{formatPrice(order.total)}</span>
                 </p>
                 <div className="flex gap-2">
-                  {order.status === 'DELIVERED' && (
-                    <button className="text-xs btn-secondary py-1.5 px-4">Write Review</button>
-                  )}
-                  {['PENDING', 'CONFIRMED'].includes(order.status) && (
-                  <button
-  onClick={() =>
-    handleCancelOrder(order.id)
-  }
-  className="text-xs border border-red-200 text-red-600 hover:bg-red-50 py-1.5 px-4 rounded-full transition-colors"
->
-  Cancel
-</button>
-                  )}
+                  
+
                   <Link href={`/orders/${order.orderNumber}`} className="text-xs btn-primary py-1.5 px-4">
                     {['SHIPPED', 'OUT_FOR_DELIVERY'].includes(order.status) ? 'Track' : 'Details'}
                   </Link>

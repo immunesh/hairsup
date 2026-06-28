@@ -18,19 +18,59 @@ const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
 
 const [existingImages, setExistingImages] = useState<string[]>([]);
 const [form, setForm] = useState({
-name: "",
-slug: "",
-categoryId: "",
-basePrice: "",
-salePrice: "",
-stock: "",
-sku: "",
-brand: "",
-gender: "MEN",
-shortDesc: "",
-description: "",
-tags: "",
+  name: "",
+  slug: "",
+  categoryId: "",
+  basePrice: "",
+  salePrice: "",
+  stock: "",
+  sku: "",
+  brand: "",
+  gender: "MEN",
+  shortDesc: "",
+  description: "",
+  tags: "",
+
+  material: "",
+  capSize: "",
+  length: "",
+  density: "",
+  texture: "",
+  color: "",
+
+  rating: "0",
+
+  isFeatured: false,
+  isBestSeller: false,
+  isNewArrival: false,
 });
+const [features, setFeatures] = useState([
+  {
+    title: "",
+    subtitle: "",
+  },
+]);
+
+const [faqs, setFaqs] = useState([
+  {
+    question: "",
+    answer: "",
+  },
+]);
+
+const [careGuides, setCareGuides] = useState([
+  {
+    icon: "",
+    title: "",
+    steps: "",
+  },
+]);
+
+const [includedItems, setIncludedItems] = useState([
+  {
+    text: "",
+  },
+]);
 
 useEffect(() => {
 fetchProduct();
@@ -75,22 +115,78 @@ setExistingImages(
 if (product.images?.length) {
   setMainPreview(product.images[0].url);
 }
-  setForm({
-    name: product.name || "",
-    slug: product.slug || "",
-    categoryId: product.categoryId || "",
-    basePrice: String(product.basePrice || ""),
-    salePrice: String(product.salePrice || ""),
-    stock: String(product.stock || ""),
-    sku: product.sku || "",
-    brand: product.brand || "",
-    gender: product.gender || "MEN",
-    shortDesc: product.shortDesc || "",
-    description: product.description || "",
-    tags: Array.isArray(product.tags)
-      ? product.tags.join(", ")
-      : "",
-  });
+setForm({
+  name: product.name || "",
+  slug: product.slug || "",
+  categoryId: product.categoryId || "",
+  basePrice: String(product.basePrice || ""),
+  salePrice: String(product.salePrice || ""),
+  stock: String(product.stock || ""),
+  sku: product.sku || "",
+  brand: product.brand || "",
+  gender: product.gender || "MEN",
+  shortDesc: product.shortDesc || "",
+  description: product.description || "",
+
+  tags: Array.isArray(product.tags)
+    ? product.tags.join(", ")
+    : "",
+
+  material: product.material || "",
+  capSize: product.capSize || "",
+  length: product.length || "",
+  density: product.density || "",
+  texture: product.texture || "",
+  color: product.color || "",
+
+  rating: String(product.rating || 0),
+
+  isFeatured: product.isFeatured || false,
+  isBestSeller: product.isBestSeller || false,
+  isNewArrival: product.isNewArrival || false,
+});
+setFeatures(
+  product.features?.length
+    ? product.features.map((item: any) => ({
+        title: item.title,
+        subtitle: item.subtitle,
+      }))
+    : [{ title: "", subtitle: "" }]
+);
+
+setFaqs(
+  product.faqs?.length
+    ? product.faqs.map((item: any) => ({
+        question: item.question,
+        answer: item.answer,
+      }))
+    : [{ question: "", answer: "" }]
+);
+
+setCareGuides(
+  product.careGuides?.length
+    ? product.careGuides.map((item: any) => ({
+        icon: item.icon || "",
+        title: item.title || "",
+        steps: item.steps || "",
+      }))
+    : [
+        {
+          icon: "",
+          title: "",
+          steps: "",
+        },
+      ]
+);
+
+setIncludedItems(
+  product.includedItems?.length
+    ? product.includedItems.map((item: any) => ({
+        text: item.text || "",
+      }))
+    : [{ text: "" }]
+);
+
 } catch (error) {
   console.error(error);
   alert("Failed to load product");
@@ -169,7 +265,12 @@ for (const image of galleryImages) {
     .map((tag) => tag.trim())
     .filter(Boolean),
 
-  images: imageUrls,
+ images: imageUrls,
+
+features,
+faqs,
+careGuides,
+includedItems,
 }),
     }
   );
@@ -419,7 +520,117 @@ return (
           />
         </div>
       </div>
+<div className="grid md:grid-cols-3 gap-6 mt-6">
 
+  <div>
+    <label className="block mb-2 text-sm text-slate-300">
+      Material
+    </label>
+
+    <input
+      type="text"
+      value={form.material}
+      onChange={(e) =>
+        setForm({
+          ...form,
+          material: e.target.value,
+        })
+      }
+      className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+    />
+  </div>
+
+  <div>
+    <label className="block mb-2 text-sm text-slate-300">
+      Length
+    </label>
+
+    <input
+      type="text"
+      value={form.length}
+      onChange={(e) =>
+        setForm({
+          ...form,
+          length: e.target.value,
+        })
+      }
+      className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+    />
+  </div>
+
+  <div>
+    <label className="block mb-2 text-sm text-slate-300">
+      Density
+    </label>
+
+    <input
+      type="text"
+      value={form.density}
+      onChange={(e) =>
+        setForm({
+          ...form,
+          density: e.target.value,
+        })
+      }
+      className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+    />
+  </div>
+
+  <div>
+    <label className="block mb-2 text-sm text-slate-300">
+      Texture
+    </label>
+
+    <input
+      type="text"
+      value={form.texture}
+      onChange={(e) =>
+        setForm({
+          ...form,
+          texture: e.target.value,
+        })
+      }
+      className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+    />
+  </div>
+
+  <div>
+    <label className="block mb-2 text-sm text-slate-300">
+      Color
+    </label>
+
+    <input
+      type="text"
+      value={form.color}
+      onChange={(e) =>
+        setForm({
+          ...form,
+          color: e.target.value,
+        })
+      }
+      className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+    />
+  </div>
+
+  <div>
+    <label className="block mb-2 text-sm text-slate-300">
+      Cap Size
+    </label>
+
+    <input
+      type="text"
+      value={form.capSize}
+      onChange={(e) =>
+        setForm({
+          ...form,
+          capSize: e.target.value,
+        })
+      }
+      className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+    />
+  </div>
+
+</div>
       <div className="mt-6">
         <label className="block mb-2 text-sm font-medium text-slate-300">
           Short Description
@@ -473,6 +684,290 @@ return (
           className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
         />
       </div>
+      {/* Product Features */}
+
+<div className="mt-6 border border-white/10 rounded-2xl p-6">
+  <div className="flex justify-between items-center mb-4">
+    <h2 className="text-xl font-bold text-white">
+      Product Features
+    </h2>
+
+    <button
+      type="button"
+      onClick={() =>
+        setFeatures([
+          ...features,
+          {
+            title: "",
+            subtitle: "",
+          },
+        ])
+      }
+      className="px-4 py-2 bg-cyan-500 rounded-xl text-white"
+    >
+      + Add Feature
+    </button>
+  </div>
+
+  {features.map((feature, index) => (
+    <div
+      key={index}
+      className="grid md:grid-cols-3 gap-4 mb-4"
+    >
+      <input
+        type="text"
+        placeholder="Title"
+        value={feature.title}
+        onChange={(e) => {
+          const copy = [...features];
+          copy[index].title =
+            e.target.value;
+          setFeatures(copy);
+        }}
+        className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+      />
+
+      <input
+        type="text"
+        placeholder="Subtitle"
+        value={feature.subtitle}
+        onChange={(e) => {
+          const copy = [...features];
+          copy[index].subtitle =
+            e.target.value;
+          setFeatures(copy);
+        }}
+        className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+      />
+
+      <button
+        type="button"
+        onClick={() =>
+          setFeatures(
+            features.filter(
+              (_, i) => i !== index
+            )
+          )
+        }
+        className="bg-red-500 rounded-xl text-white"
+      >
+        Remove
+      </button>
+    </div>
+  ))}
+</div>
+{/* Product FAQ */}
+
+<div className="mt-6 border border-white/10 rounded-2xl p-6">
+  <div className="flex justify-between items-center mb-4">
+    <h2 className="text-xl font-bold text-white">
+      Product FAQ
+    </h2>
+
+    <button
+      type="button"
+      onClick={() =>
+        setFaqs([
+          ...faqs,
+          {
+            question: "",
+            answer: "",
+          },
+        ])
+      }
+      className="px-4 py-2 bg-cyan-500 rounded-xl text-white"
+    >
+      + Add FAQ
+    </button>
+  </div>
+
+  {faqs.map((faq, index) => (
+    <div
+      key={index}
+      className="space-y-3 mb-4"
+    >
+      <input
+        type="text"
+        placeholder="Question"
+        value={faq.question}
+        onChange={(e) => {
+          const copy = [...faqs];
+          copy[index].question =
+            e.target.value;
+          setFaqs(copy);
+        }}
+        className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+      />
+
+      <textarea
+        value={faq.answer}
+        placeholder="Answer"
+        onChange={(e) => {
+          const copy = [...faqs];
+          copy[index].answer =
+            e.target.value;
+          setFaqs(copy);
+        }}
+        className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+      />
+
+      <button
+        type="button"
+        onClick={() =>
+          setFaqs(
+            faqs.filter(
+              (_, i) => i !== index
+            )
+          )
+        }
+        className="px-4 py-2 bg-red-500 rounded-xl text-white"
+      >
+        Remove
+      </button>
+    </div>
+  ))}
+</div>
+{/* Care Guide */}
+
+<div className="mt-6 border border-white/10 rounded-2xl p-6">
+  <div className="flex justify-between items-center mb-4">
+    <h2 className="text-xl font-bold text-white">
+      Care Guide
+    </h2>
+
+    <button
+      type="button"
+      onClick={() =>
+        setCareGuides([
+          ...careGuides,
+          {
+            icon: "",
+            title: "",
+            steps: "",
+          },
+        ])
+      }
+      className="px-4 py-2 bg-cyan-500 rounded-xl text-white"
+    >
+      + Add Guide
+    </button>
+  </div>
+
+  {careGuides.map((guide, index) => (
+    <div
+      key={index}
+      className="grid md:grid-cols-4 gap-4 mb-4"
+    >
+      <input
+        type="text"
+        placeholder="Icon"
+        value={guide.icon}
+        onChange={(e) => {
+          const copy = [...careGuides];
+          copy[index].icon = e.target.value;
+          setCareGuides(copy);
+        }}
+        className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+      />
+
+      <input
+        type="text"
+        placeholder="Title"
+        value={guide.title}
+        onChange={(e) => {
+          const copy = [...careGuides];
+          copy[index].title = e.target.value;
+          setCareGuides(copy);
+        }}
+        className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+      />
+
+      <input
+        type="text"
+        placeholder="Steps"
+        value={guide.steps}
+        onChange={(e) => {
+          const copy = [...careGuides];
+          copy[index].steps = e.target.value;
+          setCareGuides(copy);
+        }}
+        className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+      />
+
+      <button
+        type="button"
+        onClick={() =>
+          setCareGuides(
+            careGuides.filter(
+              (_, i) => i !== index
+            )
+          )
+        }
+        className="bg-red-500 rounded-xl text-white"
+      >
+        Remove
+      </button>
+    </div>
+  ))}
+</div>
+{/* Included Items */}
+
+<div className="mt-6 border border-white/10 rounded-2xl p-6">
+  <div className="flex justify-between items-center mb-4">
+    <h2 className="text-xl font-bold text-white">
+      Included Items
+    </h2>
+
+    <button
+      type="button"
+      onClick={() =>
+        setIncludedItems([
+          ...includedItems,
+          {
+            text: "",
+          },
+        ])
+      }
+      className="px-4 py-2 bg-cyan-500 rounded-xl text-white"
+    >
+      + Add Item
+    </button>
+  </div>
+
+  {includedItems.map((item, index) => (
+    <div
+      key={index}
+      className="flex gap-4 mb-4"
+    >
+      <input
+        type="text"
+        placeholder="Item Name"
+        value={item.text}
+        onChange={(e) => {
+          const copy = [...includedItems];
+          copy[index].text =
+            e.target.value;
+          setIncludedItems(copy);
+        }}
+        className="flex-1 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+      />
+
+      <button
+        type="button"
+        onClick={() =>
+          setIncludedItems(
+            includedItems.filter(
+              (_, i) => i !== index
+            )
+          )
+        }
+        className="px-4 bg-red-500 rounded-xl text-white"
+      >
+        Remove
+      </button>
+    </div>
+  ))}
+</div>
 {/* Main Image */}
 <div className="mt-6">
   <label className="block mb-2 text-sm font-medium text-slate-300">

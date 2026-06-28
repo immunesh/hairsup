@@ -49,47 +49,47 @@ const STATUS_TIMELINE = ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'OUT_F
 
 export default function OrderDetailPage() {
   const params = useParams();
-const [order, setOrder] = useState<Order | null>(null);
-const [loading, setLoading] = useState(true);
+  const [order, setOrder] = useState<Order | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  const loadOrder = async () => {
-    try {
-      setLoading(true);
+    const loadOrder = async () => {
+      try {
+        setLoading(true);
 
-      const { data } =
-        await ordersApi.getById(
-          params.id as string
-        );
+        const { data } =
+          await ordersApi.getById(
+            params.id as string
+          );
 
-      setOrder(data.data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+        setOrder(data.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (params.id) {
+      loadOrder();
     }
-  };
+  }, [params.id]);
 
-  if (params.id) {
-    loadOrder();
+  if (loading) {
+    return (
+      <div className="container-custom py-10">
+        Loading...
+      </div>
+    );
   }
-}, [params.id]);
 
-if (loading) {
-  return (
-    <div className="container-custom py-10">
-      Loading...
-    </div>
-  );
-}
-
-if (!order) {
-  return (
-    <div className="container-custom py-10">
-      Order not found
-    </div>
-  );
-}
+  if (!order) {
+    return (
+      <div className="container-custom py-10">
+        Order not found
+      </div>
+    );
+  }
   const currentStatusIdx = STATUS_TIMELINE.indexOf(order.status);
 
   return (
@@ -107,9 +107,7 @@ if (!order) {
           <span className={cn('badge text-sm font-semibold px-3 py-1', ORDER_STATUS_COLORS[order.status])}>
             {ORDER_STATUS_LABELS[order.status]}
           </span>
-          <button className="flex items-center gap-1.5 text-sm text-brand-600 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-50 transition-colors">
-            <Download className="w-3.5 h-3.5" /> Invoice
-          </button>
+
         </div>
       </div>
 
@@ -131,8 +129,8 @@ if (!order) {
                       <div className={cn(
                         'w-7 h-7 rounded-full flex items-center justify-center border-2 z-10 text-xs font-bold transition-all',
                         i < currentStatusIdx ? 'bg-green-500 border-green-500 text-white' :
-                        i === currentStatusIdx ? 'bg-brand-600 border-brand-600 text-white scale-110' :
-                        'bg-white border-gray-300 text-gray-400'
+                          i === currentStatusIdx ? 'bg-brand-600 border-brand-600 text-white scale-110' :
+                            'bg-white border-gray-300 text-gray-400'
                       )}>
                         {i < currentStatusIdx ? '✓' : i + 1}
                       </div>
@@ -289,11 +287,7 @@ if (!order) {
                 Buy Again
               </Link>
             )}
-            {['PENDING', 'CONFIRMED'].includes(order.status) && (
-              <button className="w-full border-2 border-red-200 text-red-600 hover:bg-red-50 font-semibold py-2.5 rounded-full transition-colors text-sm">
-                Cancel Order
-              </button>
-            )}
+
             <Link href="/contact" className="block text-center text-sm text-brand-600 hover:underline">
               Need help with this order? →
             </Link>

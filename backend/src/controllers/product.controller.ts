@@ -66,20 +66,23 @@ export const getProducts = async (
   const [products, total] = await Promise.all([
     prisma.product.findMany({
       where,
-      include: {
-        images: {
-          where: {
-            isPrimary: true,
-          },
-          take: 1,
-        },
-        category: {
-          select: {
-            name: true,
-            slug: true,
-          },
-        },
-      },
+    include: {
+  images: true,
+
+  category: {
+    select: {
+      name: true,
+      slug: true,
+    },
+  },
+
+  variants: true,
+  includedItems: true,
+  faqs: true,
+  careGuides: true,
+  features: true,
+  highlights: true,
+},
       skip,
       take: limitNum,
       orderBy,
@@ -283,16 +286,47 @@ const {
   brand,
   tags,
   images,
+
+  material,
+  capSize,
+  length,
+  density,
+  texture,
+  color,
+
+  rating,
+
+  isFeatured,
+  isBestSeller,
+  isNewArrival,
+  features,
+faqs,
+careGuides,
+includedItems,
+
 } = req.body;
 console.log("IMAGES RECEIVED:");
 console.log(images);
     const product =
       await prisma.product.create({
-       data: {
+    data: {
   name,
   slug,
   description,
   shortDesc,
+material,
+capSize,
+length,
+density,
+texture,
+color,
+
+rating: Number(rating || 0),
+
+isFeatured,
+isBestSeller,
+isNewArrival,
+  
 
   tags: JSON.stringify(
     Array.isArray(tags)
@@ -335,11 +369,39 @@ console.log(images);
                 : [],
           },
           
+          features: {
+  create: Array.isArray(features)
+    ? features
+    : [],
+},
+
+faqs: {
+  create: Array.isArray(faqs)
+    ? faqs
+    : [],
+},
+
+careGuides: {
+  create: Array.isArray(careGuides)
+    ? careGuides
+    : [],
+},
+
+includedItems: {
+  create: Array.isArray(includedItems)
+    ? includedItems
+    : [],
+},
+          
         },
 
-        include: {
-          images: true,
-        },
+       include: {
+  images: true,
+  features: true,
+  faqs: true,
+  careGuides: true,
+  includedItems: true,
+},
       });
 
     res.status(201).json({
@@ -368,21 +430,38 @@ export const updateProduct = async (
 ): Promise<void> => {
   const { id } = req.params;
 
-  const {
-    name,
-    slug,
-    shortDesc,
-    description,
-    categoryId,
-    gender,
-    basePrice,
-    salePrice,
-    stock,
-    sku,
-    brand,
-    tags,
-    images,
-  } = req.body;
+const {
+  name,
+  slug,
+  shortDesc,
+  description,
+  categoryId,
+  gender,
+  basePrice,
+  salePrice,
+  stock,
+  sku,
+  brand,
+  tags,
+  images,
+
+  material,
+  capSize,
+  length,
+  density,
+  texture,
+  color,
+
+  rating,
+
+  isFeatured,
+  isBestSeller,
+  isNewArrival,
+  features,
+faqs,
+careGuides,
+includedItems,
+} = req.body;
 
   // Delete old images
   await prisma.productImage.deleteMany({
@@ -390,7 +469,29 @@ export const updateProduct = async (
       productId: id,
     },
   });
+await prisma.productFeature.deleteMany({
+  where: {
+    productId: id,
+  },
+});
 
+await prisma.productFAQ.deleteMany({
+  where: {
+    productId: id,
+  },
+});
+
+await prisma.careGuide.deleteMany({
+  where: {
+    productId: id,
+  },
+});
+
+await prisma.includedItem.deleteMany({
+  where: {
+    productId: id,
+  },
+});
   const product = await prisma.product.update({
     where: { id },
 
@@ -401,6 +502,18 @@ export const updateProduct = async (
       description,
       categoryId,
       gender,
+      material,
+capSize,
+length,
+density,
+texture,
+color,
+
+rating: Number(rating || 0),
+
+isFeatured,
+isBestSeller,
+isNewArrival,
       basePrice: Number(basePrice),
       salePrice: salePrice
         ? Number(salePrice)
@@ -433,11 +546,38 @@ export const updateProduct = async (
             )
           : [],
       },
+      features: {
+  create: Array.isArray(features)
+    ? features
+    : [],
+},
+
+faqs: {
+  create: Array.isArray(faqs)
+    ? faqs
+    : [],
+},
+
+careGuides: {
+  create: Array.isArray(careGuides)
+    ? careGuides
+    : [],
+},
+
+includedItems: {
+  create: Array.isArray(includedItems)
+    ? includedItems
+    : [],
+},
     },
 
     include: {
-      images: true,
-    },
+  images: true,
+  features: true,
+  faqs: true,
+  careGuides: true,
+  includedItems: true,
+},
   });
 
   res.json({

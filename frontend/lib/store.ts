@@ -41,6 +41,8 @@ export const useAuthStore = create<AuthState>()(
 interface CartState {
   items: CartItem[];
   isOpen: boolean;
+  couponCode: string;
+  discount: number;
   setItems: (items: CartItem[]) => void;
   addItem: (item: CartItem) => void;
   updateItem: (id: string, quantity: number) => void;
@@ -48,6 +50,8 @@ interface CartState {
   clearCart: () => void;
   toggleCart: () => void;
   closeCart: () => void;
+  setCoupon: (code: string, discount: number) => void;
+  clearCoupon: () => void;
   get total(): number;
   get itemCount(): number;
 }
@@ -55,7 +59,9 @@ interface CartState {
 export const useCartStore = create<CartState>()((set, get) => ({
   items: [],
   isOpen: false,
-  setItems: (items) => set({ items }),
+  couponCode: '',
+  discount: 0,
+  setItems: (items) => set({ items, couponCode: '', discount: 0 }),
   addItem: (item) =>
     set((state) => {
       const existing = state.items.find((i) => i.id === item.id);
@@ -64,29 +70,50 @@ export const useCartStore = create<CartState>()((set, get) => ({
           items: state.items.map((i) =>
             i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
           ),
+          couponCode: '',
+          discount: 0,
         };
       }
-      return { items: [...state.items, item] };
+      return { items: [...state.items, item], couponCode: '', discount: 0 };
     }),
   updateItem: (id, quantity) =>
     set((state) => ({
       items: quantity <= 0
         ? state.items.filter((i) => i.id !== id)
         : state.items.map((i) => (i.id === id ? { ...i, quantity } : i)),
+      couponCode: '',
+      discount: 0,
     })),
-  removeItem: (id) => set((state) => ({ items: state.items.filter((i) => i.id !== id) })),
-  clearCart: () => set({ items: [] }),
+  removeItem: (id) =>
+    set((state) => ({
+      items: state.items.filter((i) => i.id !== id),
+      couponCode: '',
+      discount: 0,
+    })),
+  clearCart: () => set({ items: [], couponCode: '', discount: 0 }),
   toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
   closeCart: () => set({ isOpen: false }),
-  get total() {
-    return get().items.reduce((sum, item) => {
-      const price = item.product.salePrice || item.product.basePrice;
-      return sum + price * item.quantity;
-    }, 0);
-  },
+  setCoupon: (couponCode, discount) => set({ couponCode, discount }),
+  clearCoupon: () => set({ couponCode: '', discount: 0 }),
+  
+get total() {
+  const items = get().items;
+
+  console.log("TOTAL ITEMS", items);
+
+  return items.reduce((sum, item) => {
+    const price =
+      Number(item.product?.salePrice) ||
+      Number(item.product?.basePrice) ||
+      0;
+
+    return sum + price * item.quantity;
+  }, 0);
+},
   get itemCount() {
     return get().items.reduce((sum, item) => sum + item.quantity, 0);
   },
+  
 }));
 
 interface WishlistState {

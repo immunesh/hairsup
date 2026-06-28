@@ -1,35 +1,116 @@
 'use client';
 
-import { useEffect } from 'react';
+import {
+  useEffect,
+  useState
+} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, Gift, Tag, ArrowLeft } from 'lucide-react';
 import { useCartStore, useAuthStore } from '@/lib/store';
-import { cartApi } from '@/lib/api';
+import {
+  cartApi,
+  couponApi
+} from '@/lib/api';
 import { formatPrice } from '@/lib/utils';
 
 export default function CartPage() {
-  const { items, setItems, removeItem, updateItem, total, itemCount } = useCartStore();
+  const {
+    items,
+    setItems,
+    removeItem,
+    updateItem,
+    couponCode,
+    discount,
+    setCoupon,
+    clearCoupon
+  } = useCartStore();
   const { isAuthenticated } = useAuthStore();
+
+  const [couponInput, setCouponInput] = useState('');
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
-      cartApi.get().then(({ data }) => setItems(data.data)).catch(() => {});
+      cartApi.get().then(({ data }) => setItems(data.data)).catch(() => { });
     }
   }, [isAuthenticated, setItems]);
+
+  useEffect(() => {
+    setCouponInput(couponCode || '');
+  }, [couponCode]);
 
   const handleQuantityChange = async (id: string, newQty: number) => {
     try {
       if (newQty <= 0) { await cartApi.remove(id); removeItem(id); }
       else { await cartApi.update(id, newQty); updateItem(id, newQty); }
-    } catch {}
+    } catch { }
   };
+  const calculatedTotal = items.reduce((sum, item) => {
+    const price =
+      Number(item.product?.salePrice) ||
+      Number(item.product?.basePrice) ||
+      0;
 
-  const shipping = total >= 999 ? 0 : 99;
-  const tax = total * 0.18;
-  const grandTotal = total + shipping + tax;
+    return sum + price * item.quantity;
+  }, 0);
+
+  const calculatedItemCount = items.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+
+  const shipping =
+    calculatedTotal >= 999 ? 0 : 99;
+
+  const tax =
+    Math.max(calculatedTotal - discount, 0) * 0.18;
+
+  const grandTotal =
+    Math.max(
+      calculatedTotal +
+      shipping +
+      tax -
+      discount,
+      0
+    );
+
+  console.log("CALCULATED TOTAL", calculatedTotal);
+  console.log("CALCULATED COUNT", calculatedItemCount);
+  const handleApplyCoupon =
+    async () => {
+      if (!couponInput.trim()) return;
+      try {
+        setApplyingCoupon(true);
+
+        const { data } =
+          await couponApi.apply(
+            couponInput,
+            calculatedTotal
+          );
+
+        setCoupon(
+          couponInput.toUpperCase(),
+          data.data.discount
+        );
+
+        alert(
+          `Coupon Applied! Discount ₹${data.data.discount}`
+        );
+      } catch (err: any) {
+        alert(
+          err?.response?.data
+            ?.message ||
+          "Coupon failed"
+        );
+      } finally {
+        setApplyingCoupon(false);
+      }
+    };
 
   if (!isAuthenticated) {
+    console.log("CART ITEMS", items);
+
     return (
       <div className="container-custom py-20 text-center">
         <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -46,7 +127,9 @@ export default function CartPage() {
         <Link href="/products" className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-2xl font-display font-bold">Your Bag ({itemCount} items)</h1>
+        <h1 className="text-2xl font-display font-bold">
+          Your Bag ({calculatedItemCount} items)
+        </h1>
       </div>
 
       {items.length === 0 ? (
@@ -65,17 +148,17 @@ export default function CartPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart items */}
           <div className="lg:col-span-2 space-y-4">
-            {total < 999 && (
+            {calculatedTotal < 999 && (
               <div className="bg-brand-50 border border-brand-200 rounded-2xl p-4">
                 <p className="text-sm text-brand-700 font-medium mb-2">
-                  Add {formatPrice(999 - total)} more for FREE shipping!
+                  Add {formatPrice(999 - calculatedTotal)} more for FREE shipping!
                 </p>
                 <div className="h-2 bg-brand-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-brand-600 rounded-full" style={{ width: `${Math.min((total / 999) * 100, 100)}%` }} />
+                  <div className="h-full bg-brand-600 rounded-full" style={{ width: `${Math.min((calculatedTotal / 999) * 100, 100)}%` }} />
                 </div>
               </div>
             )}
-            {total >= 999 && (
+            {calculatedTotal >= 999 && (
               <div className="bg-green-50 border border-green-200 rounded-2xl p-4 flex items-center gap-2">
                 <Gift className="w-4 h-4 text-green-600" />
                 <p className="text-sm text-green-700 font-semibold">You qualify for FREE shipping!</p>
@@ -138,29 +221,87 @@ export default function CartPage() {
           <div className="space-y-4">
             {/* Coupon */}
             <div className="card p-5">
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Tag className="w-4 h-4 text-brand-600" /> Apply Coupon
-              </h3>
-              <div className="flex gap-2">
-                <input type="text" placeholder="Enter coupon code" className="input-field flex-1 text-sm py-2" />
-                <button className="btn-secondary text-sm py-2 px-4">Apply</button>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-3">
-                {['FIRST20', 'HAIRSUP200'].map((code) => (
-                  <button key={code} className="text-xs bg-brand-50 text-brand-700 border border-brand-200 px-2.5 py-1 rounded-full font-medium hover:bg-brand-100 transition-colors">
-                    {code}
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-brand-600" /> Apply Coupon
+                </h3>
+                {couponCode && (
+                  <button
+                    onClick={clearCoupon}
+                    className="text-xs text-red-500 hover:text-red-600 font-medium transition-colors"
+                  >
+                    Remove
                   </button>
-                ))}
+                )}
               </div>
+
+              {!couponCode ? (
+                <>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponInput}
+                      onChange={(e) =>
+                        setCouponInput(
+                          e.target.value.toUpperCase()
+                        )
+                      }
+                      placeholder="Enter coupon code"
+                      className="input-field flex-1 text-sm py-2 uppercase"
+                      disabled={applyingCoupon}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleApplyCoupon();
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={handleApplyCoupon}
+                      disabled={applyingCoupon || !couponInput.trim()}
+                      className="btn-secondary text-sm py-2 px-4"
+                    >
+                      {applyingCoupon ? "Applying..." : "Apply"}
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {['FIRST20', 'HAIRSUP200'].map((code) => (
+                      <button
+                        key={code}
+                        onClick={() => setCouponInput(code)}
+                        className="text-xs bg-brand-50 text-brand-700 border border-brand-200 px-2.5 py-1 rounded-full font-medium hover:bg-brand-100 transition-colors"
+                      >
+                        {code}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl p-3 animate-fade-in">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                    <span className="font-bold text-green-800 uppercase">{couponCode}</span>
+                    <span className="text-xs text-green-600 font-medium">Applied Successfully</span>
+                  </div>
+                  <span className="font-bold text-green-700">-{formatPrice(discount)}</span>
+                </div>
+              )}
             </div>
 
             {/* Price summary */}
             <div className="card p-5 space-y-3">
               <h3 className="font-bold text-gray-900 mb-4">Order Summary</h3>
               <div className="flex justify-between text-sm text-gray-600">
-                <span>Subtotal ({itemCount} items)</span>
-                <span>{formatPrice(total)}</span>
+                <span>Subtotal ({calculatedItemCount} items)</span>
+                <span>{formatPrice(calculatedTotal)}</span>
               </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-sm text-green-600">
+                  <span>Coupon Discount</span>
+                  <span>
+                    -{formatPrice(discount)}
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between text-sm text-gray-600">
                 <span>Shipping</span>
                 <span className={shipping === 0 ? 'text-green-600 font-medium' : ''}>
@@ -171,6 +312,7 @@ export default function CartPage() {
                 <span>GST (18%)</span>
                 <span>{formatPrice(tax)}</span>
               </div>
+
               <div className="border-t border-gray-100 pt-3 flex justify-between font-bold text-lg">
                 <span>Total</span>
                 <span>{formatPrice(grandTotal)}</span>

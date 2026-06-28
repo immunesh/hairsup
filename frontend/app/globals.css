@@ -11,15 +11,21 @@
     --gold: #F59E0B;
   }
 
-  * { box-sizing: border-box; }
+  * {
+    box-sizing: border-box;
+  }
 
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+  }
 
   body {
     @apply font-sans text-gray-900 bg-white antialiased;
   }
 
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     @apply font-display;
   }
 }
@@ -119,7 +125,10 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 
   .aspect-product {
     aspect-ratio: 3 / 4;
@@ -136,6 +145,16 @@
 .image-gallery-thumbnail:focus {
   border-color: #c855f5 !important;
 }
+
 .image-gallery-icon:hover {
   color: #c855f5 !important;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

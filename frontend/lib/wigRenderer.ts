@@ -3,32 +3,33 @@ export function drawWig(
   wigImage: HTMLImageElement,
   foreheadX: number,
   foreheadY: number,
-  headWidth: number,
+  faceWidth: number,
+  faceHeight: number,
   angle: number
 ) {
-  // Scale wig based on head width
-  const wigWidth = headWidth * 2.5;
-  const wigHeight = wigWidth * 1.2;
+  // Wig size based on face
+  const wigWidth = faceWidth * 2.45;
+  const wigHeight = faceHeight * 2.60;
 
-  // Move wig slightly down so it sits on the head
-  const yOffset = 285;
+  // Move wig upward from forehead
+  const wigX = foreheadX;
+const wigY = foreheadY - faceHeight * 0.25;
 
   ctx.save();
 
-  // Position wig on forehead
-  ctx.translate(
-    foreheadX,
-    foreheadY + yOffset
-  );
+  
+
+  // Move to wig position
+  ctx.translate(wigX, wigY);
 
   // Rotate with head
   ctx.rotate(angle);
 
-  // Draw centered
+  // Draw wig
   ctx.drawImage(
     wigImage,
     -wigWidth / 2,
-    -wigHeight * 0.55,
+    -wigHeight * 0.15,
     wigWidth,
     wigHeight
   );

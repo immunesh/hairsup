@@ -78,10 +78,25 @@ export const uploadApi = {
 };
 // Orders
 export const ordersApi = {
+  
   create: (data: Record<string, unknown>) => api.post('/orders', data),
   getAll: (params?: Record<string, unknown>) => api.get('/orders', { params }),
   getById: (id: string) => api.get(`/orders/${id}`),
   cancel: (id: string) => api.patch(`/orders/${id}/cancel`),
+};
+ 
+export const couponApi = {
+  apply: (
+    code: string,
+    subtotal: number
+  ) =>
+    api.post(
+      "/coupons/apply",
+      {
+        code,
+        subtotal,
+      }
+    ),
 };
 
 // User

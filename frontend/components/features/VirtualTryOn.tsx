@@ -1,12 +1,17 @@
 'use client';
-import { getFaceLandmarker } from '@/lib/faceMesh';
+import {
+  getFaceLandmarker,
+  getImageFaceLandmarker,
+} from "@/lib/faceMesh";
 import { drawWig } from '@/lib/wigRenderer';
-import { getAngleIndex } from '@/lib/wigSelector';
+ 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Camera, CameraOff, RefreshCw, Download, Zap, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import { cn } from '@/lib/utils';
+import Cropper from "react-easy-crop";
+import getCroppedImg from "@/lib/cropImage";
 import { FaceLandmarker } from "@mediapipe/tasks-vision";
 interface VirtualTryOnProps {
   products?: Product[];
@@ -58,7 +63,7 @@ export default function VirtualTryOn({
   const streamRef = useRef<MediaStream | null>(null);
   const animFrameRef = useRef<number>(0);
 
-
+const [imageSrc, setImageSrc] = useState("");
 const faceLandmarkerRef =
   useRef<FaceLandmarker | null>(null);
 const wigImagesRef = useRef<Record<string, HTMLImageElement>>({});
@@ -77,6 +82,21 @@ const [faceDetected, setFaceDetected] =
  
   const [mode, setMode] = useState<'camera' | 'upload'>('camera');
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [showCropper, setShowCropper] =
+  useState(false);
+
+const [cropImage, setCropImage] =
+  useState<string | null>(null);
+
+const [crop, setCrop] =
+  useState({ x: 0, y: 0 });
+
+const [zoom, setZoom] =
+  useState(1);
+
+const [croppedAreaPixels,
+  setCroppedAreaPixels] =
+  useState<any>(null);
 
   const displayProducts = products.length > 0 ? products : [];
   const activeProduct = selectedProduct || displayProducts[selectedProductIdx];
@@ -170,22 +190,14 @@ setFaceDetected(false);
   );
 
   ctx.restore();
+const detector =
+  await getFaceLandmarker();
 
-  const detector =
-    faceLandmarkerRef.current;
-
-  if (!detector) {
-    animFrameRef.current =
-      requestAnimationFrame(render);
-
-    return;
-  }
-
-  const result =
-    detector.detectForVideo(
-      video,
-      performance.now()
-    );
+const result =
+  detector.detectForVideo(
+    video,
+    performance.now()
+  );
 
   if (
     result.faceLandmarks &&
@@ -199,25 +211,31 @@ setFaceDetected(false);
     const landmarks =
       result.faceLandmarks[0];
 
-    const forehead = landmarks[10];
+    const forehead = landmarks[151];
 
     const leftTemple = landmarks[234];
 
     const rightTemple = landmarks[454];
+ 
 
-    const foreheadX =
-      canvas.width -
-      forehead.x * canvas.width;
+    
 
-    const foreheadY =
-      forehead.y * canvas.height;
+      const chin = landmarks[152];
 
-    const headWidth =
-      Math.abs(
-        rightTemple.x -
-          leftTemple.x
-      ) * canvas.width;
+const faceWidth =
+  Math.abs(rightTemple.x - leftTemple.x) *
+  canvas.width;
 
+const faceHeight =
+  Math.abs(chin.y - forehead.y) *
+  canvas.height;
+
+const foreheadX =
+  forehead.x * canvas.width;
+
+const foreheadY =
+  forehead.y * canvas.height;
+ 
     const angle = Math.atan2(
       rightTemple.y -
         leftTemple.y,
@@ -237,7 +255,7 @@ const nearestAngle =
 
 const wigImage =
   wigImagesRef.current[
-    nearestAngle
+    String(nearestAngle)
   ];
   console.log({
   degrees,
@@ -246,14 +264,24 @@ const wigImage =
 
 
       if (wigImage && wigImage.complete) {
-  drawWig(
-    ctx,
-    wigImage,
-    foreheadX,
-    foreheadY,
-    headWidth,
-    angle
-  );
+ctx.beginPath();
+ctx.arc(
+  foreheadX,
+  foreheadY,
+  6,
+  0,
+  Math.PI * 2
+);
+ 
+        drawWig(
+  ctx,
+  wigImage,
+  foreheadX,
+  foreheadY,
+  faceWidth,
+  faceHeight,
+  angle
+);
 }
   } else {
     if (faceDetectedRef.current) {
@@ -295,22 +323,47 @@ const wigImage =
     img.src = uploadedImage;
 
     img.onload = async () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
+    const maxWidth = 900;
+const maxHeight = 600;
 
-      ctx.drawImage(
-        img,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
+let width = img.width;
+let height = img.height;
 
-      const detector =
-        await getFaceLandmarker();
+if (width > maxWidth) {
+  height = (height * maxWidth) / width;
+  width = maxWidth;
+}
 
-      const result =
-        detector.detect(img);
+if (height > maxHeight) {
+  width = (width * maxHeight) / height;
+  height = maxHeight;
+}
+
+canvas.width = width;
+canvas.height = height;
+
+   ctx.clearRect(
+  0,
+  0,
+  canvas.width,
+  canvas.height
+);
+
+ctx.drawImage(
+  img,
+  0,
+  0,
+  width,
+  height
+);
+
+   
+const detector =
+  await getImageFaceLandmarker();
+
+const result =
+  detector.detect(img);
+
 
       if (
         !result.faceLandmarks ||
@@ -323,26 +376,28 @@ const wigImage =
         result.faceLandmarks[0];
 
       const forehead =
-        landmarks[10];
+        landmarks[151];
 
       const leftTemple =
         landmarks[234];
 
       const rightTemple =
         landmarks[454];
+const chin = landmarks[152];
 
-      const foreheadX =
-        forehead.x * canvas.width;
+const faceWidth =
+  Math.abs(rightTemple.x - leftTemple.x) *
+  canvas.width;
 
-      const foreheadY =
-        forehead.y * canvas.height;
+const faceHeight =
+  Math.abs(chin.y - forehead.y) *
+  canvas.height;
 
-      const headWidth =
-        Math.abs(
-          rightTemple.x -
-            leftTemple.x
-        ) * canvas.width;
+const foreheadX =
+  forehead.x * canvas.width;
 
+const foreheadY =
+  forehead.y * canvas.height;
       const angle =
         Math.atan2(
           rightTemple.y -
@@ -362,23 +417,23 @@ const wigImage =
           Math.abs(degrees)
         );
 
-      const wigImage =
-        wigImagesRef.current[
-          nearestAngle
-        ];
-
+  const wigImage =
+  wigImagesRef.current[
+    String(nearestAngle)
+  ];
       if (
         wigImage &&
         wigImage.complete
       ) {
-        drawWig(
-          ctx,
-          wigImage,
-          foreheadX,
-          foreheadY,
-          headWidth,
-          angle
-        );
+drawWig(
+  ctx,
+  wigImage,
+  foreheadX,
+  foreheadY,
+  faceWidth,
+  faceHeight,
+  angle
+);
       }
     };
   };
@@ -416,8 +471,8 @@ images.forEach(
 
     image.src = img.url;
 
-  loadedImages[
-  img.angle
+ loadedImages[
+  String(img.angle)
 ] = image;
   }
 );
@@ -454,22 +509,109 @@ console.log(wigImagesRef.current);
     a.click();
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => setUploadedImage(ev.target?.result as string);
-    reader.readAsDataURL(file);
-    setMode('upload');
+ const handleFileUpload = (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = (ev) => {
+    setCropImage(
+      ev.target?.result as string
+    );
+
+    setShowCropper(true);
   };
+
+  reader.readAsDataURL(file);
+};
 
   const [productImages, setProductImages] = useState<string[]>([]);
 
   
+const onCropComplete = (
+  croppedArea: any,
+  croppedAreaPixelsValue: any
+) => {
+  setCroppedAreaPixels(
+    croppedAreaPixelsValue
+  );
+};
+const applyCrop = async () => {
+  if (
+    !cropImage ||
+    !croppedAreaPixels
+  )
+    return;
+
+  const cropped =
+    await getCroppedImg(
+      cropImage,
+      croppedAreaPixels
+    );
+
+  if (!cropped) return;
+
+  setUploadedImage(cropped);
+
+  setShowCropper(false);
+
+  setMode("upload");
+};
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">``
+    <>
+    {
+showCropper &&
+(
+<div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
+
+  <div className="bg-white rounded-xl p-4 w-[600px]">
+
+    <div className="relative h-[400px]">
+
+      <Cropper
+        image={cropImage || ""}
+        crop={crop}
+        zoom={zoom}
+      aspect={4 / 5}
+        onCropChange={setCrop}
+        onZoomChange={setZoom}
+        onCropComplete={onCropComplete}
+      />
+
+    </div>
+
+    <div className="mt-4 flex justify-end gap-2">
+
+      <button
+        onClick={() =>
+          setShowCropper(false)
+        }
+        className="px-4 py-2 border rounded"
+      >
+        Cancel
+      </button>
+
+      <button
+        onClick={applyCrop}
+        className="px-4 py-2 bg-purple-600 text-white rounded"
+      >
+        Apply
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+)
+}
+        <div className="max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Camera / Preview panel */}
         <div className="lg:col-span-2 space-y-4">
           {/* Mode tabs */}
@@ -533,8 +675,7 @@ console.log(wigImagesRef.current);
             {mode === 'upload' && (
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 {uploadedImage ? (
-                  <div className="relative w-full h-full">
-
+                <div className="relative w-full h-full flex items-center justify-center">
   <img
     src={uploadedImage}
     alt="Uploaded"
@@ -542,10 +683,10 @@ console.log(wigImagesRef.current);
     id="upload-preview"
   />
 
-  <canvas
-    ref={uploadCanvasRef}
-    className="w-full h-full object-cover"
-  />
+<canvas
+  ref={uploadCanvasRef}
+  className="w-full h-full object-contain"
+/>
 
   <div className="absolute bottom-3 left-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
     Wig applied ✓
@@ -679,14 +820,38 @@ console.log(wigImagesRef.current);
 
           {/* Tips */}
           <div className="bg-brand-50 rounded-2xl p-4 border border-brand-100">
-            <h4 className="font-semibold text-brand-800 text-sm mb-2">Tips for best results</h4>
-            <ul className="space-y-1.5 text-xs text-brand-700">
-              <li className="flex items-start gap-1.5"><span>•</span> Find good, even lighting</li>
-              <li className="flex items-start gap-1.5"><span>•</span> Look directly at the camera</li>
-              <li className="flex items-start gap-1.5"><span>•</span> Keep your hair pulled back</li>
-              <li className="flex items-start gap-1.5"><span>•</span> Stay within 1–2 feet of camera</li>
-            </ul>
-          </div>
+  <h4
+    className="font-semibold text-brand-800 mb-3"
+    style={{ fontSize: "18px" }}
+  >
+    Tips for best results
+  </h4>
+
+  <ul
+    className="space-y-2 text-brand-700"
+    style={{ fontSize: "16px", lineHeight: "1.6" }}
+  >
+    <li className="flex items-start gap-2">
+      <span>•</span>
+      Find good, even lighting
+    </li>
+
+    <li className="flex items-start gap-2">
+      <span>•</span>
+      Look directly at the camera
+    </li>
+
+    <li className="flex items-start gap-2">
+      <span>•</span>
+      Keep your hair pulled back
+    </li>
+
+    <li className="flex items-start gap-2">
+      <span>•</span>
+      Stay within 1–2 feet of camera
+    </li>
+  </ul>
+</div>
 
           {/* Actions */}
           {capturedImage && (
@@ -705,5 +870,6 @@ console.log(wigImagesRef.current);
         </div>
       </div>
     </div>
+    </>
   );
 }

@@ -1,15 +1,47 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { X, ShoppingBag, Trash2, Plus, Minus, ArrowRight, Gift } from 'lucide-react';
+import { X, ShoppingBag, Trash2, Plus, Minus, ArrowRight, Gift, Tag } from 'lucide-react';
 import { useCartStore, useAuthStore } from '@/lib/store';
-import { cartApi } from '@/lib/api';
+import { cartApi, couponApi } from '@/lib/api';
 import { formatPrice } from '@/lib/utils';
 
 export default function CartSidebar() {
-  const { items, isOpen, closeCart, removeItem, updateItem, total, itemCount } = useCartStore();
+  const {
+    items,
+    isOpen,
+    closeCart,
+    removeItem,
+    updateItem,
+    couponCode,
+    discount,
+    setCoupon,
+    clearCoupon
+  } = useCartStore();
+
+  const [couponInput, setCouponInput] = useState('');
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
+  const [couponError, setCouponError] = useState('');
+
+  const calculatedTotal = items.reduce((sum, item) => {
+    const price =
+      Number(item.product?.salePrice) ||
+      Number(item.product?.basePrice) ||
+      0;
+
+    return sum + price * item.quantity;
+  }, 0);
+
+  const calculatedItemCount = items.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+
+  console.log("SIDEBAR TOTAL", calculatedTotal);
+  console.log("SIDEBAR COUNT", calculatedItemCount);
+
   const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
@@ -19,10 +51,17 @@ export default function CartSidebar() {
   }, [isOpen]);
 
   useEffect(() => {
+    setCouponInput(couponCode || '');
+    if (!couponCode) {
+      setCouponError('');
+    }
+  }, [couponCode]);
+
+  useEffect(() => {
     if (isAuthenticated) {
       cartApi.get().then(({ data }) => {
         useCartStore.getState().setItems(data.data);
-      }).catch(() => {});
+      }).catch(() => { });
     }
   }, [isAuthenticated]);
 
@@ -35,12 +74,25 @@ export default function CartSidebar() {
         await cartApi.update(id, newQty);
         updateItem(id, newQty);
       }
-    } catch {}
+    } catch { }
   };
 
-  const shipping = total >= 999 ? 0 : 99;
-  const grandTotal = total + shipping;
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim()) return;
+    try {
+      setApplyingCoupon(true);
+      setCouponError('');
+      const { data } = await couponApi.apply(couponInput, calculatedTotal);
+      setCoupon(couponInput.toUpperCase(), data.data.discount);
+    } catch (err: any) {
+      setCouponError(err?.response?.data?.message || "Invalid coupon");
+    } finally {
+      setApplyingCoupon(false);
+    }
+  };
 
+  const shipping = calculatedTotal >= 999 ? 0 : 99;
+  const grandTotal = Math.max(calculatedTotal + shipping - discount, 0);
   if (!isOpen) return null;
 
   return (
@@ -57,7 +109,7 @@ export default function CartSidebar() {
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <div className="flex items-center gap-3">
             <ShoppingBag className="w-5 h-5 text-brand-600" />
-            <h2 className="text-lg font-bold">Your Bag ({itemCount})</h2>
+            <h2 className="text-lg font-bold">Your Bag ({calculatedItemCount})</h2>
           </div>
           <button onClick={closeCart} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
             <X className="w-5 h-5" />
@@ -65,20 +117,20 @@ export default function CartSidebar() {
         </div>
 
         {/* Free shipping progress */}
-        {items.length > 0 && total < 999 && (
+        {items.length > 0 && calculatedTotal < 999 && (
           <div className="px-6 py-3 bg-brand-50">
             <p className="text-xs text-brand-700 font-medium mb-1.5">
-              Add {formatPrice(999 - total)} more for FREE shipping!
+              Add {formatPrice(999 - calculatedTotal)} more for FREE shipping!
             </p>
             <div className="h-1.5 bg-brand-100 rounded-full overflow-hidden">
               <div
                 className="h-full bg-brand-600 rounded-full transition-all duration-500"
-                style={{ width: `${Math.min((total / 999) * 100, 100)}%` }}
+                style={{ width: `${Math.min((calculatedTotal / 999) * 100, 100)}%` }}
               />
             </div>
           </div>
         )}
-        {items.length > 0 && total >= 999 && (
+        {items.length > 0 && calculatedTotal >= 999 && (
           <div className="px-6 py-3 bg-green-50">
             <p className="text-xs text-green-700 font-semibold flex items-center gap-1.5">
               <Gift className="w-3.5 h-3.5" /> Yay! You qualify for FREE shipping!
@@ -157,11 +209,90 @@ export default function CartSidebar() {
         {/* Footer */}
         {items.length > 0 && (
           <div className="border-t border-gray-100 p-6 space-y-4">
+            {/* Coupon Section */}
+            <div className="space-y-2 border-b border-gray-100 pb-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-gray-600 flex items-center gap-1.5">
+                  <Tag className="w-3.5 h-3.5 text-brand-600" /> Apply Coupon
+                </span>
+                {couponCode && (
+                  <button
+                    onClick={clearCoupon}
+                    className="text-xs text-red-500 hover:text-red-600 font-medium transition-colors"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+
+              {!couponCode ? (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponInput}
+                      onChange={(e) => {
+                        setCouponInput(e.target.value.toUpperCase());
+                        setCouponError('');
+                      }}
+                      placeholder="Enter coupon code"
+                      className="flex-1 px-3 py-1.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:border-brand-500 bg-gray-55/50 uppercase"
+                      disabled={applyingCoupon}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleApplyCoupon();
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={handleApplyCoupon}
+                      disabled={applyingCoupon || !couponInput.trim()}
+                      className="px-4 py-1.5 text-xs font-semibold text-white bg-brand-600 rounded-xl hover:bg-brand-700 disabled:opacity-50 transition-colors"
+                    >
+                      {applyingCoupon ? "Applying..." : "Apply"}
+                    </button>
+                  </div>
+                  {couponError && (
+                    <p className="text-[10px] text-red-500 font-medium">{couponError}</p>
+                  )}
+                  <div className="flex flex-wrap gap-1.5 mt-1.5">
+                    {['FIRST20', 'HAIRSUP200'].map((code) => (
+                      <button
+                        key={code}
+                        onClick={() => {
+                          setCouponInput(code);
+                          setCouponError('');
+                        }}
+                        className="text-[10px] bg-brand-50 text-brand-700 border border-brand-200 px-2 py-0.5 rounded-full font-medium hover:bg-brand-100 transition-colors"
+                      >
+                        {code}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between bg-green-50/80 border border-green-100 rounded-xl p-2 px-3 animate-fade-in">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                    <span className="text-xs font-bold text-green-800 uppercase">{couponCode}</span>
+                    <span className="text-[10px] text-green-600 font-medium">applied</span>
+                  </div>
+                  <span className="text-xs font-bold text-green-700">-{formatPrice(discount)}</span>
+                </div>
+              )}
+            </div>
+
             <div className="space-y-2 text-sm">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal</span>
-                <span>{formatPrice(total)}</span>
+                <span>{formatPrice(calculatedTotal)}</span>
               </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-green-600 font-medium animate-fade-in">
+                  <span>Coupon Discount</span>
+                  <span>-{formatPrice(discount)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-gray-600">
                 <span>Shipping</span>
                 <span className={shipping === 0 ? 'text-green-600 font-medium' : ''}>
@@ -180,13 +311,7 @@ export default function CartSidebar() {
             >
               Proceed to Checkout <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link
-              href="/cart"
-              onClick={closeCart}
-              className="block text-center text-sm text-brand-600 hover:underline"
-            >
-              View Full Cart
-            </Link>
+
           </div>
         )}
       </div>

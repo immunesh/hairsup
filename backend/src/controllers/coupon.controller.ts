@@ -84,7 +84,75 @@ export const toggleCouponStatus = async (
     data: updated,
   });
 };
+export const applyCoupon = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { code, subtotal } = req.body;
 
+  const coupon =
+    await prisma.coupon.findFirst({
+      where: {
+        code: code.toUpperCase(),
+        isActive: true,
+      },
+    });
+
+  if (!coupon) {
+    res.status(404).json({
+      success: false,
+      message: "Invalid coupon",
+    });
+    return;
+  }
+
+  if (
+    coupon.expiresAt &&
+    coupon.expiresAt < new Date()
+  ) {
+    res.status(400).json({
+      success: false,
+      message: "Coupon expired",
+    });
+    return;
+  }
+
+  if (
+    coupon.minOrder &&
+    subtotal < coupon.minOrder
+  ) {
+    res.status(400).json({
+      success: false,
+      message: `Minimum order ₹${coupon.minOrder}`,
+    });
+    return;
+  }
+
+  let discount = 0;
+
+  if (coupon.type === "PERCENTAGE") {
+    discount =
+      (subtotal * coupon.value) / 100;
+
+    if (
+      coupon.maxDiscount &&
+      discount > coupon.maxDiscount
+    ) {
+      discount =
+        coupon.maxDiscount;
+    }
+  } else {
+    discount = coupon.value;
+  }
+
+  res.json({
+    success: true,
+    data: {
+      coupon,
+      discount,
+    },
+  });
+};
 export const deleteCoupon = async (
   req: Request,
   res: Response
