@@ -13,6 +13,7 @@ import { formatPrice } from '@/lib/utils';
 import { Category, Product } from '@/types';
 import { productsApi, blogApi } from '@/lib/api';
 import { getCategories } from '@/lib/category-api';
+import { getHeroSlides } from '@/lib/hero-api';
 const FALLBACK_CATEGORY_IMAGE = "/women.avif";
 
 const CATEGORY_TILE_STYLES = [
@@ -28,7 +29,7 @@ const GENDER_BADGE: Record<string, string> = {
   UNISEX: 'Unisex',
 };
 
-const HERO_SLIDES = [
+const DEFAULT_HERO_SLIDES = [
   {
     id: 1,
     headline: 'Transform Your Look',
@@ -118,26 +119,44 @@ const TESTIMONIALS = [
  
 
 export default function HomePage() {
+  const [heroSlides, setHeroSlides] = useState<any[]>(DEFAULT_HERO_SLIDES);
   const [heroSlide, setHeroSlide] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
 const [blogs, setBlogs] = useState<any[]>([]);
+
+  useEffect(() => {
+    const loadHeroSlides = async () => {
+      try {
+        const data = await getHeroSlides(true);
+        if (Array.isArray(data) && data.length > 0) {
+          setHeroSlides(data);
+          setHeroSlide(0);
+        }
+      } catch (error) {
+        console.error('Homepage hero slides error:', error);
+      }
+    };
+
+    loadHeroSlides();
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setIsSliding(true);
-      setTimeout(() => { setHeroSlide((s) => (s + 1) % HERO_SLIDES.length); setIsSliding(false); }, 300);
+      setTimeout(() => { setHeroSlide((s) => (s + 1) % heroSlides.length); setIsSliding(false); }, 300);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [heroSlides.length]);
 
   const goSlide = (dir: number) => {
     setIsSliding(true);
     setTimeout(() => {
-      setHeroSlide((s) => ((s + dir + HERO_SLIDES.length) % HERO_SLIDES.length));
+      setHeroSlide((s) => ((s + dir + heroSlides.length) % heroSlides.length));
       setIsSliding(false);
     }, 200);
   };
 
-  const slide = HERO_SLIDES[heroSlide];
+  const slide = heroSlides[heroSlide] || heroSlides[0];
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [newArrivals, setNewArrivals] = useState<Product[]>([]);
   const [bestSellers, setBestSellers] = useState<Product[]>([]);
@@ -260,16 +279,18 @@ useEffect(() => {
             className="object-cover"
             priority
           />
-          <div className={`absolute inset-0 bg-gradient-to-r ${slide.accent} opacity-85`} />
+          <div className={`absolute inset-0 bg-gradient-to-r ${slide.accent || 'from-brand-950 to-brand-700'} opacity-85`} />
         </div>
 
         {/* Content */}
         <div className="relative container-custom flex items-center min-h-[560px] md:min-h-[640px] lg:min-h-[700px] py-20">
           <div className={`max-w-2xl text-white transition-all duration-500 ${isSliding ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
-            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-sm font-semibold mb-6">
-              <Sparkles className="w-4 h-4 text-brand-300" />
-              {slide.badge}
-            </div>
+            {slide.badge && (
+              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-sm font-semibold mb-6">
+                <Sparkles className="w-4 h-4 text-brand-300" />
+                {slide.badge}
+              </div>
+            )}
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-4">
               {slide.headline}
@@ -282,12 +303,16 @@ useEffect(() => {
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
-              <Link href={slide.ctaLink} className="btn-primary bg-white text-brand-700 hover:bg-brand-50 text-base py-3.5 px-8 flex items-center gap-2">
-                {slide.cta} <ArrowRight className="w-5 h-5" />
-              </Link>
-              <Link href={slide.ctaSecondaryLink} className="flex items-center gap-2 text-white font-semibold border border-white/40 hover:border-white rounded-full px-6 py-3.5 transition-all hover:bg-white/10 text-base">
-                <Zap className="w-4 h-4" /> {slide.ctaSecondary}
-              </Link>
+              {slide.cta && slide.ctaLink && (
+                <Link href={slide.ctaLink} className="btn-primary bg-white text-brand-700 hover:bg-brand-50 text-base py-3.5 px-8 flex items-center gap-2">
+                  {slide.cta} <ArrowRight className="w-5 h-5" />
+                </Link>
+              )}
+              {slide.ctaSecondary && slide.ctaSecondaryLink && (
+                <Link href={slide.ctaSecondaryLink} className="flex items-center gap-2 text-white font-semibold border border-white/40 hover:border-white rounded-full px-6 py-3.5 transition-all hover:bg-white/10 text-base">
+                  <Zap className="w-4 h-4" /> {slide.ctaSecondary}
+                </Link>
+              )}
             </div>
 
             {/* Mini stats */}
@@ -299,12 +324,14 @@ useEffect(() => {
           </div>
 
           {/* Tag badge */}
-          <div className="absolute top-8 right-8 hidden lg:block">
-            <div className="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl px-5 py-3 text-white text-center">
-              <div className="text-xs font-semibold text-brand-300 mb-1">COLLECTION</div>
-              <div className="text-2xl font-display font-bold">{slide.tag}</div>
+          {slide.tag && (
+            <div className="absolute top-8 right-8 hidden lg:block">
+              <div className="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl px-5 py-3 text-white text-center">
+                <div className="text-xs font-semibold text-brand-300 mb-1">COLLECTION</div>
+                <div className="text-2xl font-display font-bold">{slide.tag}</div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Slider controls */}
@@ -323,7 +350,7 @@ useEffect(() => {
 
         {/* Dots */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-          {HERO_SLIDES.map((_, i) => (
+          {heroSlides.map((_: any, i: number) => (
             <button
               key={i}
               onClick={() => setHeroSlide(i)}

@@ -14,6 +14,7 @@ import userRoutes from "./routes/user.routes";
 import wishlistRoutes from "./routes/wishlist.routes";
 import reviewRoutes from "./routes/review.routes";
 import categoryRoutes from "./routes/category.routes";
+import heroRoutes from "./routes/hero.routes";
 import uploadRoutes from "./routes/upload.routes";
 import couponRoutes from "./routes/coupon.routes";
 import {
@@ -125,6 +126,10 @@ app.use(
 app.use(
   "/api/categories",
   categoryRoutes
+);
+app.use(
+  "/api/hero-slides",
+  heroRoutes
 );
 app.use(
   "/api/coupons",
