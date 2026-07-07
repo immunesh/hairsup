@@ -5,47 +5,20 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  Package, MapPin, CreditCard, ArrowLeft, Download,
-  CheckCircle, Truck, ChevronRight,
+  Package, MapPin, CreditCard, ArrowLeft,
+  CheckCircle, Circle, Truck, ExternalLink,
 } from 'lucide-react';
 import { Order } from '@/types';
 import { formatPrice, formatDate, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import { ordersApi } from '@/lib/api';
-const MOCK_ORDER: Order = {
-  id: '1',
-  orderNumber: 'HU-DEMO-001',
-  status: 'SHIPPED',
-  paymentStatus: 'PAID',
-  paymentMethod: 'UPI',
-  subtotal: 3499,
-  discount: 0,
-  shipping: 0,
-  tax: 629,
-  total: 4128,
-  estimatedDelivery: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-  items: [
-    {
-      id: '1', productId: '1', name: 'Silky Straight Lace Front Wig',
-      image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200',
-      quantity: 1, price: 3499,
-    },
-  ],
-  address: {
-    id: '1', type: 'HOME', fullName: 'Priya Sharma', phone: '9876543210',
-    line1: '123, Sunshine Apartments, MG Road', city: 'Mumbai',
-    state: 'Maharashtra', pincode: '400001', country: 'India', isDefault: true,
-  },
-  tracking: [
-    { id: '4', status: 'SHIPPED', message: 'Package picked up by courier partner (Blue Dart).', location: 'Mumbai Warehouse', createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
-    { id: '3', status: 'PROCESSING', message: 'Quality checked and packed. Ready for dispatch.', location: 'Mumbai Fulfillment Centre', createdAt: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString() },
-    { id: '2', status: 'CONFIRMED', message: 'Order confirmed. Payment received successfully.', createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() },
-    { id: '1', status: 'PENDING', message: 'Order placed successfully.', createdAt: new Date(Date.now() - 25 * 60 * 60 * 1000).toISOString() },
-  ],
-  createdAt: new Date(Date.now() - 25 * 60 * 60 * 1000).toISOString(),
-};
 
 const STATUS_TIMELINE = ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'OUT_FOR_DELIVERY', 'DELIVERED'];
+
+const formatDateTime = (dateStr: string) =>
+  new Intl.DateTimeFormat('en-IN', {
+    day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit',
+  }).format(new Date(dateStr));
 
 export default function OrderDetailPage() {
   const params = useParams();
@@ -91,6 +64,7 @@ export default function OrderDetailPage() {
     );
   }
   const currentStatusIdx = STATUS_TIMELINE.indexOf(order.status);
+  const isShippedOrLater = currentStatusIdx >= STATUS_TIMELINE.indexOf('SHIPPED');
 
   return (
     <div className="container-custom py-10">
@@ -114,6 +88,51 @@ export default function OrderDetailPage() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Left: tracking + items */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Shipment info */}
+          {isShippedOrLater ? (
+            <div className="card p-6">
+              <h2 className="font-bold text-lg mb-5 flex items-center gap-2">
+                <Truck className="w-5 h-5 text-brand-600" /> Shipment Details
+              </h2>
+
+              <div className="grid sm:grid-cols-3 gap-4 mb-5">
+                <div>
+                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Courier</p>
+                  <p className="text-base font-bold text-gray-900 mt-0.5">{order.courier || '—'}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Tracking Number</p>
+                  <p className="text-base font-bold text-gray-900 mt-0.5 break-all">{order.awbNumber || '—'}</p>
+                </div>
+                {order.estimatedDelivery && (
+                  <div>
+                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Estimated Delivery</p>
+                    <p className="text-base font-bold text-gray-900 mt-0.5">{formatDate(order.estimatedDelivery)}</p>
+                  </div>
+                )}
+              </div>
+
+              {order.trackingUrl && (
+                <a
+                  href={order.trackingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary inline-flex items-center justify-center gap-2 text-sm py-2.5 px-5"
+                >
+                  Track Package <ExternalLink className="w-4 h-4" />
+                </a>
+              )}
+            </div>
+          ) : (
+            <div className="card p-6 flex items-center justify-between">
+              <div>
+                <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Tracking Number</p>
+                <p className="text-base font-semibold text-gray-400 mt-0.5">Not Available Yet</p>
+              </div>
+              <Truck className="w-8 h-8 text-gray-300" />
+            </div>
+          )}
+
           {/* Tracking timeline */}
           {!['CANCELLED', 'RETURNED'].includes(order.status) && (
             <div className="card p-6">
@@ -121,65 +140,66 @@ export default function OrderDetailPage() {
                 <Truck className="w-5 h-5 text-brand-600" /> Order Tracking
               </h2>
 
-              {/* Progress bar */}
-              <div className="relative mb-8">
-                <div className="flex justify-between items-center mb-2">
-                  {STATUS_TIMELINE.slice(0, 5).map((status, i) => (
-                    <div key={status} className="flex flex-col items-center gap-1 flex-1">
-                      <div className={cn(
-                        'w-7 h-7 rounded-full flex items-center justify-center border-2 z-10 text-xs font-bold transition-all',
-                        i < currentStatusIdx ? 'bg-green-500 border-green-500 text-white' :
-                          i === currentStatusIdx ? 'bg-brand-600 border-brand-600 text-white scale-110' :
-                            'bg-white border-gray-300 text-gray-400'
-                      )}>
-                        {i < currentStatusIdx ? '✓' : i + 1}
+              {/* Stepper */}
+              <div className="space-y-0 mb-6">
+                {STATUS_TIMELINE.map((stageStatus, i) => {
+                  const isComplete = i <= currentStatusIdx;
+                  const event = order.tracking.find((t) => t.status === stageStatus);
+                  const isLast = i === STATUS_TIMELINE.length - 1;
+
+                  return (
+                    <div key={stageStatus} className="flex gap-4">
+                      <div className="flex flex-col items-center">
+                        {isComplete ? (
+                          <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0" />
+                        ) : (
+                          <Circle className="w-6 h-6 text-gray-300 flex-shrink-0" />
+                        )}
+                        {!isLast && (
+                          <div className={cn('w-0.5 flex-1 min-h-[24px]', isComplete && i < currentStatusIdx ? 'bg-green-400' : 'bg-gray-200')} />
+                        )}
                       </div>
-                      <span className={cn('text-xs text-center leading-tight hidden sm:block', i <= currentStatusIdx ? 'text-gray-700 font-medium' : 'text-gray-400')}>
-                        {ORDER_STATUS_LABELS[status]}
-                      </span>
+                      <div className={cn('flex-1 flex items-center justify-between', !isLast && 'pb-5')}>
+                        <p className={cn('font-semibold text-sm', isComplete ? 'text-gray-900' : 'text-gray-400')}>
+                          {ORDER_STATUS_LABELS[stageStatus]}
+                        </p>
+                        {event && (
+                          <p className="text-xs text-gray-400">{formatDateTime(event.createdAt)}</p>
+                        )}
+                      </div>
                     </div>
-                  ))}
-                </div>
-                <div className="absolute top-3.5 left-0 right-0 h-0.5 bg-gray-200 -z-0 mx-4">
-                  <div
-                    className="h-full bg-gradient-to-r from-green-400 to-brand-600 transition-all duration-500 rounded-full"
-                    style={{ width: `${Math.min(currentStatusIdx / 4 * 100, 100)}%` }}
-                  />
-                </div>
+                  );
+                })}
               </div>
 
-              {/* Estimated delivery */}
-              {order.estimatedDelivery && !['DELIVERED', 'CANCELLED'].includes(order.status) && (
-                <div className="bg-brand-50 border border-brand-100 rounded-xl p-4 mb-6">
-                  <p className="text-sm text-brand-700 font-medium">
-                    📦 Estimated Delivery: <span className="font-bold">{formatDate(order.estimatedDelivery)}</span>
-                  </p>
+              {/* Activity log */}
+              {order.tracking.length > 0 && (
+                <div className="border-t border-gray-100 pt-5">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Activity Log</p>
+                  <div className="space-y-4">
+                    {order.tracking.map((event, i) => (
+                      <div key={event.id} className="flex gap-4">
+                        <div className="flex flex-col items-center">
+                          <div className={cn(
+                            'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
+                            i === 0 ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-400'
+                          )}>
+                            {i === 0 ? <Truck className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+                          </div>
+                          {i < order.tracking.length - 1 && <div className="w-0.5 h-8 bg-gray-200 mt-1" />}
+                        </div>
+                        <div className="flex-1 pb-4">
+                          <p className={cn('font-semibold text-sm', i === 0 ? 'text-brand-700' : 'text-gray-600')}>
+                            {event.message}
+                          </p>
+                          {event.location && <p className="text-xs text-gray-500 mt-0.5">📍 {event.location}</p>}
+                          <p className="text-xs text-gray-400 mt-1">{formatDateTime(event.createdAt)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
-
-              {/* Tracking events */}
-              <div className="space-y-4">
-                {order.tracking.map((event, i) => (
-                  <div key={event.id} className="flex gap-4">
-                    <div className="flex flex-col items-center">
-                      <div className={cn(
-                        'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
-                        i === 0 ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-400'
-                      )}>
-                        {i === 0 ? <Truck className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
-                      </div>
-                      {i < order.tracking.length - 1 && <div className="w-0.5 h-8 bg-gray-200 mt-1" />}
-                    </div>
-                    <div className="flex-1 pb-4">
-                      <p className={cn('font-semibold text-sm', i === 0 ? 'text-brand-700' : 'text-gray-600')}>
-                        {event.message}
-                      </p>
-                      {event.location && <p className="text-xs text-gray-500 mt-0.5">📍 {event.location}</p>}
-                      <p className="text-xs text-gray-400 mt-1">{formatDate(event.createdAt)}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           )}
 

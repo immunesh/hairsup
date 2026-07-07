@@ -10,9 +10,23 @@ import {
 import ProductCard from '@/components/ui/ProductCard';
 import { formatPrice } from '@/lib/utils';
  
-import { Product } from '@/types';
+import { Category, Product } from '@/types';
 import { productsApi, blogApi } from '@/lib/api';
-const image = "/women.avif";
+import { getCategories } from '@/lib/category-api';
+const FALLBACK_CATEGORY_IMAGE = "/women.avif";
+
+const CATEGORY_TILE_STYLES = [
+  { color: 'from-pink-900/80 to-brand-900/80' },
+  { color: 'from-gray-900/80 to-blue-900/80' },
+  { color: 'from-amber-900/80 to-brand-900/80' },
+  { color: 'from-brand-950/80 to-purple-900/80' },
+];
+
+const GENDER_BADGE: Record<string, string> = {
+  WOMEN: "Women's",
+  MEN: "Men's",
+  UNISEX: 'Unisex',
+};
 
 const HERO_SLIDES = [
   {
@@ -59,44 +73,6 @@ const HERO_SLIDES = [
   },
 ];
 
-const CATEGORIES = [
-  {
-    title: "Women's Wigs",
-    subtitle: "Gorgeous styles for every occasion",
-    href: '/women',
-    image:'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&q=80',
-    count: '200+ styles',
-    badge: 'Most Popular',
-    color: 'from-pink-900/80 to-brand-900/80',
-  },
-  {
-    title: "Men's Hair Systems",
-    subtitle: "Undetectable. Natural. Confident.",
-    href: '/men',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80',
-    count: '80+ styles',
-    badge: 'Premium Quality',
-    color: 'from-gray-900/80 to-blue-900/80',
-  },
-  {
-    title: "Human Hair Wigs",
-    subtitle: "100% real hair. Unlimited styling.",
-    href: '/women?material=human-hair',
-    image: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&q=80',
-    count: '120+ styles',
-    badge: 'Best Quality',
-    color: 'from-amber-900/80 to-brand-900/80',
-  },
-  {
-    title: "Virtual Try-On",
-    subtitle: "See it on you before buying",
-    href: '/try-on',
-    image: 'https://images.unsplash.com/photo-1588516903720-8ceb67f9ef84?w=600&q=80',
-    count: 'AI Powered',
-    badge: 'Free to Use',
-    color: 'from-brand-950/80 to-purple-900/80',
-  },
-];
 
 const TRUST_FEATURES = [
   { icon: Truck, title: 'Free Shipping', desc: 'On orders above ₹999', color: 'text-brand-600 bg-brand-50' },
@@ -165,6 +141,21 @@ const [blogs, setBlogs] = useState<any[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [newArrivals, setNewArrivals] = useState<Product[]>([]);
   const [bestSellers, setBestSellers] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const data = await getCategories();
+        setCategories(data || []);
+      } catch (error) {
+        console.error('Homepage categories error:', error);
+        setCategories([]);
+      }
+    };
+
+    loadCategories();
+  }, []);
 
 useEffect(() => {
   const loadProducts = async () => {
@@ -368,39 +359,49 @@ useEffect(() => {
     </p>
   </div>
 
+  {categories.length > 0 && (
   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-    {CATEGORIES.map((cat) => (
+    {categories.slice(0, 8).map((cat, i) => {
+      const productCount = cat._count?.products ?? 0;
+      const badge = (cat.gender && GENDER_BADGE[cat.gender]) || 'Shop Now';
+      const style = CATEGORY_TILE_STYLES[i % CATEGORY_TILE_STYLES.length];
+
+      return (
       <Link
-        key={cat.title}
-        href={cat.href}
+        key={cat.id}
+        href={`/products?category=${cat.slug}`}
         className="group relative overflow-hidden rounded-2xl aspect-[3/4]"
       >
         <Image
-          src={cat.image}
-          alt={cat.title}
+          src={cat.image || FALLBACK_CATEGORY_IMAGE}
+          alt={cat.name}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"
         />
 
         <div
-          className={`absolute inset-0 bg-gradient-to-t ${cat.color} transition-opacity group-hover:opacity-90`}
+          className={`absolute inset-0 bg-gradient-to-t ${style.color} transition-opacity group-hover:opacity-90`}
         />
 
         <div className="absolute inset-0 p-4 flex flex-col justify-between">
           <span className="inline-flex self-start bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-            {cat.badge}
+            {badge}
           </span>
 
           <div>
-            <p className="text-white/70 text-xs mb-1">{cat.count}</p>
+            <p className="text-white/70 text-xs mb-1">
+              {productCount} {productCount === 1 ? 'style' : 'styles'}
+            </p>
 
             <h3 className="text-white font-display font-bold text-lg leading-tight">
-              {cat.title}
+              {cat.name}
             </h3>
 
-            <p className="text-white/70 text-xs mt-1 hidden sm:block">
-              {cat.subtitle}
-            </p>
+            {cat.description && (
+              <p className="text-white/70 text-xs mt-1 hidden sm:block line-clamp-2">
+                {cat.description}
+              </p>
+            )}
 
             <div className="flex items-center gap-1 mt-2 text-white/80 text-xs font-medium">
               Shop Now
@@ -409,8 +410,10 @@ useEffect(() => {
           </div>
         </div>
       </Link>
-    ))}
+      );
+    })}
   </div>
+  )}
 </section>
 
       {/* ─── FEATURED PRODUCTS ──────────────────────────────────── */}

@@ -6,6 +6,7 @@ import {
 import { drawWig } from '@/lib/wigRenderer';
  
 import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Camera, CameraOff, RefreshCw, Download, Zap, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
@@ -56,6 +57,8 @@ export default function VirtualTryOn({
   selectedProductId,
 }: VirtualTryOnProps)
  {
+  const router = useRouter();
+  const [showNoProductModal, setShowNoProductModal] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const uploadCanvasRef =
@@ -564,6 +567,28 @@ const applyCrop = async () => {
 
   return (
     <>
+    {/* No-product modal (triggered by Start Camera / Choose Photo) */}
+    {showNoProductModal && (
+      <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
+        <div className="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 text-center shadow-xl">
+          <div className="w-16 h-16 bg-brand-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <Zap className="w-8 h-8 text-brand-600" />
+          </div>
+          <h2 className="text-xl font-display font-bold text-gray-900 mb-2">
+            Please choose a product to try on
+          </h2>
+          <p className="text-sm text-gray-500 mb-6">
+            Browse our collection and tap &quot;Try On&quot; on any product to see how it looks on you.
+          </p>
+          <button
+            onClick={() => router.push('/shop')}
+            className="btn-primary w-full"
+          >
+            Shop Now
+          </button>
+        </div>
+      </div>
+    )}
     {
 showCropper &&
 (
@@ -664,7 +689,13 @@ showCropper &&
                         <p className="text-xs text-red-300">{cameraError}</p>
                       </div>
                     )}
-                    <button onClick={startCamera} className="btn-primary flex items-center gap-2 py-3 px-8">
+                    <button
+                      onClick={() => {
+                        if (!selectedProductId) { setShowNoProductModal(true); return; }
+                        startCamera();
+                      }}
+                      className="btn-primary flex items-center gap-2 py-3 px-8"
+                    >
                       <Camera className="w-5 h-5" /> Start Camera
                     </button>
                   </div>
@@ -693,19 +724,33 @@ showCropper &&
   </div>
 
 </div>
-                ) : (
-                  <label className="flex flex-col items-center gap-4 cursor-pointer text-white">
-                    <div className="w-16 h-16 bg-brand-600/20 rounded-full flex items-center justify-center border-2 border-dashed border-brand-500/50">
-                      <Camera className="w-8 h-8 text-brand-400" />
+                ) : !selectedProductId ? (
+                    <div
+                      className="flex flex-col items-center gap-4 cursor-pointer text-white"
+                      onClick={() => setShowNoProductModal(true)}
+                    >
+                      <div className="w-16 h-16 bg-brand-600/20 rounded-full flex items-center justify-center border-2 border-dashed border-brand-500/50">
+                        <Camera className="w-8 h-8 text-brand-400" />
+                      </div>
+                      <div className="text-center">
+                        <p className="font-semibold mb-1">Upload your photo</p>
+                        <p className="text-sm text-gray-400">JPG, PNG, WEBP up to 10MB</p>
+                      </div>
+                      <span className="btn-primary py-2.5 px-6">Choose Photo</span>
                     </div>
-                    <div className="text-center">
-                      <p className="font-semibold mb-1">Upload your photo</p>
-                      <p className="text-sm text-gray-400">JPG, PNG, WEBP up to 10MB</p>
-                    </div>
-                    <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
-                    <span className="btn-primary py-2.5 px-6">Choose Photo</span>
-                  </label>
-                )}
+                  ) : (
+                    <label className="flex flex-col items-center gap-4 cursor-pointer text-white">
+                      <div className="w-16 h-16 bg-brand-600/20 rounded-full flex items-center justify-center border-2 border-dashed border-brand-500/50">
+                        <Camera className="w-8 h-8 text-brand-400" />
+                      </div>
+                      <div className="text-center">
+                        <p className="font-semibold mb-1">Upload your photo</p>
+                        <p className="text-sm text-gray-400">JPG, PNG, WEBP up to 10MB</p>
+                      </div>
+                      <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+                      <span className="btn-primary py-2.5 px-6">Choose Photo</span>
+                    </label>
+                  )}
               </div>
             )}
 

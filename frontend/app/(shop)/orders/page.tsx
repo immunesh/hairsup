@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Package, ChevronRight, Search, Filter } from 'lucide-react';
+import { Package, ChevronRight, Search, Filter, ExternalLink } from 'lucide-react';
 import { useAuthStore } from '@/lib/store';
 import { ordersApi } from '@/lib/api';
 import { Order } from '@/types';
@@ -60,6 +60,7 @@ export default function OrdersPage() {
   }
 
   const STATUS_FILTERS = ['ALL', 'PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+  const SHIPPED_OR_LATER = ['SHIPPED', 'OUT_FOR_DELIVERY', 'DELIVERED'];
   const filtered = filter === 'ALL' ? orders : orders.filter((o) => o.status === filter);
 
   const handleCancelOrder = async (
@@ -130,6 +131,9 @@ export default function OrdersPage() {
                     </span>
                   </div>
                   <p className="text-sm text-gray-500">Placed on {formatDate(order.createdAt)}</p>
+                  {SHIPPED_OR_LATER.includes(order.status) && order.awbNumber && (
+                    <p className="text-xs text-gray-500 mt-1">AWB: <span className="font-semibold text-gray-700">{order.awbNumber}</span></p>
+                  )}
                 </div>
                 <Link
                   href={`/orders/${order.orderNumber}`}
@@ -161,10 +165,10 @@ export default function OrdersPage() {
                   Total: <span className="font-bold text-gray-900">{formatPrice(order.total)}</span>
                 </p>
                 <div className="flex gap-2">
-                  
+                 
 
                   <Link href={`/orders/${order.orderNumber}`} className="text-xs btn-primary py-1.5 px-4">
-                    {['SHIPPED', 'OUT_FOR_DELIVERY'].includes(order.status) ? 'Track' : 'Details'}
+                    {SHIPPED_OR_LATER.includes(order.status) ? 'Track' : 'Details'}
                   </Link>
                 </div>
               </div>

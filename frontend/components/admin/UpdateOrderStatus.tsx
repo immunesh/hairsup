@@ -1,112 +1,84 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { updateOrderStatus } from "@/lib/order-api";
+import { ADMIN_STATUS_LABELS, getNextStatusOptions } from "@/lib/order-status";
+import { useUIStore } from "@/lib/store";
 
 export default function UpdateOrderStatus({
-orderId,
-currentStatus,
+  orderId,
+  currentStatus,
+  onUpdated,
 }: {
-orderId: string;
-currentStatus: string;
+  orderId: string;
+  currentStatus: string;
+  onUpdated: () => void;
 }) {
-const router = useRouter();
+  const { showToast } = useUIStore();
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-const [status, setStatus] =
-useState(currentStatus);
+  const nextOptions = getNextStatusOptions(currentStatus);
 
-const [loading, setLoading] =
-useState(false);
+  async function handleUpdate() {
+    if (!status) return;
+    setError("");
 
-async function handleUpdate() {
-try {
-setLoading(true);
-
-
-  const res = await fetch(
-    `http://localhost:5000/api/orders/admin/${orderId}/status`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type":
-          "application/json",
-      },
-      body: JSON.stringify({
-        status,
-      }),
+    try {
+      setLoading(true);
+      await updateOrderStatus(orderId, status);
+      showToast(`Order status updated to ${ADMIN_STATUS_LABELS[status] || status}`);
+      setStatus("");
+      onUpdated();
+    } catch (err: any) {
+      const message = err?.response?.data?.message || "Failed to update status";
+      setError(message);
+      showToast(message, "error");
+    } finally {
+      setLoading(false);
     }
-  );
-
-  const data =
-    await res.json();
-
-  if (!res.ok) {
-    alert(
-      data.message ||
-        "Failed to update status"
-    );
-    return;
   }
 
-  alert(
-    "Order status updated"
+  if (nextOptions.length === 0) {
+    return (
+      <p className="text-sm text-slate-500">
+        No further status changes are available for this order.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-col gap-3 md:flex-row md:items-end">
+        <label className="flex-1 text-sm text-slate-300">
+          <span className="mb-2 block">Move Order To</span>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="w-full border border-white/10 bg-slate-900/70 text-white p-2 rounded-xl focus:outline-none focus:border-cyan-500/50"
+          >
+            <option value="">Select next status...</option>
+            {nextOptions.map((s) => (
+              <option key={s} value={s}>
+                {ADMIN_STATUS_LABELS[s] || s}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <button
+          onClick={handleUpdate}
+          disabled={loading || !status}
+          className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white px-4 py-2 rounded-xl transition-colors"
+        >
+          {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+          {loading ? "Updating..." : "Update"}
+        </button>
+      </div>
+
+      {error && <p className="text-sm text-rose-400">{error}</p>}
+    </div>
   );
-
-  router.refresh();
-} catch (error) {
-  console.error(error);
-
-  alert(
-    "Failed to update status"
-  );
-} finally {
-  setLoading(false);
-}
-
-
-}
-
-return ( <div className="flex gap-3 items-center">
-<select
-value={status}
-onChange={(e) =>
-setStatus(
-e.target.value
-)
-}
-className="border p-2 rounded"
-> <option value="PENDING">
-PENDING </option>
-
-
-    <option value="PROCESSING">
-      PROCESSING
-    </option>
-
-    <option value="SHIPPED">
-      SHIPPED
-    </option>
-
-    <option value="DELIVERED">
-      DELIVERED
-    </option>
-
-    <option value="CANCELLED">
-      CANCELLED
-    </option>
-  </select>
-
-  <button
-    onClick={handleUpdate}
-    disabled={loading}
-    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
-  >
-    {loading
-      ? "Updating..."
-      : "Update"}
-  </button>
-</div>
-
-
-);
 }

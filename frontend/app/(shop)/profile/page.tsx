@@ -17,7 +17,6 @@ const SIDEBAR_ITEMS = [
   { id: 'addresses', icon: MapPin, label: 'My Addresses' },
   { id: 'security', icon: Lock, label: 'Password & Security' },
   { id: 'notifications', icon: Bell, label: 'Notifications' },
-  { id: 'orders', icon: Package, label: 'My Orders' },
     { id: 'reviews', icon: Heart, label: 'My Reviews' },
 ];
 
@@ -551,48 +550,6 @@ const handleSaveNotifications =
           : 'Update Password'}
       </button>
     </div>
-  </div>
-)}
-
-{activeTab === 'orders' && (
-  <div className="card p-6">
-    <h2 className="font-bold text-lg mb-6">
-      My Orders
-    </h2>
-
-    {orders.length === 0 ? (
-      <div className="text-center py-10">
-        <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-        <p className="text-gray-500">
-          No orders yet
-        </p>
-      </div>
-    ) : (
-      <div className="space-y-4">
-        {orders.map((order) => (
-          <div
-            key={order.id}
-            className="border border-gray-200 rounded-xl p-4"
-          >
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="font-semibold">
-                  Order #{order.id.slice(0, 8)}
-                </p>
-
-                <p className="text-sm text-gray-500">
-                  ₹{order.totalAmount}
-                </p>
-              </div>
-
-              <span className="badge bg-green-100 text-green-700">
-                {order.status}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-    )}
   </div>
 )}
 

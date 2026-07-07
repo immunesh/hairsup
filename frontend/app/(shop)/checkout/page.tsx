@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
-import { ChevronRight, Plus, MapPin, CreditCard, Truck, Shield, Check, Loader2, Tag, ShoppingBag } from 'lucide-react';
+import { ChevronRight, Plus, MapPin, CreditCard, Truck, Shield, Check, Loader2, Tag, ShoppingBag, X } from 'lucide-react';
 import { useCartStore, useAuthStore, useUIStore } from '@/lib/store';
 import {
   ordersApi,
@@ -35,6 +34,19 @@ export default function CheckoutPage() {
   const [couponInput, setCouponInput] = useState('');
   const [applyingCoupon, setApplyingCoupon] = useState(false);
   const [placing, setPlacing] = useState(false);
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [savingAddress, setSavingAddress] = useState(false);
+  const [addressForm, setAddressForm] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    type: 'HOME' as 'HOME' | 'OFFICE' | 'OTHER',
+    line1: '',
+    line2: '',
+    city: '',
+    state: '',
+    pincode: '',
+  });
 
 
 
@@ -60,6 +72,46 @@ export default function CheckoutPage() {
       if (def) setSelectedAddress(def.id);
     }).catch(() => { });
   }, [isAuthenticated, router]);
+
+  const resetAddressForm = () => setAddressForm({
+    firstName: '', lastName: '', phone: '', type: 'HOME',
+    line1: '', line2: '', city: '', state: '', pincode: '',
+  });
+
+  const handleSaveAddress = async () => {
+    if (!addressForm.firstName.trim() || !addressForm.lastName.trim() ||
+      !addressForm.phone.trim() || !addressForm.line1.trim() ||
+      !addressForm.city.trim() || !addressForm.state.trim() ||
+      !addressForm.pincode.trim()) {
+      showToast('Please fill in all required fields', 'error');
+      return;
+    }
+    setSavingAddress(true);
+    try {
+      const payload = {
+        fullName: `${addressForm.firstName.trim()} ${addressForm.lastName.trim()}`,
+        phone: addressForm.phone.trim(),
+        type: addressForm.type,
+        line1: addressForm.line1.trim(),
+        line2: addressForm.line2.trim() || undefined,
+        city: addressForm.city.trim(),
+        state: addressForm.state.trim(),
+        pincode: addressForm.pincode.trim(),
+        country: 'India',
+      };
+      const { data } = await userApi.addAddress(payload);
+      const newAddr: Address = data.data;
+      setAddresses((prev) => [...prev, newAddr]);
+      setSelectedAddress(newAddr.id);
+      setShowAddressModal(false);
+      resetAddressForm();
+      showToast('Address added successfully!');
+    } catch {
+      showToast('Failed to save address', 'error');
+    } finally {
+      setSavingAddress(false);
+    }
+  };
 
   useEffect(() => {
     setCouponInput(couponCode || '');
@@ -213,9 +265,12 @@ export default function CheckoutPage() {
                     </div>
                   </label>
                 ))}
-                <Link href="/profile#addresses" className="flex items-center gap-2 p-4 border-2 border-dashed border-gray-200 rounded-2xl text-sm text-brand-600 hover:border-brand-400 hover:bg-brand-50 transition-all font-medium w-fit">
+                <button
+                  onClick={() => { resetAddressForm(); setShowAddressModal(true); }}
+                  className="flex items-center gap-2 p-4 border-2 border-dashed border-gray-200 rounded-2xl text-sm text-brand-600 hover:border-brand-400 hover:bg-brand-50 transition-all font-medium w-fit"
+                >
                   <Plus className="w-4 h-4" /> Add New Address
-                </Link>
+                </button>
               </div>
             </div>
 
@@ -331,6 +386,147 @@ export default function CheckoutPage() {
         </div>
 
       </div>
+
+      {/* Add New Address Modal */}
+      {showAddressModal && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowAddressModal(false)} />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+            <div className="bg-white rounded-2xl p-6 w-full max-w-lg pointer-events-auto shadow-xl max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="text-lg font-display font-bold text-gray-900">Add New Address</h3>
+                <button onClick={() => setShowAddressModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">First Name *</label>
+                    <input
+                      value={addressForm.firstName}
+                      onChange={(e) => setAddressForm({ ...addressForm, firstName: e.target.value })}
+                      placeholder="John"
+                      className="input-field"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Last Name *</label>
+                    <input
+                      value={addressForm.lastName}
+                      onChange={(e) => setAddressForm({ ...addressForm, lastName: e.target.value })}
+                      placeholder="Doe"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone Number *</label>
+                  <input
+                    value={addressForm.phone}
+                    onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value.replace(/\D/g, '') })}
+                    placeholder="10-digit mobile number"
+                    maxLength={10}
+                    className="input-field"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Address Type</label>
+                  <div className="flex gap-2">
+                    {(['HOME', 'OFFICE', 'OTHER'] as const).map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setAddressForm({ ...addressForm, type: t })}
+                        className={`px-4 py-2 rounded-xl text-sm font-medium border-2 transition-all ${addressForm.type === t
+                          ? 'border-brand-500 bg-brand-50 text-brand-600'
+                          : 'border-gray-200 text-gray-600 hover:border-brand-300'
+                          }`}
+                      >
+                        {t === 'HOME' ? '🏠 Home' : t === 'OFFICE' ? '🏢 Work' : '📍 Other'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Address Line 1 *</label>
+                  <input
+                    value={addressForm.line1}
+                    onChange={(e) => setAddressForm({ ...addressForm, line1: e.target.value })}
+                    placeholder="House no., Building, Street"
+                    className="input-field"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Address Line 2</label>
+                  <input
+                    value={addressForm.line2}
+                    onChange={(e) => setAddressForm({ ...addressForm, line2: e.target.value })}
+                    placeholder="Landmark, Area (optional)"
+                    className="input-field"
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">City *</label>
+                    <input
+                      value={addressForm.city}
+                      onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
+                      placeholder="City"
+                      className="input-field"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">State *</label>
+                    <input
+                      value={addressForm.state}
+                      onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })}
+                      placeholder="State"
+                      className="input-field"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Pincode *</label>
+                    <input
+                      value={addressForm.pincode}
+                      onChange={(e) => setAddressForm({ ...addressForm, pincode: e.target.value.replace(/\D/g, '') })}
+                      placeholder="6-digit"
+                      maxLength={6}
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setShowAddressModal(false)}
+                  className="btn-secondary flex-1"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveAddress}
+                  disabled={savingAddress}
+                  className="btn-primary flex-1 flex items-center justify-center gap-2"
+                >
+                  {savingAddress ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
+                  ) : (
+                    <><Check className="w-4 h-4" /> Save Address</>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

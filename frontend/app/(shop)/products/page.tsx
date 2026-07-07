@@ -20,7 +20,10 @@ const SORT_OPTIONS = [
 export default function AllProductsPage() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
-  const [filters, setFilters] = useState<Record<string, string | string[] | number | boolean | undefined>>({});
+  const [filters, setFilters] = useState<Record<string, string | string[] | number | boolean | undefined>>(() => {
+    const category = searchParams.get('category');
+    return category ? { category } : {};
+  });
   const [sort, setSort] = useState('createdAt-desc');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
@@ -39,6 +42,13 @@ if (activeGender !== "ALL") {
       String(p.gender || "")
         .trim()
         .toUpperCase() === activeGender
+  );
+}
+
+// Category filter
+if (filters.category) {
+  filtered = filtered.filter(
+    (p: Product) => p.category?.slug === filters.category
   );
 }
 

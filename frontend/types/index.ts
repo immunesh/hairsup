@@ -170,10 +170,23 @@ export interface Order {
   couponCode?: string;
   estimatedDelivery?: string;
   deliveredAt?: string;
+  awbNumber?: string;
+  courier?: string;
+  trackingUrl?: string;
+  shippedAt?: string;
+  shipmentNotes?: string;
   items: OrderItem[];
   address: Address;
   tracking: OrderTracking[];
   createdAt: string;
+}
+
+export interface ShipmentPayload {
+  courier: string;
+  awbNumber: string;
+  trackingUrl?: string;
+  estimatedDelivery: string;
+  notes?: string;
 }
 
 export type OrderStatus =

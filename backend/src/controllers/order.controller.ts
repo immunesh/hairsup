@@ -9,6 +9,44 @@ const generateOrderNumber = (): string => {
   return `HU-${timestamp}-${random}`;
 };
 
+// Valid forward status transitions. SHIPPED is reachable only through the
+// dedicated shipment endpoints, which enforce that an AWB has been assigned.
+const ALLOWED_STATUS_TRANSITIONS: Record<string, string[]> = {
+  PENDING: ['CONFIRMED', 'CANCELLED'],
+  CONFIRMED: ['PROCESSING', 'CANCELLED'],
+  PROCESSING: ['CANCELLED'],
+  SHIPPED: ['OUT_FOR_DELIVERY', 'CANCELLED'],
+  OUT_FOR_DELIVERY: ['DELIVERED', 'CANCELLED'],
+  DELIVERED: [],
+  CANCELLED: [],
+};
+
+const STATUS_MESSAGES: Record<string, string> = {
+  CONFIRMED: 'Order confirmed.',
+  PROCESSING: 'Order is being processed.',
+  OUT_FOR_DELIVERY: 'Order is out for delivery.',
+  DELIVERED: 'Order delivered successfully.',
+  CANCELLED: 'Order cancelled by admin.',
+};
+
+const validateShipmentPayload = (body: Record<string, unknown>) => {
+  const courier = typeof body.courier === 'string' ? body.courier.trim() : '';
+  const awbNumber = typeof body.awbNumber === 'string' ? body.awbNumber.trim() : '';
+  const trackingUrl = typeof body.trackingUrl === 'string' ? body.trackingUrl.trim() : '';
+  const estimatedDelivery = body.estimatedDelivery as string | undefined;
+
+  if (!courier) throw new AppError('Courier is required', 400);
+  if (!awbNumber) throw new AppError('AWB / Tracking number is required', 400);
+  if (!estimatedDelivery || isNaN(new Date(estimatedDelivery).getTime())) {
+    throw new AppError('A valid estimated delivery date is required', 400);
+  }
+  if (trackingUrl && !/^https?:\/\//i.test(trackingUrl)) {
+    throw new AppError('Tracking URL must be a valid http/https URL', 400);
+  }
+
+  return { courier, awbNumber, trackingUrl: trackingUrl || null, estimatedDelivery: new Date(estimatedDelivery) };
+};
+
 export const createOrder = async (req: AuthRequest, res: Response): Promise<void> => {
   const { addressId, paymentMethod, couponCode, notes } = req.body;
 
@@ -67,7 +105,6 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<void
       total,
       couponCode,
       notes,
-      estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
       items: { create: orderItems },
       tracking: { create: { status: 'PENDING', message: 'Order placed successfully.' } },
     },
@@ -193,27 +230,148 @@ export const updateOrderStatus = async (
 req: AuthRequest,
 res: Response
 ): Promise<void> => {
-const { id } = req.params;
+try {
 
+const { id } = req.params;
 const { status } = req.body;
 
-const order =
-await prisma.order.update({
-where: { id },
-data: {
-status,
-tracking: {
-create: {
-status,
-message: `Order status updated to ${status}`,
-},
-},
-},
+const existing = await prisma.order.findUnique({ where: { id } });
+if (!existing) throw new AppError('Order not found', 404);
+
+if (status === existing.status) {
+  res.json({ success: true, data: existing });
+  return;
+}
+
+if (status === 'SHIPPED') {
+  throw new AppError('Use the Ship Order action to mark an order as shipped', 400);
+}
+
+const allowedNext = ALLOWED_STATUS_TRANSITIONS[existing.status] || [];
+if (!allowedNext.includes(status)) {
+  throw new AppError(`Cannot change status from ${existing.status} to ${status}`, 400);
+}
+
+const order = await prisma.order.update({
+  where: { id },
+  data: {
+    status,
+    deliveredAt: status === 'DELIVERED' ? new Date() : existing.deliveredAt,
+    tracking: {
+      create: {
+        status,
+        message: STATUS_MESSAGES[status] || `Order status updated to ${status}`,
+      },
+    },
+  },
+  include: { items: true, address: true, tracking: { orderBy: { createdAt: 'desc' } } },
 });
 
 res.json({
 success: true,
 data: order,
 });
+} catch (error) {
+if (error instanceof AppError) {
+res.status(error.statusCode).json({ success: false, message: error.message });
+return;
+}
+console.error('Failed to update order status:', error);
+res.status(500).json({ success: false, message: 'Failed to update order status' });
+}
+};
+
+export const createShipment = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    const existing = await prisma.order.findUnique({ where: { id } });
+    if (!existing) throw new AppError('Order not found', 404);
+
+    if (existing.status !== 'PROCESSING') {
+      throw new AppError('Order must be in Processing status before it can be shipped', 400);
+    }
+
+    const { courier, awbNumber, trackingUrl, estimatedDelivery } = validateShipmentPayload(req.body);
+    const notes = typeof req.body.notes === 'string' ? req.body.notes.trim() : '';
+
+    const order = await prisma.order.update({
+      where: { id },
+      data: {
+        status: 'SHIPPED',
+        courier,
+        awbNumber,
+        trackingUrl,
+        estimatedDelivery,
+        shipmentNotes: notes || null,
+        shippedAt: new Date(),
+        tracking: {
+          create: {
+            status: 'SHIPPED',
+            message: `Order shipped via ${courier}. AWB: ${awbNumber}`,
+          },
+        },
+      },
+      include: { items: true, address: true, tracking: { orderBy: { createdAt: 'desc' } } },
+    });
+
+    res.status(201).json({ success: true, data: order });
+  } catch (error) {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({ success: false, message: error.message });
+      return;
+    }
+    console.error('Failed to create shipment:', error);
+    res.status(500).json({ success: false, message: 'Failed to create shipment' });
+  }
+};
+
+export const updateShipment = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    const existing = await prisma.order.findUnique({ where: { id } });
+    if (!existing) throw new AppError('Order not found', 404);
+
+    if (!existing.awbNumber) {
+      throw new AppError('Shipment has not been created for this order yet', 400);
+    }
+
+    const { courier, awbNumber, trackingUrl, estimatedDelivery } = validateShipmentPayload(req.body);
+    const notes = typeof req.body.notes === 'string' ? req.body.notes.trim() : '';
+
+    const order = await prisma.order.update({
+      where: { id },
+      data: {
+        courier,
+        awbNumber,
+        trackingUrl,
+        estimatedDelivery,
+        shipmentNotes: notes || null,
+        tracking: {
+          create: {
+            status: existing.status,
+            message: `Shipment details updated. Courier: ${courier}, AWB: ${awbNumber}`,
+          },
+        },
+      },
+      include: { items: true, address: true, tracking: { orderBy: { createdAt: 'desc' } } },
+    });
+
+    res.json({ success: true, data: order });
+  } catch (error) {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({ success: false, message: error.message });
+      return;
+    }
+    console.error('Failed to update shipment:', error);
+    res.status(500).json({ success: false, message: 'Failed to update shipment' });
+  }
 };
 

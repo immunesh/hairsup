@@ -1,14 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Truck, Eye, Pencil } from "lucide-react";
 import {
   getAllOrders,
   updateOrderStatus,
 } from "@/lib/order-api";
+import {
+  ADMIN_STATUS_BADGE,
+  ADMIN_STATUS_LABELS,
+  getNextStatusOptions,
+} from "@/lib/order-status";
+import { useUIStore } from "@/lib/store";
+import ShipmentModal from "@/components/admin/ShipmentModal";
 
 export default function OrdersPage() {
+  const { showToast } = useUIStore();
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [shipmentModal, setShipmentModal] = useState<{
+    orderId: string;
+    mode: "create" | "edit";
+    existing?: any;
+  } | null>(null);
 
   useEffect(() => {
     loadOrders();
@@ -30,10 +46,14 @@ export default function OrdersPage() {
     status: string
   ) => {
     try {
+      setUpdatingId(id);
       await updateOrderStatus(id, status);
+      showToast(`Order status updated to ${ADMIN_STATUS_LABELS[status] || status}`);
       loadOrders();
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      showToast(error?.response?.data?.message || "Failed to update status", "error");
+    } finally {
+      setUpdatingId(null);
     }
   };
 
@@ -82,7 +102,7 @@ return (
         "
       >
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px]">
+          <table className="w-full min-w-[1080px]">
             <thead>
               <tr className="border-b border-white/10 bg-white/5">
                 <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
@@ -104,6 +124,10 @@ return (
                 <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
                   Status
                 </th>
+
+                <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                  Shipment
+                </th>
               </tr>
             </thead>
 
@@ -111,7 +135,7 @@ return (
               {orders.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={6}
                     className="
                     text-center
                     p-8 sm:p-10
@@ -122,7 +146,11 @@ return (
                   </td>
                 </tr>
               ) : (
-                orders.map((order) => (
+                orders.map((order) => {
+                  const nextOptions = getNextStatusOptions(order.status);
+                  const hasShipment = !!order.awbNumber;
+
+                  return (
                   <tr
                     key={order.id}
                     className="
@@ -135,9 +163,12 @@ return (
                   >
                     {/* Order Number */}
                     <td className="p-3 sm:p-5">
-                      <span className="font-medium text-white">
+                      <Link
+                        href={`/admin/orders/${order.id}`}
+                        className="font-medium text-white hover:text-cyan-400 hover:underline"
+                      >
                         {order.orderNumber}
-                      </span>
+                      </Link>
                     </td>
 
                     {/* Customer */}
@@ -160,64 +191,126 @@ return (
 
                     {/* Status */}
                     <td className="p-3 sm:p-5">
-                      <select
-                        value={order.status}
-                        onChange={(e) =>
-                          handleStatusChange(
-                            order.id,
-                            e.target.value
-                          )
-                        }
-                        className="
-                        w-full
-                        min-w-[140px]
+                      <div className="space-y-2 min-w-[150px]">
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${
+                            ADMIN_STATUS_BADGE[order.status] ||
+                            "bg-white/5 text-slate-300 border-white/10"
+                          }`}
+                        >
+                          {ADMIN_STATUS_LABELS[order.status] || order.status}
+                        </span>
 
-                        px-3 sm:px-4
-                        py-2
+                        {nextOptions.length > 0 && (
+                          <select
+                            value=""
+                            disabled={updatingId === order.id}
+                            onChange={(e) =>
+                              e.target.value &&
+                              handleStatusChange(order.id, e.target.value)
+                            }
+                            className="
+                            w-full
+                            px-3
+                            py-2
 
-                        text-sm
+                            text-xs
 
-                        rounded-xl
+                            rounded-xl
 
-                        bg-[#131827]
+                            bg-[#131827]
 
-                        border
-                        border-white/10
+                            border
+                            border-white/10
 
-                        text-white
+                            text-slate-300
 
-                        focus:outline-none
-                        focus:border-cyan-500/50
-                        "
-                      >
-                        <option value="PENDING">
-                          PENDING
-                        </option>
+                            focus:outline-none
+                            focus:border-cyan-500/50
+                            disabled:opacity-50
+                            "
+                          >
+                            <option value="">
+                              {updatingId === order.id ? "Updating..." : "Move to..."}
+                            </option>
+                            {nextOptions.map((s) => (
+                              <option key={s} value={s}>
+                                {ADMIN_STATUS_LABELS[s] || s}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      </div>
+                    </td>
 
-                        <option value="PROCESSING">
-                          PROCESSING
-                        </option>
-
-                        <option value="SHIPPED">
-                          SHIPPED
-                        </option>
-
-                        <option value="DELIVERED">
-                          DELIVERED
-                        </option>
-
-                        <option value="CANCELLED">
-                          CANCELLED
-                        </option>
-                      </select>
+                    {/* Shipment */}
+                    <td className="p-3 sm:p-5 text-sm">
+                      {hasShipment ? (
+                        <div className="space-y-1 min-w-[180px]">
+                          <p className="text-slate-300">
+                            Courier:{" "}
+                            <span className="font-medium text-white">
+                              {order.courier || "—"}
+                            </span>
+                          </p>
+                          <p className="text-slate-300">
+                            AWB:{" "}
+                            <span className="font-medium text-white break-all">
+                              {order.awbNumber}
+                            </span>
+                          </p>
+                          <div className="flex items-center gap-3 pt-1">
+                            <Link
+                              href={`/admin/orders/${order.id}`}
+                              className="flex items-center gap-1 text-cyan-400 hover:underline text-xs"
+                            >
+                              <Eye className="w-3.5 h-3.5" /> View
+                            </Link>
+                            <button
+                              onClick={() =>
+                                setShipmentModal({
+                                  orderId: order.id,
+                                  mode: "edit",
+                                  existing: order,
+                                })
+                              }
+                              className="flex items-center gap-1 text-purple-400 hover:underline text-xs"
+                            >
+                              <Pencil className="w-3.5 h-3.5" /> Edit
+                            </button>
+                          </div>
+                        </div>
+                      ) : order.status === "PROCESSING" ? (
+                        <button
+                          onClick={() =>
+                            setShipmentModal({ orderId: order.id, mode: "create" })
+                          }
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-medium transition-all"
+                        >
+                          <Truck className="w-3.5 h-3.5" /> Ship Order
+                        </button>
+                      ) : (
+                        <span className="text-slate-500">Not Assigned</span>
+                      )}
                     </td>
                   </tr>
-                ))
+                  );
+                })
               )}
             </tbody>
           </table>
         </div>
       </div>
+    )}
+
+    {shipmentModal && (
+      <ShipmentModal
+        orderId={shipmentModal.orderId}
+        mode={shipmentModal.mode}
+        existing={shipmentModal.existing}
+        onClose={() => setShipmentModal(null)}
+        onSuccess={loadOrders}
+      />
     )}
   </div>
 );

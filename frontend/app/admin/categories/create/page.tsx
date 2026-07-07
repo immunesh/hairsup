@@ -13,10 +13,39 @@ export default function CreateCategoryPage() {
     gender: "",
   });
 
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setSubmitting(true);
 
     try {
+      let imageUrl = "";
+
+      if (image) {
+        const imageFormData = new FormData();
+        imageFormData.append("image", image);
+
+        const uploadRes = await fetch(
+          "http://localhost:5000/api/upload/image",
+          {
+            method: "POST",
+            body: imageFormData,
+          }
+        );
+
+        const uploadData = await uploadRes.json();
+
+        if (!uploadRes.ok) {
+          alert(uploadData.message || "Image upload failed");
+          return;
+        }
+
+        imageUrl = uploadData.url;
+      }
+
       const res = await fetch(
         "http://localhost:5000/api/categories",
         {
@@ -24,7 +53,7 @@ export default function CreateCategoryPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(form),
+          body: JSON.stringify({ ...form, image: imageUrl }),
         }
       );
 
@@ -42,6 +71,8 @@ export default function CreateCategoryPage() {
     } catch (error) {
       console.error(error);
       alert("Server error");
+    } finally {
+      setSubmitting(false);
     }
   }
 return (
@@ -191,6 +222,52 @@ return (
         />
       </div>
 
+      {/* Category Image */}
+      <div>
+        <label className="block mb-2 text-sm font-medium text-slate-300">
+          Category Image
+        </label>
+
+        <input
+          type="file"
+          accept="image/*"
+          className="
+          w-full
+          px-4
+          py-3
+          rounded-2xl
+          bg-white/5
+          border
+          border-white/10
+          text-slate-300
+          "
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+
+            if (!file) return;
+
+            setImage(file);
+            setImagePreview(URL.createObjectURL(file));
+          }}
+        />
+
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Preview"
+            className="
+            mt-4
+            w-40
+            h-40
+            object-cover
+            rounded-2xl
+            border
+            border-white/10
+            "
+          />
+        )}
+      </div>
+
       {/* Gender */}
       <div>
         <label className="block mb-2 text-sm font-medium text-slate-300">
@@ -246,6 +323,7 @@ return (
       <div className="pt-2">
         <button
           type="submit"
+          disabled={submitting}
           className="
           px-8
           py-3
@@ -265,9 +343,12 @@ return (
           hover:scale-105
 
           shadow-[0_0_25px_rgba(56,189,248,0.35)]
+
+          disabled:opacity-50
+          disabled:hover:scale-100
           "
         >
-          Save Category
+          {submitting ? "Saving..." : "Save Category"}
         </button>
       </div>
     </form>

@@ -147,7 +147,9 @@ export default function CartSidebar() {
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">Your bag is empty</h3>
               <p className="text-sm text-gray-500 mb-6">Looks like you haven&apos;t added any wigs yet.</p>
-              <button onClick={closeCart} className="btn-primary">Start Shopping</button>
+              <Link href="/shop" onClick={closeCart} className="btn-primary">
+                Start Shopping
+              </Link>
             </div>
           ) : (
             <div className="space-y-4">

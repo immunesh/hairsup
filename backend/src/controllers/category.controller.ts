@@ -63,7 +63,7 @@ export const createCategory = async (
   res: Response
 ) => {
   try {
-    const { name, slug, description, gender } = req.body;
+    const { name, slug, description, gender, image } = req.body;
 
     const category = await prisma.category.create({
       data: {
@@ -71,6 +71,7 @@ export const createCategory = async (
         slug,
         description,
         gender,
+        image,
       },
     });
 
@@ -90,7 +91,7 @@ export const updateCategory = async (
 ) => {
   try {
     const { id } = req.params;
-    const { name, slug, description, gender } = req.body;
+    const { name, slug, description, gender, image } = req.body;
 
     const category = await prisma.category.update({
       where: {
@@ -101,6 +102,7 @@ export const updateCategory = async (
         slug,
         description,
         gender,
+        image,
       },
     });
 

@@ -170,7 +170,7 @@ if (filters.texture) {
   );
 }
 if (filters.length) {
-  list = list.filter((p) => {
+  list = list.filter((p: any) => {
     const inches = parseInt(
       String(p.length || "").replace(/\D/g, "")
     );

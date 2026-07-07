@@ -16,6 +16,8 @@ export default function EditCategoryForm({
     gender: category.gender || "",
   });
 
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState(category.image || "");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(
@@ -26,6 +28,29 @@ export default function EditCategoryForm({
     setLoading(true);
 
     try {
+      let imageUrl = category.image || "";
+
+      if (image) {
+        const imageFormData = new FormData();
+        imageFormData.append("image", image);
+
+        const uploadRes = await fetch(
+          "http://localhost:5000/api/upload/image",
+          {
+            method: "POST",
+            body: imageFormData,
+          }
+        );
+
+        const uploadData = await uploadRes.json();
+
+        if (!uploadRes.ok) {
+          throw new Error(uploadData.message || "Image upload failed");
+        }
+
+        imageUrl = uploadData.url;
+      }
+
       const res = await fetch(
         `http://localhost:5000/api/categories/${category.id}`,
         {
@@ -34,7 +59,7 @@ export default function EditCategoryForm({
             "Content-Type":
               "application/json",
           },
-          body: JSON.stringify(form),
+          body: JSON.stringify({ ...form, image: imageUrl }),
         }
       );
 
@@ -87,6 +112,34 @@ export default function EditCategoryForm({
           }
           className="w-full border p-3 rounded"
         />
+      </div>
+
+      <div className="mb-6">
+        <label className="block mb-2 font-medium">
+          Category Image
+        </label>
+
+        <input
+          type="file"
+          accept="image/*"
+          className="w-full border p-3 rounded"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+
+            if (!file) return;
+
+            setImage(file);
+            setImagePreview(URL.createObjectURL(file));
+          }}
+        />
+
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Preview"
+            className="mt-4 w-40 h-40 object-cover rounded-2xl border"
+          />
+        )}
       </div>
 
       <div className="mb-6">

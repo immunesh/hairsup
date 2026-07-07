@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 
 import Sidebar from "@/components/admin/Sidebar";
 import AdminHeader from "@/components/admin/AdminHeader";
+import Toast from "@/components/ui/Toast";
 
 export default function AdminLayout({
   children,
@@ -82,6 +83,8 @@ export default function AdminLayout({
       "
     >
       <AdminHeader />
+
+      <Toast />
 
       <main
         className="

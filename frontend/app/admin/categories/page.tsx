@@ -1,4 +1,5 @@
 import Link from "next/link";
+import DeleteCategoryButton from "@/components/admin/DeleteCategoryButton";
 
 async function getCategories() {
   const res = await fetch(
@@ -79,6 +80,10 @@ return (
           <thead>
             <tr className="border-b border-white/10 bg-white/5">
               <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                Image
+              </th>
+
+              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
                 Name
               </th>
 
@@ -104,7 +109,7 @@ return (
             {categories.length === 0 ? (
               <tr>
                 <td
-                  colSpan={5}
+                  colSpan={6}
                   className="
                   p-8 sm:p-12
                   text-center
@@ -128,6 +133,21 @@ return (
                   duration-300
                   "
                 >
+                  {/* Image */}
+                  <td className="p-3 sm:p-5">
+                    {category.image ? (
+                      <img
+                        src={category.image}
+                        alt={category.name}
+                        className="w-12 h-12 rounded-xl object-cover border border-white/10"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 text-xs">
+                        —
+                      </div>
+                    )}
+                  </td>
+
                   {/* Name */}
                   <td className="p-3 sm:p-5">
                     <div className="font-medium text-white">
@@ -200,6 +220,7 @@ return (
 
                   {/* Actions */}
                   <td className="p-3 sm:p-5">
+                    <div className="flex items-center gap-2">
                     <Link
                       href={`/admin/categories/edit/${category.id}`}
                       className="
@@ -231,6 +252,12 @@ return (
                     >
                       Edit
                     </Link>
+
+                    <DeleteCategoryButton
+                      id={category.id}
+                      name={category.name}
+                    />
+                    </div>
                   </td>
                 </tr>
               ))

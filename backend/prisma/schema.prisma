@@ -279,6 +279,11 @@ model Order {
   notes             String?
   estimatedDelivery DateTime?
   deliveredAt       DateTime?
+  awbNumber         String?
+  courier           String?
+  trackingUrl       String?
+  shippedAt         DateTime?
+  shipmentNotes     String?
   items             OrderItem[]
   tracking          OrderTracking[]
   createdAt         DateTime        @default(now())
