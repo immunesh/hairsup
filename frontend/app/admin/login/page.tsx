@@ -14,64 +14,64 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    setLoading(true);
-    setError("");
+    try {
+      setLoading(true);
+      setError("");
 
-    const response = await authApi.login(
-      email,
-      password
-    );
-
-    const {
-      accessToken,
-      refreshToken,
-      user,
-    } = response.data.data;
-
-    if (user.role !== "ADMIN") {
-      setError(
-        "You are not an administrator"
+      const response = await authApi.login(
+        email,
+        password
       );
-      return;
+
+      const {
+        accessToken,
+        refreshToken,
+        user,
+      } = response.data.data;
+
+      if (user.role !== "ADMIN") {
+        setError(
+          "You are not an administrator"
+        );
+        return;
+      }
+
+      localStorage.setItem(
+        "accessToken",
+        accessToken
+      );
+
+      localStorage.setItem(
+        "refreshToken",
+        refreshToken
+      );
+
+      localStorage.setItem(
+        "role",
+        user.role
+      );
+
+      localStorage.setItem(
+        "userId",
+        user.id
+      );
+
+      router.replace("/admin");
+    } catch (err: any) {
+      setError(
+        err?.response?.data?.message ||
+        "Login failed"
+      );
+    } finally {
+      setLoading(false);
     }
-
-    localStorage.setItem(
-      "accessToken",
-      accessToken
-    );
-
-    localStorage.setItem(
-      "refreshToken",
-      refreshToken
-    );
-
-    localStorage.setItem(
-      "role",
-      user.role
-    );
-
-    localStorage.setItem(
-      "userId",
-      user.id
-    );
-
-    router.replace("/admin");
-  } catch (err: any) {
-    setError(
-      err?.response?.data?.message ||
-      "Login failed"
-    );
-  } finally {
-    setLoading(false);
-  }
-};
-
- return (
-  <div
-    className="
+  };
+         
+  return (
+    <div
+            className="
     min-h-screen
 
     flex
@@ -85,9 +85,9 @@ export default function AdminLoginPage() {
 
     p-6
     "
-  >
-    <div
-      className="
+    >
+      <div
+        className="
       w-full
       max-w-md
 
@@ -103,11 +103,11 @@ export default function AdminLoginPage() {
 
       shadow-2xl
       "
-    >
-      {/* Logo */}
-      <div className="text-center mb-8">
-        <h1
-          className="
+      >
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <h1
+            className="
           text-4xl
           font-bold
 
@@ -119,19 +119,19 @@ export default function AdminLoginPage() {
           bg-clip-text
           text-transparent
           "
-        >
-          HairsUp Admin
-        </h1>
+          >
+            HairsUp Admin
+          </h1>
 
-        <p className="text-slate-400 mt-3">
-          Sign in to access dashboard
-        </p>
-      </div>
+          <p className="text-slate-400 mt-3">
+            Sign in to access dashboard
+          </p>
+        </div>
 
-      {/* Error */}
-      {error && (
-        <div
-          className="
+        {/* Error */}
+        {error && (
+          <div
+            className="
           mb-5
 
           p-4
@@ -145,29 +145,29 @@ export default function AdminLoginPage() {
 
           text-red-300
           "
+          >
+            {error}
+          </div>
+        )}
+
+        <form
+          onSubmit={handleLogin}
+          className="space-y-5"
         >
-          {error}
-        </div>
-      )}
+          {/* Email */}
+          <div>
+            <label className="block text-sm text-slate-300 mb-2">
+              Email Address
+            </label>
 
-      <form
-        onSubmit={handleLogin}
-        className="space-y-5"
-      >
-        {/* Email */}
-        <div>
-          <label className="block text-sm text-slate-300 mb-2">
-            Email Address
-          </label>
-
-          <input
-            type="email"
-            placeholder="admin@example.com"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-            className="
+            <input
+              type="email"
+              placeholder="admin@example.com"
+              value={email}
+              onChange={(e) =>
+                setEmail(e.target.value)
+              }
+              className="
             w-full
 
             px-4
@@ -191,23 +191,23 @@ export default function AdminLoginPage() {
 
             transition-all
             "
-          />
-        </div>
+            />
+          </div>
 
-        {/* Password */}
-        <div>
-          <label className="block text-sm text-slate-300 mb-2">
-            Password
-          </label>
+          {/* Password */}
+          <div>
+            <label className="block text-sm text-slate-300 mb-2">
+              Password
+            </label>
 
-          <input
-            type="password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
-            className="
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
+              className="
             w-full
 
             px-4
@@ -231,14 +231,14 @@ export default function AdminLoginPage() {
 
             transition-all
             "
-          />
-        </div>
+            />
+          </div>
 
-        {/* Login Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="
+          {/* Login Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="
           w-full
 
           py-3
@@ -262,20 +262,20 @@ export default function AdminLoginPage() {
 
           shadow-[0_0_25px_rgba(56,189,248,0.35)]
           "
-        >
-          {loading
-            ? "Logging in..."
-            : "Login to Dashboard"}
-        </button>
-      </form>
+          >
+            {loading
+              ? "Logging in..."
+              : "Login to Dashboard"}
+          </button>
+        </form>
 
-      {/* Footer */}
-      <div className="mt-8 text-center">
-        <p className="text-xs text-slate-500">
-          HairsUp Administration Panel
-        </p>
+        {/* Footer */}
+        <div className="mt-8 text-center">
+          <p className="text-xs text-slate-500">
+            HairsUp Administration Panel
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
