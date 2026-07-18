@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Sparkles, Mail, Lock, User, Phone, Loader2, Check } from 'lucide-react';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { useAuthStore, useUIStore } from '@/lib/store';
 import { authApi } from '@/lib/api';
 
@@ -53,6 +54,25 @@ export default function RegisterPage() {
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       showToast(error?.response?.data?.message || 'Registration failed', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse.credential) return;
+    setLoading(true);
+    try {
+      const { data } = await authApi.google(credentialResponse.credential);
+      const { user, accessToken, refreshToken } = data.data;
+      setAuth(user, accessToken, refreshToken);
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      showToast(`Welcome to HairsUp, ${user.firstName}! 🎉`);
+      router.push('/');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      showToast(error?.response?.data?.message || 'Google sign-in failed', 'error');
     } finally {
       setLoading(false);
     }
@@ -237,6 +257,19 @@ export default function RegisterPage() {
               {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Creating Account…</> : 'Create Account — Free'}
             </button>
           </form>
+
+          <div className="mt-6 relative">
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
+            <div className="relative flex justify-center text-xs text-gray-400 bg-white px-3">OR CONTINUE WITH</div>
+          </div>
+
+          <div className="mt-4 flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => showToast('Google sign-in failed', 'error')}
+              width="384"
+            />
+          </div>
         </div>
       </div>
     </div>

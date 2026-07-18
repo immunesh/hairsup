@@ -10,7 +10,9 @@ datasource db {
 model User {
   id         String   @id @default(uuid())
   email      String   @unique
-  password   String
+  password   String?
+  provider   String   @default("local")
+  googleId   String?  @unique
   firstName  String
   lastName   String
   phone      String?
@@ -26,6 +28,7 @@ model User {
   wishlist      WishlistItem[]
   reviews       Review[]
   refreshTokens RefreshToken[]
+  notifications Notification[]
 
   emailNotifications      Boolean @default(true)
   offerNotifications      Boolean @default(true)
@@ -34,6 +37,21 @@ model User {
   restockNotifications    Boolean @default(true)
 
   @@map("users")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId   String?
+  order     Order?   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  status    String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
 }
 
 model RefreshToken {
@@ -286,6 +304,7 @@ model Order {
   shipmentNotes     String?
   items             OrderItem[]
   tracking          OrderTracking[]
+  notifications     Notification[]
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 

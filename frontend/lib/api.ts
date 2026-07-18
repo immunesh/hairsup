@@ -46,6 +46,7 @@ api.interceptors.response.use(
 export const authApi = {
   register: (data: Record<string, string>) => api.post('/auth/register', data),
   login: (email: string, password: string) => api.post('/auth/login', { email, password }),
+  google: (credential: string) => api.post('/auth/google', { credential }),
   logout: (refreshToken: string) => api.post('/auth/logout', { refreshToken }),
   getMe: () => api.get('/auth/me'),
 };
@@ -165,4 +166,12 @@ delete: (id: string) =>
 
 export const blogApi = {
   getAll: () => api.get('/blogs/published'),
+};
+
+// Notifications
+export const notificationsApi = {
+  getAll: () => api.get('/notifications'),
+  getUnreadCount: () => api.get('/notifications/unread-count'),
+  markRead: (id: string) => api.patch(`/notifications/${id}/read`),
+  markAllRead: () => api.patch('/notifications/read-all'),
 };

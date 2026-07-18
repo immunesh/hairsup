@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore, useCartStore, useWishlistStore, useUIStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
+import NotificationBell from '@/components/ui/NotificationBell';
 
 const NAV_LINKS = [
   {
@@ -194,6 +195,9 @@ export default function Navbar() {
                   </span>
                 )}
               </Link>
+
+              {/* Notifications */}
+              <NotificationBell />
 
               {/* Cart */}
               <button

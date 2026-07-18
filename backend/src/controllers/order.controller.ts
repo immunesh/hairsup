@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { prisma } from '../db/prisma';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { AppError } from '../middleware/error.middleware';
+import { notifyOrderStatus } from '../utils/notifications';
 
 const generateOrderNumber = (): string => {
   const timestamp = Date.now().toString(36).toUpperCase();
@@ -112,6 +113,15 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<void
   });
 
   await prisma.cartItem.deleteMany({ where: { userId: req.user!.userId } });
+
+  const user = await prisma.user.findUnique({
+    where: { id: req.user!.userId },
+    select: { id: true, email: true, firstName: true, emailNotifications: true },
+  });
+  if (user) {
+    notifyOrderStatus(user, address, order, 'PENDING');
+  }
+
   res.status(201).json({ success: true, data: order });
 };
 
@@ -155,13 +165,19 @@ export const cancelOrder = async (req: AuthRequest, res: Response): Promise<void
   if (!['PENDING', 'CONFIRMED'].includes(order.status)) {
     throw new AppError('Order cannot be cancelled at this stage', 400);
   }
-  await prisma.order.update({
+  const updated = await prisma.order.update({
     where: { id },
     data: {
       status: 'CANCELLED',
       tracking: { create: { status: 'CANCELLED', message: 'Order cancelled by customer.' } },
     },
+    include: {
+      items: true,
+      address: true,
+      user: { select: { id: true, email: true, firstName: true, emailNotifications: true } },
+    },
   });
+  notifyOrderStatus(updated.user, updated.address, updated, 'CANCELLED');
   res.json({ success: true, message: 'Order cancelled successfully' });
 };
 
@@ -264,8 +280,15 @@ const order = await prisma.order.update({
       },
     },
   },
-  include: { items: true, address: true, tracking: { orderBy: { createdAt: 'desc' } } },
+  include: {
+    items: true,
+    address: true,
+    tracking: { orderBy: { createdAt: 'desc' } },
+    user: { select: { id: true, email: true, firstName: true, emailNotifications: true } },
+  },
 });
+
+notifyOrderStatus(order.user, order.address, order, status);
 
 res.json({
 success: true,
@@ -315,8 +338,15 @@ export const createShipment = async (
           },
         },
       },
-      include: { items: true, address: true, tracking: { orderBy: { createdAt: 'desc' } } },
+      include: {
+        items: true,
+        address: true,
+        tracking: { orderBy: { createdAt: 'desc' } },
+        user: { select: { id: true, email: true, firstName: true, emailNotifications: true } },
+      },
     });
+
+    notifyOrderStatus(order.user, order.address, order, 'SHIPPED');
 
     res.status(201).json({ success: true, data: order });
   } catch (error) {

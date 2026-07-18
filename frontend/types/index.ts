@@ -243,6 +243,16 @@ export interface PaginatedResponse<T> {
   };
 }
 
+export interface Notification {
+  id: string;
+  orderId?: string;
+  title: string;
+  message: string;
+  status?: OrderStatus;
+  isRead: boolean;
+  createdAt: string;
+}
+
 export interface ProductFilters {
   gender?: string;
   category?: string;

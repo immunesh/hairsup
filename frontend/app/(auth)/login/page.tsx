@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Sparkles, Mail, Lock, Loader2 } from 'lucide-react';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { useAuthStore, useUIStore } from '@/lib/store';
 import { authApi } from '@/lib/api';
 
@@ -40,6 +41,25 @@ export default function LoginPage() {
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       showToast(error?.response?.data?.message || 'Invalid credentials', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse.credential) return;
+    setLoading(true);
+    try {
+      const { data } = await authApi.google(credentialResponse.credential);
+      const { user, accessToken, refreshToken } = data.data;
+      setAuth(user, accessToken, refreshToken);
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      showToast(`Welcome back, ${user.firstName}!`);
+      router.push('/');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      showToast(error?.response?.data?.message || 'Google sign-in failed', 'error');
     } finally {
       setLoading(false);
     }
@@ -145,12 +165,12 @@ export default function LoginPage() {
             <div className="relative flex justify-center text-xs text-gray-400 bg-white px-3">OR CONTINUE WITH</div>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            {['Google', 'Apple'].map((provider) => (
-              <button key={provider} className="flex items-center justify-center gap-2 border border-gray-200 rounded-xl py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                {provider === 'Google' ? '🌐' : '🍎'} {provider}
-              </button>
-            ))}
+          <div className="mt-4 flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => showToast('Google sign-in failed', 'error')}
+              width="384"
+            />
           </div>
 
           <p className="mt-8 text-xs text-gray-400 text-center">

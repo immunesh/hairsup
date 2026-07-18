@@ -23,6 +23,7 @@ import {
 } from "./middleware/error.middleware";
 import blogRoutes from "./routes/blog.routes";
 import storeRoutes from "./routes/store.routes";
+import notificationRoutes from "./routes/notification.routes";
 const app = express();
 
 app.use(
@@ -154,6 +155,10 @@ app.use(
 app.use(
   "/api/stores",
   storeRoutes
+);
+app.use(
+  "/api/notifications",
+  notificationRoutes
 );
 
 /* ---------------- ERROR HANDLER ---------------- */

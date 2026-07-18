@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { User, CartItem, WishlistItem, Product } from '../types';
+import { User, CartItem, WishlistItem, Product, Notification } from '../types';
 
 interface AuthState {
   user: User | null;
@@ -157,6 +157,37 @@ export const useUIStore = create<UIState>()((set) => ({
   closeMobileMenu: () => set({ isMobileMenuOpen: false }),
   showToast: (message, type = 'success') => set({ toast: { message, type } }),
   clearToast: () => set({ toast: null }),
+}));
+
+interface NotificationState {
+  items: Notification[];
+  unreadCount: number;
+  isOpen: boolean;
+  setItems: (items: Notification[]) => void;
+  setUnreadCount: (count: number) => void;
+  markRead: (id: string) => void;
+  markAllRead: () => void;
+  toggle: () => void;
+  close: () => void;
+}
+
+export const useNotificationStore = create<NotificationState>()((set) => ({
+  items: [],
+  unreadCount: 0,
+  isOpen: false,
+  setItems: (items) => set({ items }),
+  setUnreadCount: (unreadCount) => set({ unreadCount }),
+  markRead: (id) =>
+    set((state) => ({
+      items: state.items.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
+      unreadCount: state.items.find((n) => n.id === id && !n.isRead)
+        ? Math.max(0, state.unreadCount - 1)
+        : state.unreadCount,
+    })),
+  markAllRead: () =>
+    set((state) => ({ items: state.items.map((n) => ({ ...n, isRead: true })), unreadCount: 0 })),
+  toggle: () => set((state) => ({ isOpen: !state.isOpen })),
+  close: () => set({ isOpen: false }),
 }));
 
 interface CompareState {

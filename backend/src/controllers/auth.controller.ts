@@ -1,9 +1,12 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
+import { OAuth2Client } from 'google-auth-library';
 import { prisma } from '../db/prisma';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt';
 import { AppError } from '../middleware/error.middleware';
 import { AuthRequest } from '../middleware/auth.middleware';
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   const { email, password, firstName, lastName, phone } = req.body;
@@ -38,9 +41,61 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw new AppError('Invalid credentials', 401);
+  if (!user.password) {
+    throw new AppError('This account uses Google Sign-In. Please continue with Google.', 401);
+  }
 
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) throw new AppError('Invalid credentials', 401);
+
+  const accessToken = generateAccessToken(user.id, user.role);
+  const refreshToken = generateRefreshToken(user.id);
+
+  await prisma.refreshToken.create({
+    data: {
+      token: refreshToken,
+      userId: user.id,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    },
+  });
+
+  const { password: _, ...userWithoutPassword } = user;
+  res.json({ success: true, data: { user: userWithoutPassword, accessToken, refreshToken } });
+};
+
+export const googleAuth = async (req: Request, res: Response): Promise<void> => {
+  const { credential } = req.body;
+  if (!credential) throw new AppError('Google credential is required', 400);
+
+  const ticket = await googleClient.verifyIdToken({
+    idToken: credential,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+  const payload = ticket.getPayload();
+  if (!payload?.email) throw new AppError('Invalid Google token', 401);
+
+  const { sub: googleId, email, given_name, family_name, picture, email_verified } = payload;
+
+  let user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        email,
+        googleId,
+        provider: 'google',
+        firstName: given_name || 'User',
+        lastName: family_name || '',
+        avatar: picture,
+        isVerified: !!email_verified,
+      },
+    });
+  } else if (!user.googleId) {
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: { googleId, avatar: user.avatar || picture },
+    });
+  }
 
   const accessToken = generateAccessToken(user.id, user.role);
   const refreshToken = generateRefreshToken(user.id);
