@@ -89,7 +89,7 @@ export default function Navbar() {
     router.push('/');
   };
 
-  const itemCount = cartStore.itemCount;
+  const itemCount = cartStore.itemCount();
 
   return (
     <>

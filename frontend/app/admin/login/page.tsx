@@ -68,10 +68,10 @@ export default function AdminLoginPage() {
       setLoading(false);
     }
   };
-         
+
   return (
     <div
-            className="
+      className="
     min-h-screen
 
     flex
