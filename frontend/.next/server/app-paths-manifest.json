@@ -1,8 +1,8 @@
 {
+  "/admin/login/page": "app/admin/login/page.js",
   "/(shop)/page": "app/(shop)/page.js",
-  "/(shop)/orders/page": "app/(shop)/orders/page.js",
-  "/admin/orders/page": "app/admin/orders/page.js",
-  "/(shop)/orders/[id]/page": "app/(shop)/orders/[id]/page.js",
-  "/(shop)/blog/[slug]/page": "app/(shop)/blog/[slug]/page.js",
-  "/(shop)/products/page": "app/(shop)/products/page.js"
+  "/(shop)/women/page": "app/(shop)/women/page.js",
+  "/(shop)/checkout/page": "app/(shop)/checkout/page.js",
+  "/(shop)/order-confirmed/page": "app/(shop)/order-confirmed/page.js",
+  "/(shop)/products/[id]/page": "app/(shop)/products/[id]/page.js"
 }

@@ -288,6 +288,7 @@ model Order {
   paymentStatus     String          @default("PENDING")
   paymentMethod     String?
   paymentId         String?
+  razorpayOrderId   String?         @unique
   subtotal          Float
   discount          Float           @default(0)
   shipping          Float           @default(0)

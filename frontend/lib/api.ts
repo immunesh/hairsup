@@ -85,6 +85,15 @@ export const ordersApi = {
   getById: (id: string) => api.get(`/orders/${id}`),
   cancel: (id: string) => api.patch(`/orders/${id}/cancel`),
 };
+
+// Payments
+export const paymentApi = {
+  verify: (data: {
+    razorpay_payment_id: string;
+    razorpay_order_id: string;
+    razorpay_signature: string;
+  }) => api.post('/payments/verify', data),
+};
  
 export const couponApi = {
   apply: (

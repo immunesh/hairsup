@@ -1,45 +1,20 @@
 {
   "pages": {
-    "/layout": [
+    "/(shop)/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/layout.css",
-      "static/chunks/app/layout.js"
+      "static/chunks/app/(shop)/page.js"
     ],
     "/(shop)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(shop)/layout.js"
     ],
-    "/(shop)/page": [
+    "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(shop)/page.js"
-    ],
-    "/(auth)/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(auth)/layout.js"
-    ],
-    "/(auth)/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(auth)/login/page.js"
-    ],
-    "/(shop)/checkout/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(shop)/checkout/page.js"
-    ],
-    "/(shop)/order-confirmed/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(shop)/order-confirmed/page.js"
-    ],
-    "/(shop)/orders/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(shop)/orders/[id]/page.js"
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
     ],
     "/admin/layout": [
       "static/chunks/webpack.js",
@@ -51,30 +26,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/admin/login/page.js"
     ],
-    "/admin/page": [
+    "/(shop)/women/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/page.js"
+      "static/chunks/app/(shop)/women/page.js"
     ],
-    "/admin/orders/page": [
+    "/(shop)/products/[id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/orders/page.js"
+      "static/chunks/app/(shop)/products/[id]/page.js"
     ],
-    "/(shop)/orders/page": [
+    "/(shop)/checkout/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(shop)/orders/page.js"
+      "static/chunks/app/(shop)/checkout/page.js"
     ],
-    "/(shop)/products/page": [
+    "/(shop)/order-confirmed/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(shop)/products/page.js"
-    ],
-    "/(shop)/blog/[slug]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(shop)/blog/[slug]/page.js"
+      "static/chunks/app/(shop)/order-confirmed/page.js"
     ]
   }
 }

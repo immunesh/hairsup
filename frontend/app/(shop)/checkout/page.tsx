@@ -8,7 +8,8 @@ import { useCartStore, useAuthStore, useUIStore } from '@/lib/store';
 import {
   ordersApi,
   userApi,
-  couponApi
+  couponApi,
+  paymentApi
 } from '@/lib/api';
 import { formatPrice } from '@/lib/utils';
 import { Address } from '@/types';
@@ -20,6 +21,29 @@ const PAYMENT_METHODS = [
   { id: 'cod', label: 'Cash on Delivery', icon: '💵', desc: 'Pay when delivered' },
   { id: 'emi', label: 'EMI', icon: '📅', desc: 'No-cost EMI on credit cards' },
 ];
+
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined') {
+      resolve(false);
+      return;
+    }
+    if ((window as any).Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    script.onload = () => {
+      resolve(true);
+    };
+    script.onerror = () => {
+      resolve(false);
+    };
+    document.body.appendChild(script);
+  });
+};
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -139,16 +163,83 @@ export default function CheckoutPage() {
     if (!selectedAddress) { showToast('Please select a delivery address', 'error'); return; }
     setPlacing(true);
     try {
+      const isOnline = paymentMethod.toLowerCase() !== 'cod';
+
+      // 1. Create order on the server
       const { data } = await ordersApi.create({
         addressId: selectedAddress,
         paymentMethod,
         couponCode: discount > 0 ? couponCode : undefined,
       });
-      clearCart();
-      router.push(`/order-confirmed?id=${data.data.orderNumber}`);
-    } catch {
-      showToast('Failed to place order. Please try again.', 'error');
-    } finally {
+
+      const orderData = data.data;
+
+      // 2. If online payment, launch Razorpay Modal
+      if (isOnline && orderData.razorpayOrder) {
+        const resScript = await loadRazorpayScript();
+        if (!resScript) {
+          showToast('Razorpay SDK failed to load. Please check your internet connection.', 'error');
+          setPlacing(false);
+          return;
+        }
+
+        const options = {
+          key: orderData.razorpayOrder.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+          amount: orderData.razorpayOrder.amount,
+          currency: orderData.razorpayOrder.currency,
+          name: 'HairsUp',
+          description: `Order ${orderData.orderNumber}`,
+          order_id: orderData.razorpayOrder.id,
+          prefill: {
+            name: user ? `${user.firstName} ${user.lastName || ''}`.trim() : '',
+            email: user?.email || '',
+            phone: user?.phone || '',
+          },
+          theme: {
+            color: '#a21caf',
+          },
+          handler: async function (response: any) {
+            setPlacing(true);
+            try {
+              // Trigger signature verification callback on backend
+              const verifyRes = await paymentApi.verify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+              });
+
+              if (verifyRes.data.success) {
+                clearCart();
+                router.push(`/order-confirmed?id=${orderData.orderNumber}`);
+                showToast('Payment successful!', 'success');
+              } else {
+                showToast('Payment verification failed.', 'error');
+              }
+            } catch (err: any) {
+              showToast(err?.response?.data?.message || 'Verification failed. Please contact customer support.', 'error');
+            } finally {
+              setPlacing(false);
+            }
+          },
+          modal: {
+            onDismiss: function () {
+              setPlacing(false);
+              showToast('Payment cancelled by user.', 'info');
+            },
+          },
+        };
+
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+      } else {
+        // COD Flow
+        clearCart();
+        router.push(`/order-confirmed?id=${orderData.orderNumber}`);
+        showToast('Order placed successfully!', 'success');
+        setPlacing(false);
+      }
+    } catch (err: any) {
+      showToast(err?.response?.data?.message || 'Failed to place order. Please try again.', 'error');
       setPlacing(false);
     }
   };
@@ -284,7 +375,7 @@ export default function CheckoutPage() {
                   </h2>
                   <div className="space-y-3">
                     {PAYMENT_METHODS.map((method) => {
-                      const isDisabled = method.id !== "cod";
+                      const isDisabled = false;
 
                       return (
                         <label
@@ -316,12 +407,6 @@ export default function CheckoutPage() {
                             <p className="text-xs text-gray-500">
                               {method.desc}
                             </p>
-
-                            {isDisabled && (
-                              <p className="text-xs text-red-500 mt-1">
-                                Coming Soon
-                              </p>
-                            )}
                           </div>
                         </label>
                       );
