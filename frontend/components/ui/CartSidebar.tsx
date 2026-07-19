@@ -39,9 +39,6 @@ export default function CartSidebar() {
     0
   );
 
-  console.log("SIDEBAR TOTAL", calculatedTotal);
-  console.log("SIDEBAR COUNT", calculatedItemCount);
-
   const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {

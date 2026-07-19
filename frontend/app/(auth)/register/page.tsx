@@ -45,12 +45,9 @@ export default function RegisterPage() {
         phone: form.phone,
         password: form.password,
       });
-      const { user, accessToken, refreshToken } = data.data;
-      setAuth(user, accessToken, refreshToken);
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      showToast(`Welcome to HairsUp, ${user.firstName}! 🎉`);
-      router.push('/');
+      const { user } = data.data;
+      showToast(`Welcome to HairsUp, ${user.firstName}! Please sign in to continue.`);
+      router.push('/login');
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       showToast(error?.response?.data?.message || 'Registration failed', 'error');
