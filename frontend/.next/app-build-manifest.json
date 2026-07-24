@@ -31,20 +31,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(shop)/women/page.js"
     ],
-    "/(shop)/products/[id]/page": [
+    "/(auth)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(shop)/products/[id]/page.js"
+      "static/chunks/app/(auth)/layout.js"
     ],
-    "/(shop)/checkout/page": [
+    "/(auth)/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(shop)/checkout/page.js"
+      "static/chunks/app/(auth)/login/page.js"
     ],
-    "/(shop)/order-confirmed/page": [
+    "/not-found": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(shop)/order-confirmed/page.js"
+      "static/chunks/app/not-found.js"
     ]
   }
 }
