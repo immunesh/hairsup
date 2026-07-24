@@ -3,6 +3,7 @@ import { prisma } from '../db/prisma';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { AppError } from '../middleware/error.middleware';
 import { notifyOrderStatus } from '../utils/notifications';
+import { razorpay } from '../utils/razorpay';
 
 const generateOrderNumber = (): string => {
   const timestamp = Date.now().toString(36).toUpperCase();
@@ -93,6 +94,8 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<void
   const tax = (subtotal - discount) * 0.18;
   const total = subtotal - discount + shipping + tax;
 
+  const isOnlinePayment = paymentMethod && paymentMethod.toUpperCase() !== 'COD';
+
   const order = await prisma.order.create({
     data: {
       orderNumber: generateOrderNumber(),
@@ -107,11 +110,46 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<void
       couponCode,
       notes,
       items: { create: orderItems },
-      tracking: { create: { status: 'PENDING', message: 'Order placed successfully.' } },
+      tracking: { create: { status: 'PENDING', message: isOnlinePayment ? 'Awaiting online payment.' : 'Order placed successfully.' } },
     },
     include: { items: true, address: true, tracking: true },
   });
 
+  if (isOnlinePayment) {
+    try {
+      const rpOrder = await razorpay.orders.create({
+        amount: Math.round(total * 100), // amount in paise
+        currency: 'INR',
+        receipt: order.id,
+      });
+
+      const updatedOrder = await prisma.order.update({
+        where: { id: order.id },
+        data: { razorpayOrderId: rpOrder.id },
+        include: { items: true, address: true, tracking: true },
+      });
+
+      res.status(201).json({
+        success: true,
+        data: {
+          ...updatedOrder,
+          razorpayOrder: {
+            id: rpOrder.id,
+            amount: rpOrder.amount,
+            currency: rpOrder.currency,
+            keyId: process.env.RAZORPAY_KEY_ID,
+          },
+        },
+      });
+      return;
+    } catch (error) {
+      // If Razorpay order creation fails, clean up the order to avoid dangling records
+      await prisma.order.delete({ where: { id: order.id } });
+      throw new AppError('Failed to initialize payment gateway. Please try again.', 500);
+    }
+  }
+
+  // COD Flow: delete cart items immediately
   await prisma.cartItem.deleteMany({ where: { userId: req.user!.userId } });
 
   const user = await prisma.user.findUnique({

@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
+dotenv.config();
+
 import app from './app';
 import { prisma } from './db/prisma';
-
-dotenv.config();
 
 const PORT = parseInt(process.env.PORT || '5000', 10);
 
