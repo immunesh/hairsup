@@ -52,8 +52,8 @@ interface CartState {
   closeCart: () => void;
   setCoupon: (code: string, discount: number) => void;
   clearCoupon: () => void;
-  get total(): number;
-  get itemCount(): number;
+  total: () => number;
+  itemCount: () => number;
 }
 
 export const useCartStore = create<CartState>()((set, get) => ({
@@ -95,25 +95,17 @@ export const useCartStore = create<CartState>()((set, get) => ({
   closeCart: () => set({ isOpen: false }),
   setCoupon: (couponCode, discount) => set({ couponCode, discount }),
   clearCoupon: () => set({ couponCode: '', discount: 0 }),
-  
-get total() {
-  const items = get().items;
+  total: () => {
+    return get().items.reduce((sum, item) => {
+      const price =
+        Number(item.product?.salePrice) ||
+        Number(item.product?.basePrice) ||
+        0;
 
-  console.log("TOTAL ITEMS", items);
-
-  return items.reduce((sum, item) => {
-    const price =
-      Number(item.product?.salePrice) ||
-      Number(item.product?.basePrice) ||
-      0;
-
-    return sum + price * item.quantity;
-  }, 0);
-},
-  get itemCount() {
-    return get().items.reduce((sum, item) => sum + item.quantity, 0);
+      return sum + price * item.quantity;
+    }, 0);
   },
-  
+  itemCount: () => get().items.reduce((sum, item) => sum + item.quantity, 0),
 }));
 
 interface WishlistState {

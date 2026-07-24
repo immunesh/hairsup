@@ -30,7 +30,7 @@ export default function CheckoutPage() {
   const [addresses, setAddresses] = useState<Address[]>([]);
 
   const [selectedAddress, setSelectedAddress] = useState<string>('');
-  const [paymentMethod, setPaymentMethod] = useState('COD');
+  const [paymentMethod, setPaymentMethod] = useState('cod');
   const [couponInput, setCouponInput] = useState('');
   const [applyingCoupon, setApplyingCoupon] = useState(false);
   const [placing, setPlacing] = useState(false);
@@ -137,6 +137,7 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!selectedAddress) { showToast('Please select a delivery address', 'error'); return; }
+    if (!paymentMethod) { showToast('Please select a payment method', 'error'); return; }
     setPlacing(true);
     try {
       const { data } = await ordersApi.create({
@@ -357,7 +358,7 @@ export default function CheckoutPage() {
             {/* Place Order Button right in the summary card */}
             <button
               onClick={handlePlaceOrder}
-              disabled={placing || !selectedAddress}
+              disabled={placing || !selectedAddress || !paymentMethod}
               className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 mt-2 font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {placing ? (
@@ -371,6 +372,9 @@ export default function CheckoutPage() {
 
             {!selectedAddress && (
               <p className="text-xs text-red-500 text-center font-medium">Please select a delivery address to complete your order</p>
+            )}
+            {selectedAddress && !paymentMethod && (
+              <p className="text-xs text-red-500 text-center font-medium">Please select a payment method to complete your order</p>
             )}
 
             <div className="bg-green-50 border border-green-100 rounded-xl p-3 flex items-center gap-2 text-xs text-green-700 font-medium">
