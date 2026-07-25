@@ -1,10 +1,27 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle, Package, Truck, MapPin, Star, ArrowRight, Download } from 'lucide-react';
 
 export default function OrderConfirmedPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container-custom py-16 max-w-2xl mx-auto animate-pulse">
+          <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-6" />
+          <div className="bg-gray-200 h-8 w-2/3 rounded mx-auto mb-4" />
+          <div className="bg-gray-200 h-4 w-1/2 rounded mx-auto" />
+        </div>
+      }
+    >
+      <OrderConfirmedContent />
+    </Suspense>
+  );
+}
+
+function OrderConfirmedContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('id') || 'HU-ORDER-001';
 

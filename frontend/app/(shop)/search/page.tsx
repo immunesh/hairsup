@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import ProductCard from '@/components/ui/ProductCard';
@@ -11,6 +11,30 @@ import { Product } from '@/types';
 const SUGGESTIONS = ['Lace Front', 'Human Hair', "Men's System", 'Curly Wig', 'Ombre', 'Body Wave', 'Synthetic', 'Short Bob', 'Afro', 'Straight'];
 
 export default function SearchPage() {
+  return (
+    <Suspense fallback={<ProductGridSkeleton />}>
+      <SearchContent />
+    </Suspense>
+  );
+}
+
+function ProductGridSkeleton() {
+  return (
+    <div className="container-custom py-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="animate-pulse">
+            <div className="bg-gray-200 aspect-product rounded-2xl mb-3" />
+            <div className="bg-gray-200 h-4 rounded mb-2" />
+            <div className="bg-gray-200 h-4 w-2/3 rounded" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SearchContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const query = searchParams.get('q') || '';

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Grid, List, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import ProductCard from '@/components/ui/ProductCard';
@@ -35,6 +35,30 @@ const GENDER_OPTIONS = [
 
 /* ─── page ─── */
 export default function ShopAllPage() {
+  return (
+    <Suspense fallback={<ProductGridSkeleton />}>
+      <ShopAllContent />
+    </Suspense>
+  );
+}
+
+function ProductGridSkeleton() {
+  return (
+    <div className="container-custom py-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+          <div key={i} className="animate-pulse">
+            <div className="bg-gray-200 aspect-product rounded-2xl mb-3" />
+            <div className="bg-gray-200 h-4 rounded mb-2" />
+            <div className="bg-gray-200 h-4 w-2/3 rounded" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ShopAllContent() {
   const searchParams = useSearchParams();
 
   // No gender lock → fetch ALL products
