@@ -16,6 +16,35 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Shop routes that require a signed-in customer. Everything else (home, shop,
+// product pages, blog...) stays browsable as a guest.
+const PROTECTED_SHOP_ROUTES = ['/profile', '/orders', '/checkout', '/wishlist'];
+
+function clearSession() {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('role');
+  localStorage.removeItem('userId');
+}
+
+// Send the user to the login page that matches where they already are — and
+// only when the current page actually needs auth. A public page just drops the
+// dead session and keeps rendering.
+function redirectToLogin() {
+  if (typeof window === 'undefined') return;
+  const path = window.location.pathname;
+
+  if (path.startsWith('/admin')) {
+    if (path !== '/admin/login') window.location.href = '/admin/login';
+    return;
+  }
+
+  const needsAuth = PROTECTED_SHOP_ROUTES.some(
+    (route) => path === route || path.startsWith(`${route}/`)
+  );
+  if (needsAuth && path !== '/login') window.location.href = '/login';
+}
+
 api.interceptors.response.use(
   (res) => res,
   async (err) => {
@@ -31,10 +60,8 @@ api.interceptors.response.use(
           original.headers.Authorization = `Bearer ${data.data.accessToken}`;
           return api(original);
         } catch {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-        window.location.href = '/admin/login';
-        //window.location.href = '/login';
+          clearSession();
+          redirectToLogin();
         }
       }
     }
