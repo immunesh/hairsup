@@ -12,6 +12,10 @@ out/
 # Build outputs
 dist/
 build/
+# TypeScript incremental compile cache — regenerated on every build, so it
+# only ever creates diff noise and merge conflicts.
+*.tsbuildinfo
+build-output.txt
 
 # Environment variables
 .env
