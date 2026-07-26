@@ -6,6 +6,11 @@ import fs from "fs";
 
 const router = Router();
 
+// This URL is written into the database alongside the product, so it must be
+// the public address of this server, not localhost.
+const BACKEND_URL =
+  process.env.BACKEND_URL || "http://localhost:5000";
+
 const uploadDir = "uploads";
 
 if (!fs.existsSync(uploadDir)) {
@@ -48,7 +53,7 @@ router.post(
 
     res.json({
       success: true,
-      url: `http://localhost:5000/uploads/${req.file.filename}`,
+      url: `${BACKEND_URL}/uploads/${req.file.filename}`,
     });
   }
 );

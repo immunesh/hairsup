@@ -29,6 +29,17 @@ const nextConfig = {
         hostname: "localhost",
         port: "5000",
       },
+
+      // Backend uploaded images in deployed environments. next/image refuses
+      // any host not listed here, so the deployed backend must be allowed too.
+      ...(process.env.NEXT_PUBLIC_API_URL
+        ? [
+            {
+              protocol: new URL(process.env.NEXT_PUBLIC_API_URL).protocol.replace(":", ""),
+              hostname: new URL(process.env.NEXT_PUBLIC_API_URL).hostname,
+            },
+          ]
+        : []),
     ],
   },
 };

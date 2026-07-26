@@ -1,9 +1,10 @@
 import Link from "next/link";
 import DeleteProductButton from "@/components/DeleteProductButton";
+import { API_URL } from '@/lib/config';
 
 async function getProducts() {
   const res = await fetch(
-    "http://localhost:5000/api/products",
+    `${API_URL}/products`,
     {
       cache: "no-store",
     }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { API_URL } from '@/lib/config';
 
 export default function EditProductPage() {
 const params = useParams();
@@ -80,7 +81,7 @@ fetchCategories();
 async function fetchCategories() {
 try {
 const res = await fetch(
-"http://localhost:5000/api/categories"
+`${API_URL}/categories`
 );
 
 
@@ -102,7 +103,7 @@ async function fetchProduct() {
 try {
   
 const res = await fetch(
-`http://localhost:5000/api/products/${params.id}`
+`${API_URL}/products/${params.id}`
 );
 
 
@@ -212,7 +213,7 @@ if (mainImage) {
   fd.append("image", mainImage);
 
   const uploadRes = await fetch(
-    "http://localhost:5000/api/upload/image",
+    `${API_URL}/upload/image`,
     {
       method: "POST",
       body: fd,
@@ -232,7 +233,7 @@ for (const image of galleryImages) {
   fd.append("image", image);
 
   const uploadRes = await fetch(
-    "http://localhost:5000/api/upload/image",
+    `${API_URL}/upload/image`,
     {
       method: "POST",
       body: fd,
@@ -246,7 +247,7 @@ for (const image of galleryImages) {
   }
 }
   const res = await fetch(
-    `http://localhost:5000/api/products/${params.id}`,
+    `${API_URL}/products/${params.id}`,
     {
       method: "PUT",
       headers: {

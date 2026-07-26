@@ -1,9 +1,10 @@
 import Link from "next/link";
 import DeleteHeroSlideButton from "@/components/admin/DeleteHeroSlideButton";
+import { API_URL } from '@/lib/config';
 
 async function getHeroSlides() {
   const res = await fetch(
-    "http://localhost:5000/api/hero-slides",
+    `${API_URL}/hero-slides`,
     {
       cache: "no-store",
     }

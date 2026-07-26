@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_URL } from '@/lib/config';
 
 export default function CreateHeroSlidePage() {
   const router = useRouter();
@@ -39,7 +40,7 @@ export default function CreateHeroSlidePage() {
       imageFormData.append("image", image);
 
       const uploadRes = await fetch(
-        "http://localhost:5000/api/upload/image",
+        `${API_URL}/upload/image`,
         {
           method: "POST",
           body: imageFormData,
@@ -56,7 +57,7 @@ export default function CreateHeroSlidePage() {
       const imageUrl = uploadData.url;
 
       const res = await fetch(
-        "http://localhost:5000/api/hero-slides",
+        `${API_URL}/hero-slides`,
         {
           method: "POST",
           headers: {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { API_URL } from '@/lib/config';
 
 export default function DeleteProductButton({
   id,
@@ -17,7 +18,7 @@ export default function DeleteProductButton({
     if (!confirmDelete) return;
 
     const res = await fetch(
-      `http://localhost:5000/api/products/${id}`,
+      `${API_URL}/products/${id}`,
       {
         method: "DELETE",
       }

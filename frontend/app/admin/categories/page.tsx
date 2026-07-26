@@ -1,9 +1,10 @@
 import Link from "next/link";
 import DeleteCategoryButton from "@/components/admin/DeleteCategoryButton";
+import { API_URL } from '@/lib/config';
 
 async function getCategories() {
   const res = await fetch(
-    "http://localhost:5000/api/categories",
+    `${API_URL}/categories`,
     {
       cache: "no-store",
     }

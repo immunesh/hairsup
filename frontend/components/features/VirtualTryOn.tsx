@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import Cropper from "react-easy-crop";
 import getCroppedImg from "@/lib/cropImage";
 import { FaceLandmarker } from "@mediapipe/tasks-vision";
+import { API_URL } from '@/lib/config';
 interface VirtualTryOnProps {
   products?: Product[];
   selectedProduct?: Product;
@@ -450,7 +451,7 @@ drawWig(
   const loadProductImages = async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/products/${selectedProductId}`
+        `${API_URL}/products/${selectedProductId}`
       );
 
       const data = await res.json();

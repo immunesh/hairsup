@@ -1,9 +1,10 @@
 import Link from "next/link";
 import EditCategoryForm from "@/components/admin/EditCategoryForm";
+import { API_URL } from '@/lib/config';
 
 async function getCategory(id: string) {
   const res = await fetch(
-    `http://localhost:5000/api/categories/${id}`,
+    `${API_URL}/categories/${id}`,
     {
       cache: "no-store",
     }

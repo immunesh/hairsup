@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { API_URL } from './config';
 
 export async function getCategories() {
   const res = await api.get("/categories");
@@ -7,7 +8,7 @@ export async function getCategories() {
 
 export async function deleteCategory(id: string) {
   const res = await fetch(
-    `http://localhost:5000/api/categories/${id}`,
+    `${API_URL}/categories/${id}`,
     {
       method: "DELETE",
     }

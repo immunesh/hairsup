@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_URL } from '@/lib/config';
 
 export default function CreateProductPage() {
   const router = useRouter();
@@ -97,7 +98,7 @@ const [includedItems, setIncludedItems] = useState([
 
       const uploadRes =
         await fetch(
-          "http://localhost:5000/api/upload/image",
+          `${API_URL}/upload/image`,
           {
             method: "POST",
             body: imageFormData,
@@ -140,7 +141,7 @@ for (const image of galleryImages) {
   );
 
   const uploadRes = await fetch(
-    "http://localhost:5000/api/upload/image",
+    `${API_URL}/upload/image`,
     {
       method: "POST",
       body: formData,
@@ -159,7 +160,7 @@ for (const image of galleryImages) {
 
     // Create product
     const res = await fetch(
-      "http://localhost:5000/api/products",
+      `${API_URL}/products`,
       {
         method: "POST",
         headers: {
@@ -249,7 +250,7 @@ includedItems,
   async function loadCategories() {
     try {
       const res = await fetch(
-        "http://localhost:5000/api/categories"
+        `${API_URL}/categories`
       );
 
       const data = await res.json();

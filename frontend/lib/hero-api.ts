@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { API_URL } from './config';
 
 export async function getHeroSlides(activeOnly = false) {
   const res = await api.get("/hero-slides", {
@@ -9,7 +10,7 @@ export async function getHeroSlides(activeOnly = false) {
 
 export async function deleteHeroSlide(id: string) {
   const res = await fetch(
-    `http://localhost:5000/api/hero-slides/${id}`,
+    `${API_URL}/hero-slides/${id}`,
     {
       method: "DELETE",
     }

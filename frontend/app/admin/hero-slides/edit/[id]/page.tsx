@@ -1,9 +1,10 @@
 import Link from "next/link";
 import EditHeroSlideForm from "@/components/admin/EditHeroSlideForm";
+import { API_URL } from '@/lib/config';
 
 async function getHeroSlide(id: string) {
   const res = await fetch(
-    `http://localhost:5000/api/hero-slides/${id}`,
+    `${API_URL}/hero-slides/${id}`,
     {
       cache: "no-store",
     }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_URL } from '@/lib/config';
 
 export default function CreateCategoryPage() {
   const router = useRouter();
@@ -29,7 +30,7 @@ export default function CreateCategoryPage() {
         imageFormData.append("image", image);
 
         const uploadRes = await fetch(
-          "http://localhost:5000/api/upload/image",
+          `${API_URL}/upload/image`,
           {
             method: "POST",
             body: imageFormData,
@@ -47,7 +48,7 @@ export default function CreateCategoryPage() {
       }
 
       const res = await fetch(
-        "http://localhost:5000/api/categories",
+        `${API_URL}/categories`,
         {
           method: "POST",
           headers: {

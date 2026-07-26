@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
 
+// This URL is written into the database alongside the product, so it must be
+// the public address of this server, not localhost.
+const BACKEND_URL =
+  process.env.BACKEND_URL || "http://localhost:5000";
+
 export const uploadImage = async (
   req: Request,
   res: Response
@@ -16,7 +21,7 @@ export const uploadImage = async (
     res.status(200).json({
       success: true,
       filename: req.file.filename,
-      url: `http://localhost:5000/uploads/${req.file.filename}`,
+      url: `${BACKEND_URL}/uploads/${req.file.filename}`,
     });
   } catch (error) {
     console.error(error);

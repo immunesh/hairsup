@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import VirtualTryOn from '@/components/features/VirtualTryOn';
 import { Zap, Camera, Sparkles, Star } from 'lucide-react';
 import Link from 'next/link';
+import { API_URL } from '@/lib/config';
 
 export const metadata: Metadata = {
   title: 'Virtual Try-On — See How Any Wig Looks on You',
@@ -27,7 +28,7 @@ export default async function TryOnPage({
 
   if (wig) {
     const res = await fetch(
-      `http://localhost:5000/api/products/${wig}`,
+      `${API_URL}/products/${wig}`,
       {
         cache: "no-store",
       }

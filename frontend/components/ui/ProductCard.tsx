@@ -9,6 +9,7 @@ import { formatPrice, getDiscountPercent } from '@/lib/utils';
 import { useCartStore, useWishlistStore, useAuthStore, useUIStore } from '@/lib/store';
 import { cartApi, wishlistApi } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import { API_ORIGIN } from '@/lib/config';
 
 interface ProductCardProps {
   product: Product;
@@ -26,10 +27,6 @@ console.log("CARD", {
   name: product.name,
   images: product.images,
 });
- const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ||
-  "http://localhost:5000";
-
 const primaryImage =
   product.images?.find((img) => img.isPrimary) ||
   product.images?.[0];
@@ -41,13 +38,13 @@ const hoverImage =
 const imageUrl = primaryImage?.url
   ? primaryImage.url.startsWith("http")
     ? primaryImage.url
-    : `${API_BASE}${primaryImage.url}`
+    : `${API_ORIGIN}${primaryImage.url}`
   : "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800";
 
 const hoverUrl = hoverImage?.url
   ? hoverImage.url.startsWith("http")
     ? hoverImage.url
-    : `${API_BASE}${hoverImage.url}`
+    : `${API_ORIGIN}${hoverImage.url}`
   : imageUrl;
     const isWishlisted = wishlistItems.some((i) => i.productId === product.id);
   const discountPct = product.salePrice ? getDiscountPercent(product.basePrice, product.salePrice) : 0;

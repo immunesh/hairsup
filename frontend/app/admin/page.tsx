@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { API_URL } from '@/lib/config';
 
 interface DashboardStats {
   products: number;
@@ -90,14 +91,14 @@ export default function AdminDashboard() {
         ordersRes,
       ] = await Promise.all([
         fetch(
-          "http://localhost:5000/api/products",
+          `${API_URL}/products`,
           {
             cache: "no-store",
           }
         ),
 
         fetch(
-          "http://localhost:5000/api/users/admin/all",
+          `${API_URL}/users/admin/all`,
           {
             headers,
             cache: "no-store",
@@ -105,7 +106,7 @@ export default function AdminDashboard() {
         ),
 
         fetch(
-          "http://localhost:5000/api/orders/admin/all",
+          `${API_URL}/orders/admin/all`,
           {
             headers,
             cache: "no-store",

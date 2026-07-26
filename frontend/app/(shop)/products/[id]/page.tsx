@@ -34,6 +34,7 @@ import {
 import { cartApi, wishlistApi, productsApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { reviewsApi } from "@/lib/api";
+import { API_URL } from "@/lib/config";
 const PRODUCT_TABS = ["Description", "Care Guide", "Reviews", "FAQ"];
 
 export default function ProductDetailPage() {
@@ -90,10 +91,7 @@ export default function ProductDetailPage() {
         err?.response?.data?.message || err?.message || "Network Error";
       // Try a plain fetch fallback to see if axios-specific behavior or CORS is the problem
       try {
-        const API_BASE =
-          (process.env.NEXT_PUBLIC_API_URL as string) ||
-          "http://localhost:5000/api";
-        const fallbackRes = await fetch(`${API_BASE}/products/${productId}`);
+        const fallbackRes = await fetch(`${API_URL}/products/${productId}`);
         const text = await fallbackRes.text();
         if (fallbackRes.ok) {
           // parse JSON and set product if possible
@@ -105,7 +103,7 @@ export default function ProductDetailPage() {
             // try related via fetch too
             try {
               const relRes = await fetch(
-                `${API_BASE}/products/${productData.id}/related`,
+                `${API_URL}/products/${productData.id}/related`,
               );
               if (relRes.ok) {
                 const relParsed = await relRes.json();

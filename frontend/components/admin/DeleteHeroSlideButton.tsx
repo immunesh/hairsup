@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2, Loader2 } from "lucide-react";
 import { useUIStore } from "@/lib/store";
+import { API_URL } from '@/lib/config';
 
 export default function DeleteHeroSlideButton({
   id,
@@ -27,7 +28,7 @@ export default function DeleteHeroSlideButton({
       setLoading(true);
 
       const res = await fetch(
-        `http://localhost:5000/api/hero-slides/${id}`,
+        `${API_URL}/hero-slides/${id}`,
         {
           method: "DELETE",
         }
