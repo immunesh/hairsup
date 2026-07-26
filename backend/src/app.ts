@@ -35,12 +35,17 @@ app.use(
   })
 );
 
+// Browsers send Origin as scheme://host[:port] with no trailing slash, but
+// FRONTEND_URL is usually copied from a browser address bar, which shows one.
+// Without stripping it the entry can never match and every request fails as an
+// opaque 500, so normalise instead of trusting the value as typed.
 const allowedOrigins = (
   process.env.FRONTEND_URL ||
   "http://localhost:3000"
 )
   .split(",")
-  .map((origin) => origin.trim());
+  .map((origin) => origin.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
 
 app.use(
   cors({
