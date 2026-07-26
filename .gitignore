@@ -17,6 +17,11 @@ build/
 .env
 .env.local
 .env.*.local
+# Backups and per-host copies. Deliberately not a blanket .env.* so that
+# .env.example stays tracked.
+.env.bak*
+.env.production
+.env.development
 
 # IDE
 .vscode/
