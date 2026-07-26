@@ -7,13 +7,11 @@
     "dev:3001": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "prisma generate"
+    "lint": "next lint"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
     "@mediapipe/tasks-vision": "^0.10.35",
-    "@prisma/client": "^5.22.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
@@ -27,7 +25,6 @@
     "framer-motion": "^10.18.0",
     "lucide-react": "^0.309.0",
     "next": "14.1.0",
-    "prisma": "^5.22.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-easy-crop": "^6.0.2",
