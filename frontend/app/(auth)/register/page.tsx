@@ -45,8 +45,7 @@ export default function RegisterPage() {
         phone: form.phone,
         password: form.password,
       });
-      const { user } = data.data;
-      showToast(`Welcome to HairsUp, ${user.firstName}! Please sign in to continue.`);
+      showToast(data.message || 'Verification email sent. Please check your inbox to verify your account.', 'success');
       router.push('/login');
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
