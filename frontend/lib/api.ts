@@ -75,6 +75,10 @@ export const authApi = {
   google: (credential: string) => api.post('/auth/google', { credential }),
   logout: (refreshToken: string) => api.post('/auth/logout', { refreshToken }),
   getMe: () => api.get('/auth/me'),
+  verifyEmail: (token: string) => api.post('/auth/verify-email', { token }),
+  resendVerification: (email: string) => api.post('/auth/resend-verification', { email }),
+  forgotPassword: (email: string) => api.post('/auth/forgot-password', { email }),
+  resetPassword: (data: Record<string, string>) => api.post('/auth/reset-password', data),
 };
 
 // Products

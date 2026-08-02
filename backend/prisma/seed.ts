@@ -80,6 +80,14 @@ async function main() {
         { url: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600', isPrimary: false, angle: 90 },
         { url: 'https://images.unsplash.com/photo-1519699047748-de8e44489ece?w=600', isPrimary: false, angle: 180 },
         { url: 'https://images.unsplash.com/photo-1588516903720-8ceb67f9ef84?w=600', isPrimary: false, angle: 270 },
+        { url: '/wigs/wig1/wig_no_label_1.png', isPrimary: false, angle: 0, isTryOn: true },
+        { url: '/wigs/wig1/wig_no_label_2.png', isPrimary: false, angle: 45, isTryOn: true },
+        { url: '/wigs/wig1/wig_no_label_3.png', isPrimary: false, angle: 90, isTryOn: true },
+        { url: '/wigs/wig1/wig_no_label_4.png', isPrimary: false, angle: 135, isTryOn: true },
+        { url: '/wigs/wig1/wig_no_label_5.png', isPrimary: false, angle: 180, isTryOn: true },
+        { url: '/wigs/wig1/wig_no_label_6.png', isPrimary: false, angle: 225, isTryOn: true },
+        { url: '/wigs/wig1/wig_no_label_7.png', isPrimary: false, angle: 270, isTryOn: true },
+        { url: '/wigs/wig1/wig_no_label_8.png', isPrimary: false, angle: 315, isTryOn: true },
       ],
     },
     {
@@ -104,6 +112,14 @@ async function main() {
       images: [
         { url: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600', isPrimary: true, angle: 0 },
         { url: 'https://images.unsplash.com/photo-1571512599285-9494e11d9e72?w=600', isPrimary: false, angle: 90 },
+        { url: '/wigs/wig2/wig_view_1.png', isPrimary: false, angle: 0, isTryOn: true },
+        { url: '/wigs/wig2/wig_view_2.png', isPrimary: false, angle: 45, isTryOn: true },
+        { url: '/wigs/wig2/wig_view_3.png', isPrimary: false, angle: 90, isTryOn: true },
+        { url: '/wigs/wig2/wig_view_4.png', isPrimary: false, angle: 135, isTryOn: true },
+        { url: '/wigs/wig2/wig_view_5.png', isPrimary: false, angle: 180, isTryOn: true },
+        { url: '/wigs/wig2/wig_view_6.png', isPrimary: false, angle: 225, isTryOn: true },
+        { url: '/wigs/wig2/wig_view_7.png', isPrimary: false, angle: 270, isTryOn: true },
+        { url: '/wigs/wig2/wig_view_8.png', isPrimary: false, angle: 315, isTryOn: true },
       ],
     },
     {
@@ -128,6 +144,14 @@ async function main() {
       images: [
         { url: 'https://images.unsplash.com/photo-1519699047748-de8e44489ece?w=600', isPrimary: true, angle: 0 },
         { url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600', isPrimary: false, angle: 90 },
+        { url: '/wigs/wig3/wig3_view_1.png', isPrimary: false, angle: 0, isTryOn: true },
+        { url: '/wigs/wig3/wig3_view_2.png', isPrimary: false, angle: 45, isTryOn: true },
+        { url: '/wigs/wig3/wig3_view_3.png', isPrimary: false, angle: 90, isTryOn: true },
+        { url: '/wigs/wig3/wig3_view_4.png', isPrimary: false, angle: 135, isTryOn: true },
+        { url: '/wigs/wig3/wig3_view_5.png', isPrimary: false, angle: 180, isTryOn: true },
+        { url: '/wigs/wig3/wig3_view_6.png', isPrimary: false, angle: 225, isTryOn: true },
+        { url: '/wigs/wig3/wig3_view_7.png', isPrimary: false, angle: 270, isTryOn: true },
+        { url: '/wigs/wig3/wig3_view_8.png', isPrimary: false, angle: 315, isTryOn: true },
       ],
     },
     {
@@ -150,6 +174,14 @@ async function main() {
       tags: JSON.stringify(['ombre', 'deep wave', 'color', 'blonde']),
       images: [
         { url: 'https://images.unsplash.com/photo-1571512599285-9494e11d9e72?w=600', isPrimary: true, angle: 0 },
+        { url: '/wigs/wig4/wig4_view_1.png', isPrimary: false, angle: 0, isTryOn: true },
+        { url: '/wigs/wig4/wig4_view_2.png', isPrimary: false, angle: 45, isTryOn: true },
+        { url: '/wigs/wig4/wig4_view_3.png', isPrimary: false, angle: 90, isTryOn: true },
+        { url: '/wigs/wig4/wig4_view_4.png', isPrimary: false, angle: 135, isTryOn: true },
+        { url: '/wigs/wig4/wig4_view_5.png', isPrimary: false, angle: 180, isTryOn: true },
+        { url: '/wigs/wig4/wig4_view_6.png', isPrimary: false, angle: 225, isTryOn: true },
+        { url: '/wigs/wig4/wig4_view_7.png', isPrimary: false, angle: 270, isTryOn: true },
+        { url: '/wigs/wig4/wig4_view_8.png', isPrimary: false, angle: 315, isTryOn: true },
       ],
     },
     {
@@ -171,6 +203,14 @@ async function main() {
       tags: JSON.stringify(['ponytail', 'sleek', 'synthetic', 'updo']),
       images: [
         { url: 'https://images.unsplash.com/photo-1588516903720-8ceb67f9ef84?w=600', isPrimary: true, angle: 0 },
+        { url: '/wigs/wig5/wig5_view_1.png', isPrimary: false, angle: 0, isTryOn: true },
+        { url: '/wigs/wig5/wig5_view_2.png', isPrimary: false, angle: 45, isTryOn: true },
+        { url: '/wigs/wig5/wig5_view_3.png', isPrimary: false, angle: 90, isTryOn: true },
+        { url: '/wigs/wig5/wig5_view_4.png', isPrimary: false, angle: 135, isTryOn: true },
+        { url: '/wigs/wig5/wig5_view_5.png', isPrimary: false, angle: 180, isTryOn: true },
+        { url: '/wigs/wig5/wig5_view_6.png', isPrimary: false, angle: 225, isTryOn: true },
+        { url: '/wigs/wig5/wig5_view_7.png', isPrimary: false, angle: 270, isTryOn: true },
+        { url: '/wigs/wig5/wig5_view_8.png', isPrimary: false, angle: 315, isTryOn: true },
       ],
     },
     {
@@ -193,6 +233,14 @@ async function main() {
       tags: JSON.stringify(['afro', 'kinky', '4c', 'natural']),
       images: [
         { url: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600', isPrimary: true, angle: 0 },
+        { url: '/wigs/wig6/wig6_view_1.png', isPrimary: false, angle: 0, isTryOn: true },
+        { url: '/wigs/wig6/wig6_view_2.png', isPrimary: false, angle: 45, isTryOn: true },
+        { url: '/wigs/wig6/wig6_view_3.png', isPrimary: false, angle: 90, isTryOn: true },
+        { url: '/wigs/wig6/wig6_view_4.png', isPrimary: false, angle: 135, isTryOn: true },
+        { url: '/wigs/wig6/wig6_view_5.png', isPrimary: false, angle: 180, isTryOn: true },
+        { url: '/wigs/wig6/wig6_view_6.png', isPrimary: false, angle: 225, isTryOn: true },
+        { url: '/wigs/wig6/wig6_view_7.png', isPrimary: false, angle: 270, isTryOn: true },
+        { url: '/wigs/wig6/wig6_view_8.png', isPrimary: false, angle: 315, isTryOn: true },
       ],
     },
     {
@@ -293,7 +341,12 @@ async function main() {
     const { images, tags, ...data } = p;
     await prisma.product.upsert({
       where: { slug: p.slug },
-      update: {},
+      update: {
+        images: {
+          deleteMany: {},
+          create: images,
+        },
+      },
       create: {
         ...data,
         tags,

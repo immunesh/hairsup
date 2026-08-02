@@ -20,6 +20,10 @@ model User {
   avatar     String?
   role       String   @default("CUSTOMER")
   isVerified Boolean  @default(false)
+  verificationToken       String?  @unique
+  verificationTokenExpiry DateTime?
+  resetPasswordToken      String?  @unique
+  resetPasswordExpiry     DateTime?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
