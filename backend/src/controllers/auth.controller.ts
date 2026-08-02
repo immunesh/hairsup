@@ -6,7 +6,7 @@ import { prisma } from '../db/prisma';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt';
 import { AppError } from '../middleware/error.middleware';
 import { AuthRequest } from '../middleware/auth.middleware';
-import { sendEmail } from '../utils/email';
+import { sendEmail, isEmailConfigured } from '../utils/email';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -67,11 +67,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     </div>
   `;
 
-  await sendEmail(email, 'Verify your email - HairsUp', emailText, emailHtml);
+  void sendEmail(email, 'Verify your email - HairsUp', emailText, emailHtml);
 
-  const userGmail = process.env.GMAIL_USER;
-  const passGmail = process.env.GMAIL_APP_PASSWORD;
-  const isSmtpConfigured = userGmail && passGmail && !userGmail.includes('your_gmail_address') && !passGmail.includes('your_16_char_gmail_app_password');
+  const isSmtpConfigured = isEmailConfigured();
 
   res.status(201).json({
     success: true,
@@ -286,7 +284,7 @@ export const resendVerification = async (req: Request, res: Response): Promise<v
     </div>
   `;
 
-  await sendEmail(email, 'Verify your email - HairsUp', emailText, emailHtml);
+  void sendEmail(email, 'Verify your email - HairsUp', emailText, emailHtml);
 
   res.json({
     success: true,
@@ -338,11 +336,9 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
     </div>
   `;
 
-  await sendEmail(email, 'Reset your password - HairsUp', emailText, emailHtml);
+  void sendEmail(email, 'Reset your password - HairsUp', emailText, emailHtml);
 
-  const userGmail = process.env.GMAIL_USER;
-  const passGmail = process.env.GMAIL_APP_PASSWORD;
-  const isSmtpConfigured = userGmail && passGmail && !userGmail.includes('your_gmail_address') && !passGmail.includes('your_16_char_gmail_app_password');
+  const isSmtpConfigured = isEmailConfigured();
 
   res.json({
     success: true,
