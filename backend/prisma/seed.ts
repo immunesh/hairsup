@@ -9,13 +9,16 @@ async function main() {
   const adminPassword = await bcrypt.hash('Admin@123', 12);
   await prisma.user.upsert({
     where: { email: 'admin@hairsup.com' },
-    update: {},
+    // Login rejects unverified accounts, and no one can click a verification
+    // link for a seeded account, so without this the admin can never sign in.
+    update: { isVerified: true },
     create: {
       email: 'admin@hairsup.com',
       password: adminPassword,
       firstName: 'Admin',
       lastName: 'HairsUp',
       role: 'ADMIN',
+      isVerified: true,
     },
   });
 
