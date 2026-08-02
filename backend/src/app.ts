@@ -27,6 +27,13 @@ import storeRoutes from "./routes/store.routes";
 import notificationRoutes from "./routes/notification.routes";
 const app = express();
 
+// Render, and any similar host, terminates TLS at a proxy and forwards the
+// caller's address in X-Forwarded-For. Without this Express reports every
+// request as coming from the proxy, so the rate limiter counts all traffic
+// against a single bucket and could lock out every user at once. One hop:
+// trusting blindly would let a client forge the header and evade the limit.
+app.set('trust proxy', 1);
+
 app.use(
   helmet({
     crossOriginResourcePolicy: {
