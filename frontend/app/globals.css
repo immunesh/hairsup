@@ -87,6 +87,21 @@
            transition-colors duration-200;
   }
 
+  /* Vertical rhythm. The reference runs 100px / 70px / 25px and alternates
+     backgrounds, so sections read as distinct blocks. Everything here used a
+     single py-16, which is the flatness that made the page feel machine-set. */
+  .section-lg {
+    @apply py-20 md:py-[100px];
+  }
+
+  .section-md {
+    @apply py-14 md:py-[70px];
+  }
+
+  .section-xs {
+    @apply py-6 md:py-[25px];
+  }
+
   /* Small caps label above a section title — the template uses this pairing
      throughout and it does a lot of the work. */
   .section-eyebrow {
@@ -94,11 +109,37 @@
   }
 
   .section-title {
-    @apply font-display text-3xl md:text-4xl font-bold text-ink mb-3;
+    @apply font-display text-3xl md:text-[42px] md:leading-[1.15] font-bold text-ink mb-3;
+  }
+
+  /* Heading broken across two lines with a short rule sitting on the second.
+     This one detail carries much of the reference's character. */
+  .heading-decorate .rule {
+    @apply inline-block align-middle w-[75px] h-[3px] bg-brand-100 mr-4 -translate-y-1;
   }
 
   .section-subtitle {
     @apply text-ink-muted text-base leading-relaxed mb-8;
+  }
+
+  /* Lead paragraph — a size step above body copy, used once at the top of a
+     block before the normal-sized supporting text. */
+  .lead {
+    @apply text-lg leading-relaxed text-ink-soft;
+  }
+
+  /* Asymmetric editorial block: image on one side, a deliberately narrower
+     text column on the other, so the two are not mirror images. */
+  .editorial-grid {
+    @apply grid lg:grid-cols-12 gap-10 lg:gap-16 items-center;
+  }
+
+  .editorial-media {
+    @apply lg:col-span-6;
+  }
+
+  .editorial-copy {
+    @apply lg:col-span-5 lg:col-start-8;
   }
 
   .badge {

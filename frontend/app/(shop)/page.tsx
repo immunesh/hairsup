@@ -360,7 +360,7 @@ useEffect(() => {
       </section>
 
       {/* ─── TRUST STRIP ────────────────────────────────────────────── */}
-      <section className="bg-gray-50 border-y border-gray-100">
+      <section className="bg-mist border-y border-gray-100">
         <div className="container-custom py-6 grid grid-cols-2 md:grid-cols-4 gap-4">
           {TRUST_FEATURES.map(({ icon: Icon, title, desc, color }) => (
             <div key={title} className="flex items-center gap-3">
@@ -377,9 +377,10 @@ useEffect(() => {
       </section>
 
       {/* ─── CATEGORIES ──────────────────────────────────────────────── */}
-     <section className="py-16 container-custom">
+     <section className="section-lg container-custom">
   <div className="text-center mb-10">
-    <h2 className="section-title">Shop by Category</h2>
+    <p className="section-eyebrow">Collections</p>
+    <h2 className="section-title heading-decorate">Shop by<br /><span className="rule" />Category</h2>
     <p className="section-subtitle">
       Find the perfect wig for your lifestyle and personality
     </p>
@@ -442,11 +443,12 @@ useEffect(() => {
 </section>
 
       {/* ─── FEATURED PRODUCTS ──────────────────────────────────── */}
-      <section className="py-16 bg-gray-50">
+      <section className="section-lg bg-mist">
         <div className="container-custom">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <h2 className="section-title">Featured Collection</h2>
+              <p className="section-eyebrow">Handpicked</p>
+              <h2 className="section-title heading-decorate">Featured<br /><span className="rule" />Collection</h2>
               <p className="text-gray-500">Handpicked by our style experts</p>
             </div>
             <Link href="/products" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
@@ -469,52 +471,53 @@ useEffect(() => {
       </section>
 
       {/* ─── PROMO BANNER (Try On) ───────────────────────────────── */}
-      <section className="py-16">
+      <section className="section-lg">
         <div className="container-custom">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-950 via-brand-800 to-brand-700 text-white p-8 md:p-14">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-20 w-40 h-40 bg-white/5 rounded-full translate-y-1/2" />
-            <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-              <div className="flex-1">
-                <div className="inline-flex items-center gap-2 bg-white/15 rounded-full px-3 py-1.5 text-sm font-semibold mb-4">
-                  <Zap className="w-4 h-4 text-yellow-300" /> AI-Powered Feature
-                </div>
-                <h2 className="text-3xl md:text-4xl font-display font-bold mb-3">
-                  Try Before You Buy
-                </h2>
-                <p className="text-white/75 text-lg mb-6 max-w-md">
-                  Our revolutionary virtual try-on uses AI to overlay any wig on your live camera feed.
-                  See exactly how you&apos;ll look before adding to your bag.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <Link href="/try-on" className="bg-white text-brand-700 font-bold px-6 py-3 rounded-full hover:bg-brand-50 transition-colors flex items-center gap-2">
-                    <Zap className="w-4 h-4" /> Try On Free Now
-                  </Link>
-                  <Link href="/blog" className="border border-white/40 hover:border-white text-white px-6 py-3 rounded-full transition-all hover:bg-white/10 flex items-center gap-2">
-                    Learn More
-                  </Link>
-                </div>
-              </div>
-              <div className="flex-shrink-0">
-                <div className="w-52 h-52 bg-white/10 rounded-3xl flex items-center justify-center backdrop-blur-sm border border-white/20">
-                  <div className="text-center">
-                    <div className="text-5xl font-display font-bold text-white mb-1">360°</div>
-                    <div className="text-brand-300 text-sm font-medium">Product View</div>
-                    <div className="text-white/50 text-xs mt-2">Drag to rotate</div>
-                  </div>
-                </div>
-              </div>
+          <div className="editorial-grid">
+            <div className="editorial-media relative aspect-[4/5] lg:aspect-[378/463]">
+              <Image
+                src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=900&q=80"
+                alt="Virtual try-on in a salon chair"
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            <div className="editorial-copy">
+              <p className="section-eyebrow">Virtual Try-On</p>
+
+              <h2 className="section-title heading-decorate">
+                Try Before
+                <br />
+                <span className="rule" />
+                You Buy
+              </h2>
+
+              <p className="lead mb-5">
+                Our virtual try-on overlays any wig on your live camera feed, so you
+                see exactly how it sits before it reaches your bag.
+              </p>
+
+              <p className="text-ink-muted mb-8 leading-relaxed">
+                Match a style to your face shape, compare lengths side by side, and
+                rotate through 360° product views — all without leaving home.
+              </p>
+
+              <Link href="/try-on" className="btn-primary inline-flex items-center gap-2">
+                Try On Free <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* ─── NEW ARRIVALS ────────────────────────────────────────── */}
-      <section className="py-16 bg-gray-50">
+      <section className="section-md bg-mist">
         <div className="container-custom">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <h2 className="section-title">New Arrivals</h2>
+              <p className="section-eyebrow">Just In</p>
+              <h2 className="section-title heading-decorate">New<br /><span className="rule" />Arrivals</h2>
               <p className="text-gray-500">Fresh styles just landed</p>
             </div>
             <Link href="/products" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
@@ -528,7 +531,7 @@ useEffect(() => {
       </section>
 
       {/* ─── GENDER SPLIT BANNER ──────────────────────────────────── */}
-      <section className="py-16 container-custom">
+      <section className="section-md container-custom">
         <div className="grid md:grid-cols-2 gap-6">
           {/* Women */}
           <Link href="/women" className="group relative overflow-hidden rounded-3xl min-h-[360px] cursor-pointer">
@@ -571,11 +574,12 @@ useEffect(() => {
       </section>
 
       {/* ─── BEST SELLERS ────────────────────────────────────────── */}
-      <section className="py-16 bg-gray-50">
+      <section className="section-lg bg-mist">
         <div className="container-custom">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <h2 className="section-title">Best Sellers</h2>
+              <p className="section-eyebrow">Most Loved</p>
+              <h2 className="section-title heading-decorate">Best<br /><span className="rule" />Sellers</h2>
               <p className="text-gray-500">Customer favourites, tried and loved</p>
             </div>
             <Link href="/products" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
@@ -589,7 +593,7 @@ useEffect(() => {
       </section>
 
       {/* ─── STATS ──────────────────────────────────────────────── */}
-      <section className="py-16 bg-gradient-to-r from-brand-950 via-brand-900 to-brand-800 text-white">
+      <section className="section-md bg-gradient-to-r from-brand-950 via-brand-900 to-brand-800 text-white">
         <div className="container-custom">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-3">
@@ -612,9 +616,10 @@ useEffect(() => {
       </section>
 
       {/* ─── TESTIMONIALS ────────────────────────────────────────── */}
-      <section className="py-16 container-custom">
+      <section className="section-md container-custom">
         <div className="text-center mb-12">
-          <h2 className="section-title">Real Stories. Real Confidence.</h2>
+          <p className="section-eyebrow">Testimonials</p>
+          <h2 className="section-title heading-decorate">Real Stories.<br /><span className="rule" />Real Confidence.</h2>
           <p className="section-subtitle">See what our customers say about HairsUp</p>
         </div>
 
@@ -643,11 +648,12 @@ useEffect(() => {
       </section>
 
       {/* ─── BLOG ───────────────────────────────────────────────── */}
-      <section className="py-16 bg-gray-50">
+      <section className="section-lg bg-mist">
         <div className="container-custom">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <h2 className="section-title">Hair Care Tips & Style Guides</h2>
+              <p className="section-eyebrow">Journal</p>
+              <h2 className="section-title heading-decorate">Hair Care Tips<br /><span className="rule" />&amp; Style Guides</h2>
               <p className="text-gray-500">Expert advice from our team</p>
             </div>
             <Link href="/blog" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
@@ -710,7 +716,7 @@ useEffect(() => {
       </section>
 
       {/* ─── NEWSLETTER ──────────────────────────────────────────── */}
-      <section className="py-16">
+      <section className="section-lg">
         <div className="container-custom">
           <div className="bg-gradient-to-r from-brand-50 to-brand-50 rounded-3xl p-10 md:p-16 text-center border border-brand-100">
             <Sparkles className="w-10 h-10 text-brand-600 mx-auto mb-4" />
