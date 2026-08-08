@@ -281,7 +281,7 @@ useEffect(() => {
 
         {/* Content */}
         <div className="relative container-custom flex items-center min-h-[560px] md:min-h-[640px] lg:min-h-[700px] py-20">
-          <div className={`max-w-2xl text-white transition-all duration-500 ${isSliding ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+          <div className={`max-w-xl lg:max-w-2xl text-white transition-all duration-500 ${isSliding ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
             {slide.badge && (
               <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-sm font-semibold mb-6">
                 <Sparkles className="w-4 h-4 text-brand-300" />
@@ -289,13 +289,14 @@ useEffect(() => {
               </div>
             )}
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-4">
+            <h1 className="heading-decorate font-display font-bold text-[38px] leading-[1.1] sm:text-5xl lg:text-6xl mb-5">
               {slide.headline}
               <br />
-              <span className="text-brand-300">{slide.subheadline}</span>
+              <span className="rule" />
+              <span className="text-brand-200">{slide.subheadline}</span>
             </h1>
 
-            <p className="text-lg text-white/80 mb-8 max-w-lg leading-relaxed">
+            <p className="lead text-white/85 mb-8 max-w-lg">
               {slide.description}
             </p>
 
@@ -313,7 +314,7 @@ useEffect(() => {
             </div>
 
             {/* Mini stats */}
-            <div className="flex items-center gap-6 mt-10 pt-8 border-t border-white/20">
+            <div className="hidden sm:flex items-center gap-6 mt-10 pt-8 border-t border-white/20">
               {['10L+ Customers', '4.8★ Rating', '50+ Stores'].map((stat) => (
                 <div key={stat} className="text-sm text-white/70 font-medium">{stat}</div>
               ))}
@@ -336,13 +337,13 @@ useEffect(() => {
         {/* Slider controls */}
         <button
           onClick={() => goSlide(-1)}
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all"
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white rounded-full hidden lg:flex items-center justify-center transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
         <button
           onClick={() => goSlide(1)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all"
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white rounded-full hidden lg:flex items-center justify-center transition-colors"
         >
           <ChevronRight className="w-5 h-5" />
         </button>

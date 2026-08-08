@@ -94,7 +94,7 @@ export default function Navbar() {
   return (
     <>
       {/* Top bar */}
-      <div className="bg-brand-950 text-white text-xs py-2 hidden md:block">
+      <div className="bg-ink text-white/90 text-xs py-2.5 hidden md:block">
         <div className="container-custom flex justify-between items-center">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5">
@@ -105,7 +105,7 @@ export default function Navbar() {
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-brand-300">Free shipping above ₹999</span>
+            <span className="text-brand-200">Free shipping above ₹999</span>
             <Link href="/stores" className="hover:text-brand-300 transition-colors">Find a Store</Link>
             <Link href="/blog" className="hover:text-brand-300 transition-colors">Hair Care Tips</Link>
           </div>
@@ -139,8 +139,8 @@ export default function Navbar() {
                   <Link
                     href={link.href}
                     className={cn(
-                      'nav-link flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium',
-                      activeMenu === link.label && 'text-brand-600 bg-brand-50'
+                      'nav-link flex items-center gap-1 px-3.5 py-2.5 text-[13px] font-semibold uppercase tracking-button',
+                      activeMenu === link.label && 'text-brand-600'
                     )}
                   >
                     {link.label}
