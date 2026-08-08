@@ -16,14 +16,6 @@ import { getCategories } from '@/lib/category-api';
 import { getHeroSlides } from '@/lib/hero-api';
 const FALLBACK_CATEGORY_IMAGE = "/women.avif";
 
-// Four tints of the same teal rather than four different hues — the mixed
-// blue and amber tiles read as unrelated to the rest of the palette.
-const CATEGORY_TILE_STYLES = [
-  { color: 'from-brand-950/85 to-brand-800/55' },
-  { color: 'from-ink/85 to-brand-900/55' },
-  { color: 'from-brand-900/85 to-brand-700/55' },
-  { color: 'from-ink-soft/85 to-brand-800/55' },
-];
 
 const GENDER_BADGE: Record<string, string> = {
   WOMEN: "Women's",
@@ -281,7 +273,10 @@ useEffect(() => {
             className="object-cover"
             priority
           />
-          <div className={`absolute inset-0 bg-gradient-to-r ${slide.accent || 'from-brand-950 to-brand-700'} opacity-85`} />
+          {/* Neutral scrim behind the copy only. A full-bleed tinted wash
+              made every photo the same colour as the brand; this keeps the
+              right side of the image untouched. */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-transparent" />
         </div>
 
         {/* Content */}
@@ -328,8 +323,10 @@ useEffect(() => {
           {/* Tag badge */}
           {slide.tag && (
             <div className="absolute top-8 right-8 hidden lg:block">
-              <div className="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl px-5 py-3 text-white text-center">
-                <div className="text-xs font-semibold text-brand-300 mb-1">COLLECTION</div>
+              {/* Sits over the uncovered part of the photo, so it carries its
+                  own dark backing rather than relying on a page-wide overlay. */}
+              <div className="bg-black/55 backdrop-blur-sm border border-white/25 rounded-card px-5 py-3 text-white text-center">
+                <div className="font-ui text-[11px] font-semibold uppercase tracking-label text-brand-200 mb-1">Collection</div>
                 <div className="text-2xl font-display font-bold">{slide.tag}</div>
               </div>
             </div>
@@ -393,7 +390,6 @@ useEffect(() => {
     {categories.slice(0, 8).map((cat, i) => {
       const productCount = cat._count?.products ?? 0;
       const badge = (cat.gender && GENDER_BADGE[cat.gender]) || 'Shop Now';
-      const style = CATEGORY_TILE_STYLES[i % CATEGORY_TILE_STYLES.length];
 
       return (
       <Link
@@ -408,9 +404,9 @@ useEffect(() => {
           className="object-cover transition-transform duration-500 group-hover:scale-110"
         />
 
-        <div
-          className={`absolute inset-0 bg-gradient-to-t ${style.color} transition-opacity group-hover:opacity-90`}
-        />
+        {/* Text sits along the bottom, so darken only that band and leave
+            the rest of the photograph its own colour. */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent transition-opacity duration-300 group-hover:from-black/70" />
 
         <div className="absolute inset-0 p-4 flex flex-col justify-between">
           <span className="inline-flex self-start bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full">
@@ -542,7 +538,7 @@ useEffect(() => {
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-900/80 via-brand-900/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
             <div className="absolute inset-0 p-10 flex flex-col justify-end">
               <span className="badge bg-white/20 text-white mb-3 self-start backdrop-blur-sm">For Her</span>
               <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">Women&apos;s Wigs</h3>
@@ -561,7 +557,7 @@ useEffect(() => {
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-900/85 via-brand-950/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
             <div className="absolute inset-0 p-10 flex flex-col justify-end">
               <span className="badge bg-white/20 text-white mb-3 self-start backdrop-blur-sm">For Him</span>
               <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">Men&apos;s Hair Systems</h3>
