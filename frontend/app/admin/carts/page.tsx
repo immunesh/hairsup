@@ -258,11 +258,11 @@ return (
                         text-[10px] sm:text-xs
                         font-semibold
 
-                        bg-purple-500/20
-                        text-purple-300
+                        bg-brand-500/20
+                        text-brand-300
 
                         border
-                        border-purple-500/20
+                        border-brand-500/20
                         "
                       >
                         {item.quantity}

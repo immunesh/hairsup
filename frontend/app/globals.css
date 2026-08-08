@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,9 +6,10 @@
 
 @layer base {
   :root {
-    --brand: #c855f5;
-    --brand-dark: #9420c4;
-    --gold: #F59E0B;
+    --brand: #2b8073;
+    --brand-mint: #cef1ea;
+    --brand-mint-hover: #b4e5db;
+    --ink: #151515;
   }
 
   * {
@@ -20,83 +21,126 @@
   }
 
   body {
-    @apply font-sans text-gray-900 bg-white antialiased;
+    @apply font-sans text-ink bg-white antialiased;
   }
 
+  /* Serif headings against sans body is what carries the editorial look.
+     Slightly tightened so large display sizes do not drift apart.
+     Colour is deliberately left to inherit: headings sit on dark hero
+     panels as often as on white, and forcing a colour here turns those
+     into near-black on near-black. */
   h1,
   h2,
-  h3 {
+  h3,
+  h4 {
     @apply font-display;
+    letter-spacing: -0.01em;
   }
 }
 
 @layer components {
+  /* Pill, uppercase, letter-spaced, 2px border — the button treatment the
+     rest of the theme is built around. Mint fill with near-black text
+     rather than a saturated fill with white text. */
   .btn-primary {
-    @apply bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-full transition-all duration-200 shadow-md hover:shadow-glow active:scale-95;
+    @apply font-ui text-sm font-semibold uppercase tracking-button
+           bg-brand-100 hover:bg-brand-200 text-ink
+           border-2 border-brand-100 hover:border-brand-200
+           px-8 py-2.5 rounded-button
+           transition-colors duration-200;
   }
 
   .btn-secondary {
-    @apply border-2 border-brand-600 text-brand-600 hover:bg-brand-600 hover:text-white font-semibold px-6 py-3 rounded-full transition-all duration-200 active:scale-95;
+    @apply font-ui text-sm font-semibold uppercase tracking-button
+           bg-transparent hover:bg-ink text-ink hover:text-white
+           border-2 border-ink
+           px-8 py-2.5 rounded-button
+           transition-colors duration-200;
+  }
+
+  .btn-dark {
+    @apply font-ui text-sm font-semibold uppercase tracking-button
+           bg-ink-soft hover:bg-brand-100 text-white hover:text-ink
+           border-2 border-ink-soft hover:border-brand-100
+           px-8 py-2.5 rounded-button
+           transition-colors duration-200;
   }
 
   .btn-ghost {
-    @apply text-gray-700 hover:bg-gray-100 font-medium px-4 py-2 rounded-lg transition-all duration-200;
+    @apply font-ui text-sm font-medium text-ink-muted hover:text-ink
+           px-4 py-2 rounded-card transition-colors duration-200;
   }
 
+  /* Cards stay nearly square — the uniform heavy rounding was a large part
+     of what made the old theme read as generic. */
   .card {
-    @apply bg-white rounded-2xl shadow-product hover:shadow-product-hover transition-shadow duration-300;
+    @apply bg-white rounded-card border border-gray-100
+           shadow-product hover:shadow-product-hover
+           transition-shadow duration-300;
   }
 
   .input-field {
-    @apply w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white;
+    @apply w-full px-4 py-3 bg-white
+           border border-gray-200 rounded-card
+           text-ink placeholder:text-ink-muted
+           focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500
+           transition-colors duration-200;
+  }
+
+  /* Small caps label above a section title — the template uses this pairing
+     throughout and it does a lot of the work. */
+  .section-eyebrow {
+    @apply font-ui text-xs font-semibold uppercase tracking-label text-brand-600 mb-3;
   }
 
   .section-title {
-    @apply text-3xl md:text-4xl font-display font-bold text-gray-900 mb-2;
+    @apply font-display text-3xl md:text-4xl font-bold text-ink mb-3;
   }
 
   .section-subtitle {
-    @apply text-gray-500 text-lg mb-8;
+    @apply text-ink-muted text-base leading-relaxed mb-8;
   }
 
   .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    @apply inline-flex items-center font-ui px-2.5 py-1
+           rounded-sm text-[11px] font-semibold uppercase tracking-button;
   }
 
   .badge-sale {
-    @apply badge bg-red-100 text-red-700;
+    @apply badge bg-coral-500 text-white;
   }
 
   .badge-new {
-    @apply badge bg-green-100 text-green-700;
+    @apply badge bg-brand-100 text-ink;
   }
 
   .badge-best {
-    @apply badge bg-amber-100 text-amber-700;
+    @apply badge bg-ink text-white;
   }
 
   .nav-link {
-    @apply text-gray-700 hover:text-brand-600 font-medium transition-colors duration-200 relative;
+    @apply font-ui text-sm text-ink hover:text-brand-600 font-medium
+           transition-colors duration-200 relative;
   }
 
   .price-current {
-    @apply text-xl font-bold text-gray-900;
+    @apply font-display text-xl font-bold text-ink;
   }
 
   .price-original {
-    @apply text-sm text-gray-400 line-through ml-2;
+    @apply text-sm text-ink-muted line-through ml-2;
   }
 
   .price-discount {
-    @apply text-sm font-semibold text-green-600 ml-2;
+    @apply font-ui text-xs font-semibold uppercase tracking-button text-coral-600 ml-2;
   }
 
   .star-filled {
-    @apply text-amber-400 fill-amber-400;
+    @apply text-brand-500 fill-brand-500;
   }
 
   .star-empty {
-    @apply text-gray-300 fill-gray-300;
+    @apply text-gray-200 fill-gray-200;
   }
 
   .container-custom {
@@ -104,11 +148,11 @@
   }
 
   .page-hero {
-    @apply bg-gradient-to-r from-brand-950 via-brand-800 to-brand-600 text-white;
+    @apply bg-mist text-ink border-b border-gray-100;
   }
 
   .skeleton {
-    @apply animate-pulse bg-gray-200 rounded;
+    @apply animate-pulse bg-gray-100 rounded-card;
   }
 
   .divider {
@@ -118,7 +162,7 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-purple-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-700 to-brand-500;
   }
 
   .scrollbar-hide {
@@ -137,17 +181,17 @@
 
 /* Swiper overrides */
 .swiper-pagination-bullet-active {
-  background: #c855f5 !important;
+  background: #2b8073 !important;
 }
 
 /* Image gallery overrides */
 .image-gallery-thumbnail.active,
 .image-gallery-thumbnail:focus {
-  border-color: #c855f5 !important;
+  border-color: #2b8073 !important;
 }
 
 .image-gallery-icon:hover {
-  color: #c855f5 !important;
+  color: #2b8073 !important;
 }
 
 .hide-scrollbar::-webkit-scrollbar {

@@ -71,7 +71,7 @@ export default function UpdateOrderStatus({
         <button
           onClick={handleUpdate}
           disabled={loading || !status}
-          className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white px-4 py-2 rounded-xl transition-colors"
+          className="flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white px-4 py-2 rounded-xl transition-colors"
         >
           {loading && <Loader2 className="w-4 h-4 animate-spin" />}
           {loading ? "Updating..." : "Update"}

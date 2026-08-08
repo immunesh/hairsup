@@ -274,7 +274,7 @@ return (
                                   existing: order,
                                 })
                               }
-                              className="flex items-center gap-1 text-purple-400 hover:underline text-xs"
+                              className="flex items-center gap-1 text-brand-400 hover:underline text-xs"
                             >
                               <Pencil className="w-3.5 h-3.5" /> Edit
                             </button>

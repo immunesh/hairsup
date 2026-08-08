@@ -96,7 +96,7 @@ function VerifyEmailContent() {
 
 export default function VerifyEmailPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-12 bg-gradient-to-br from-brand-950 via-brand-800 to-purple-700">
+    <div className="min-h-screen flex items-center justify-center px-6 py-12 bg-gradient-to-br from-brand-950 via-brand-800 to-brand-700">
       <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 border border-gray-100 relative overflow-hidden">
         <div className="absolute inset-0 opacity-5 pointer-events-none">
           <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-brand-600" />

@@ -84,7 +84,7 @@ self-start
 >
   {/* Glow */}
   <div className="absolute -top-24 -left-24 w-72 h-72 bg-cyan-500/20 blur-[120px]" />
-  <div className="absolute bottom-0 -right-24 w-72 h-72 bg-purple-500/20 blur-[120px]" />
+  <div className="absolute bottom-0 -right-24 w-72 h-72 bg-brand-500/20 blur-[120px]" />
 
   {/* Header */}
   <div className="relative z-10 p-6">
@@ -97,7 +97,7 @@ self-start
             bg-gradient-to-br
             from-cyan-400
             via-blue-500
-            to-purple-600
+            to-brand-600
             flex items-center justify-center
             text-xl font-bold
             shadow-[0_0_30px_rgba(56,189,248,0.5)]
@@ -112,8 +112,8 @@ self-start
               text-2xl font-bold
               bg-gradient-to-r
               from-cyan-300
-              via-purple-300
-              to-pink-300
+              via-brand-300
+              to-brand-200
               bg-clip-text
               text-transparent
             "
@@ -183,7 +183,7 @@ self-start
                 ${
                   isActive
                     ? "bg-cyan-400 shadow-[0_0_10px_#22d3ee]"
-                    : "bg-purple-500"
+                    : "bg-brand-500"
                 }
               `}
             />

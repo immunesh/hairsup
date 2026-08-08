@@ -162,7 +162,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             <div className="mt-10 pt-8 border-t border-gray-100 flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-2">
                 <Tag className="w-4 h-4 text-gray-400" />
-                <span className={`badge text-xs ${post.tag === 'Care Tips' ? 'bg-blue-100 text-blue-700' : 'bg-brand-100 text-brand-700'}`}>{post.tag}</span>
+                <span className={`badge text-xs ${post.tag === 'Care Tips' ? 'bg-mist text-ink-soft' : 'bg-brand-100 text-brand-700'}`}>{post.tag}</span>
               </div>
               <div className="flex items-center gap-3">
                 <button className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-red-500 transition-colors"><Heart className="w-4 h-4" /> Save</button>
@@ -205,7 +205,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               </div>
             </div>
 
-            <div className="card p-5 bg-gradient-to-br from-brand-50 to-purple-50 border-brand-100">
+            <div className="card p-5 bg-gradient-to-br from-brand-50 to-brand-50 border-brand-100">
               <h3 className="font-bold text-gray-900 mb-2">Try On Any Wig — Free</h3>
               <p className="text-sm text-gray-600 mb-4">See how any HairsUp wig looks on you using our AI-powered virtual try-on tool.</p>
               <Link href="/try-on" className="btn-primary text-sm py-2.5 w-full text-center block">Launch Try-On</Link>

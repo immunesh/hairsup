@@ -232,13 +232,13 @@ export default function AdminDashboard() {
       <StatCard
         title="Orders"
         value={stats.orders}
-        color="bg-purple-400"
+        color="bg-brand-400"
       />
 
       <StatCard
         title="Users"
         value={stats.users}
-        color="bg-pink-400"
+        color="bg-brand-300"
       />
 
       <StatCard

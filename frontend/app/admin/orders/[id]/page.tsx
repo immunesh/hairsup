@@ -293,7 +293,7 @@ export default function OrderDetailsPage() {
           {hasShipment && (
             <button
               onClick={() => setShipmentModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-purple-400 hover:bg-white/10 transition-all text-sm"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-brand-400 hover:bg-white/10 transition-all text-sm"
             >
               <Pencil className="w-3.5 h-3.5" /> Edit Shipment
             </button>

@@ -44,8 +44,8 @@ export default function AdminHeader() {
 
           bg-gradient-to-r
           from-cyan-300
-          via-purple-300
-          to-pink-300
+          via-brand-300
+          to-brand-200
 
           bg-clip-text
           text-transparent
@@ -94,7 +94,7 @@ export default function AdminHeader() {
             bg-gradient-to-br
             from-cyan-400
             via-blue-500
-            to-purple-600
+            to-brand-600
 
             flex
             items-center

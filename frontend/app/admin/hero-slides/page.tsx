@@ -48,7 +48,7 @@ export default async function HeroSlidesPage() {
 
           bg-gradient-to-r
           from-cyan-500
-          to-purple-600
+          to-brand-600
 
           text-white
           font-medium
@@ -177,11 +177,11 @@ export default async function HeroSlidesPage() {
                           text-[10px] sm:text-xs
                           font-semibold
 
-                          bg-purple-500/20
-                          text-purple-300
+                          bg-brand-500/20
+                          text-brand-300
 
                           border
-                          border-purple-500/20
+                          border-brand-500/20
                           "
                         >
                           {slide.tag}

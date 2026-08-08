@@ -1176,7 +1176,7 @@ includedItems,
         rounded-2xl
         bg-gradient-to-r
         from-cyan-500
-        to-purple-600
+        to-brand-600
         text-white
         font-medium
         transition-all

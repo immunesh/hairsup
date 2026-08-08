@@ -113,8 +113,8 @@ export default function AdminLoginPage() {
 
           bg-gradient-to-r
           from-cyan-400
-          via-purple-400
-          to-pink-400
+          via-brand-400
+          to-brand-300
 
           bg-clip-text
           text-transparent
@@ -247,7 +247,7 @@ export default function AdminLoginPage() {
 
           bg-gradient-to-r
           from-cyan-500
-          to-purple-600
+          to-brand-600
 
           text-white
           font-semibold

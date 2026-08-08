@@ -174,7 +174,7 @@ export default function EditCategoryForm({
       <button
         type="submit"
         disabled={loading}
-        className="bg-purple-600 text-white px-6 py-3 rounded-xl"
+        className="bg-brand-600 text-white px-6 py-3 rounded-xl"
       >
         {loading
           ? "Updating..."

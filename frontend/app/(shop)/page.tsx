@@ -16,11 +16,13 @@ import { getCategories } from '@/lib/category-api';
 import { getHeroSlides } from '@/lib/hero-api';
 const FALLBACK_CATEGORY_IMAGE = "/women.avif";
 
+// Four tints of the same teal rather than four different hues — the mixed
+// blue and amber tiles read as unrelated to the rest of the palette.
 const CATEGORY_TILE_STYLES = [
-  { color: 'from-pink-900/80 to-brand-900/80' },
-  { color: 'from-gray-900/80 to-blue-900/80' },
-  { color: 'from-amber-900/80 to-brand-900/80' },
-  { color: 'from-brand-950/80 to-purple-900/80' },
+  { color: 'from-brand-950/85 to-brand-800/55' },
+  { color: 'from-ink/85 to-brand-900/55' },
+  { color: 'from-brand-900/85 to-brand-700/55' },
+  { color: 'from-ink-soft/85 to-brand-800/55' },
 ];
 
 const GENDER_BADGE: Record<string, string> = {
@@ -69,7 +71,7 @@ const DEFAULT_HERO_SLIDES = [
     ctaSecondaryLink: '/blog/virtual-try-on',
     badge: 'AI-Powered Technology',
     image: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1200&q=80',
-    accent: 'from-purple-950 to-brand-700',
+    accent: 'from-brand-950 to-brand-700',
     tag: 'NEW',
   },
 ];
@@ -473,7 +475,7 @@ useEffect(() => {
       {/* ─── PROMO BANNER (Try On) ───────────────────────────────── */}
       <section className="py-16">
         <div className="container-custom">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-950 via-brand-800 to-purple-700 text-white p-8 md:p-14">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-950 via-brand-800 to-brand-700 text-white p-8 md:p-14">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-20 w-40 h-40 bg-white/5 rounded-full translate-y-1/2" />
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
@@ -540,7 +542,7 @@ useEffect(() => {
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-pink-900/80 via-brand-900/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-900/80 via-brand-900/60 to-transparent" />
             <div className="absolute inset-0 p-10 flex flex-col justify-end">
               <span className="badge bg-white/20 text-white mb-3 self-start backdrop-blur-sm">For Her</span>
               <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">Women&apos;s Wigs</h3>
@@ -714,7 +716,7 @@ useEffect(() => {
       {/* ─── NEWSLETTER ──────────────────────────────────────────── */}
       <section className="py-16">
         <div className="container-custom">
-          <div className="bg-gradient-to-r from-brand-50 to-purple-50 rounded-3xl p-10 md:p-16 text-center border border-brand-100">
+          <div className="bg-gradient-to-r from-brand-50 to-brand-50 rounded-3xl p-10 md:p-16 text-center border border-brand-100">
             <Sparkles className="w-10 h-10 text-brand-600 mx-auto mb-4" />
             <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
               Get Exclusive Offers & Style Tips

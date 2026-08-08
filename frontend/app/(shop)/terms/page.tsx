@@ -24,7 +24,7 @@ export default function TermsPage() {
     <div className="bg-gray-50 min-h-screen">
       {/* Hero Header */}
       <div className="page-hero py-16 text-center relative overflow-hidden bg-gradient-to-r from-brand-950 via-brand-800 to-brand-600 text-white">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-300 via-brand-950 to-transparent"></div>
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-brand-300 via-brand-950 to-transparent"></div>
         <div className="container-custom max-w-3xl mx-auto relative z-10">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 backdrop-blur-sm border border-white/20 text-brand-200 mb-4">
             Legal Agreement

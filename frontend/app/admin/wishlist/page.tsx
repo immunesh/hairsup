@@ -56,11 +56,11 @@ export default function AdminWishlistPage() {
 
         rounded-2xl
 
-        bg-pink-500/10
+        bg-brand-400/10
         border
-        border-pink-500/20
+        border-brand-400/20
 
-        text-pink-300
+        text-brand-200
         font-medium
         "
       >
@@ -166,11 +166,11 @@ export default function AdminWishlistPage() {
                       text-[10px] sm:text-xs
                       font-semibold
 
-                      bg-pink-500/20
-                      text-pink-300
+                      bg-brand-400/20
+                      text-brand-200
 
                       border
-                      border-pink-500/20
+                      border-brand-400/20
                       "
                     >
                       1

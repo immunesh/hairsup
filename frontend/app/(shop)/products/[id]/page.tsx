@@ -381,8 +381,8 @@ export default function ProductDetailPage() {
                 className={cn(
                   "badge text-xs",
                   product.gender === "WOMEN"
-                    ? "bg-pink-100 text-pink-700"
-                    : "bg-blue-100 text-blue-700",
+                    ? "bg-cream text-ink-soft"
+                    : "bg-mist text-ink-soft",
                 )}
               >
                 {product.gender === "WOMEN" ? "Women" : "Men"}

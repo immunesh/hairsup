@@ -85,7 +85,7 @@ export default function AboutPage() {
       {/* Mission & Vision */}
       <section className="py-16 container-custom">
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-gradient-to-br from-brand-50 to-purple-50 rounded-3xl p-8 border border-brand-100">
+          <div className="bg-gradient-to-br from-brand-50 to-brand-50 rounded-3xl p-8 border border-brand-100">
             <div className="w-12 h-12 bg-brand-100 rounded-2xl flex items-center justify-center mb-4">
               <Target className="w-6 h-6 text-brand-600" />
             </div>
