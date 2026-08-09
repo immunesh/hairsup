@@ -118,17 +118,17 @@ export default function Navbar() {
         scrolled ? 'shadow-lg' : 'shadow-sm border-b border-gray-100'
       )}>
         <div className="container-custom">
-          <div className="flex items-center h-16 gap-4">
+          <div className="flex items-center h-16 lg:h-24 gap-4">
             {/* Logo */}
             <Link href="/" className="flex-shrink-0 flex items-center gap-2" onClick={closeMobileMenu}>
-              <div className="w-8 h-8 bg-gradient-to-br from-brand-600 to-brand-800 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-brand-700" />
               </div>
-              <span className="text-2xl font-display font-bold text-gradient">HairsUp</span>
+              <span className="text-[28px] font-display font-bold text-ink">HairsUp</span>
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-1 ml-6 flex-1">
+            <nav className="hidden lg:flex items-center gap-9 ml-12 flex-1">
               {NAV_LINKS.map((link) => (
                 <div
                   key={link.label}
@@ -138,9 +138,9 @@ export default function Navbar() {
                 >
                   <Link
                     href={link.href}
+                    data-active={activeMenu === link.label ? 'true' : undefined}
                     className={cn(
-                      'nav-link flex items-center gap-1 px-3.5 py-2.5 text-[13px] font-semibold uppercase tracking-button',
-                      activeMenu === link.label && 'text-brand-600'
+                      'nav-link flex items-center gap-1.5'
                     )}
                   >
                     {link.label}

@@ -159,9 +159,23 @@
     @apply badge bg-ink text-white;
   }
 
+  /* Title case at 16px with a mint rule that grows from the left on hover,
+     rather than a colour swap. Taken from the reference's .rd-nav-link. */
   .nav-link {
-    @apply font-ui text-sm text-ink hover:text-brand-600 font-medium
-           transition-colors duration-200 relative;
+    @apply font-ui text-base font-semibold text-ink hover:text-ink
+           relative inline-block leading-tight transition-colors duration-200;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-link::before {
+    content: '';
+    @apply absolute left-0 -bottom-1 h-[2px] w-0 bg-brand-100;
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover::before,
+  .nav-link[data-active='true']::before {
+    @apply w-full;
   }
 
   .price-current {
