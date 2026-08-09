@@ -26,8 +26,8 @@ export default function ContactPage() {
       {/* Hero */}
       <div className="page-hero py-14 text-center">
         <div className="container-custom max-w-2xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">Get in Touch</h1>
-          <p className="text-white/75 text-lg">
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-ink mb-4">Get in Touch</h1>
+          <p className="text-ink-muted text-lg">
             Our certified hair specialists are here to help — Mon–Sun, 9 AM to 9 PM.
           </p>
         </div>

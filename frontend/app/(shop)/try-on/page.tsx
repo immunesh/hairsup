@@ -46,17 +46,17 @@ export default async function TryOnPage({
       {/* Hero */}
       <div className="page-hero py-12 text-center">
         <div className="container-custom max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-sm font-semibold mb-4 text-white">
-            <Zap className="w-4 h-4 text-yellow-300" /> AI-Powered Virtual Try-On
+          <div className="inline-flex items-center gap-2 bg-brand-100 backdrop-blur-sm border border-brand-200 rounded-full px-4 py-1.5 text-sm font-semibold mb-4 text-ink">
+            <Zap className="w-4 h-4 text-brand-700" /> AI-Powered Virtual Try-On
           </div>
-          <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-ink mb-4">
             See It On You Before You Buy
           </h1>
-          <p className="text-white/75 text-lg max-w-xl mx-auto mb-6">
+          <p className="text-ink-muted text-lg max-w-xl mx-auto mb-6">
             Try on any HairsUp wig in real time using your camera. Our AI technology places the wig
             on your head instantly — no app download required.
           </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-white/60">
+          <div className="flex items-center justify-center gap-6 text-sm text-ink-muted">
             <span className="flex items-center gap-1.5"><Camera className="w-4 h-4" /> Camera or upload</span>
             <span>·</span>
             <span className="flex items-center gap-1.5"><Sparkles className="w-4 h-4" /> Multiple styles</span>

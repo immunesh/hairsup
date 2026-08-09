@@ -291,8 +291,8 @@ switch (sort) {
       {/* Page header */}
       <div className="page-hero py-10 text-center">
         <div className="container-custom">
-          <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-3">All Wigs & Hair Systems</h1>
-          <p className="text-white/70">Premium quality wigs for men and women</p>
+          <h1 className="text-3xl md:text-4xl font-display font-bold text-ink mb-3">All Wigs & Hair Systems</h1>
+          <p className="text-ink-muted">Premium quality wigs for men and women</p>
         </div>
       </div>
 

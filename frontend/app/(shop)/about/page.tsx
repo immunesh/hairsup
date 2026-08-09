@@ -64,7 +64,7 @@ export default function AboutPage() {
             alt="HairsUp Story"
             fill className="object-cover object-top"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-950/92 via-brand-900/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-950/90 via-brand-900/70 to-transparent" />
         </div>
         <div className="relative container-custom max-w-4xl">
           <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-sm font-semibold mb-6 text-white">

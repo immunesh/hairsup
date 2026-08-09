@@ -73,10 +73,10 @@ export default function FAQPage() {
       {/* Hero */}
       <div className="page-hero py-14 text-center">
         <div className="container-custom max-w-2xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-ink mb-4">
             Frequently Asked Questions
           </h1>
-          <p className="text-white/75 text-lg">
+          <p className="text-ink-muted text-lg">
             Everything you need to know about HairsUp, our products, and how we work.
           </p>
         </div>

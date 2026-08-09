@@ -31,13 +31,13 @@ export default async function StoresPage() {
       {/* Hero */}
       <div className="page-hero py-14 text-center">
         <div className="container-custom max-w-2xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-ink mb-4">
             Find a HairsUp Store
           </h1>
-          <p className="text-white/75 text-lg mb-6">
+          <p className="text-ink-muted text-lg mb-6">
             Visit any of our 50+ experience centres for a personalised wig consultation — completely free.
           </p>
-          <div className="flex items-center justify-center gap-6 text-white/60 text-sm">
+          <div className="flex items-center justify-center gap-6 text-ink-muted text-sm">
             <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> 50+ Cities</span>
             <span>·</span>
             <span>Free Consultations</span>

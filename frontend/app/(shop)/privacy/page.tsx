@@ -24,16 +24,16 @@ export default function PrivacyPage() {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Hero Header */}
-      <div className="page-hero py-16 text-center relative overflow-hidden bg-gradient-to-r from-brand-950 via-brand-800 to-brand-600 text-white">
+      <div className="page-hero py-16 text-center relative overflow-hidden text-ink">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-brand-300 via-brand-950 to-transparent"></div>
         <div className="container-custom max-w-3xl mx-auto relative z-10">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 backdrop-blur-sm border border-white/20 text-brand-200 mb-4">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-100 border border-brand-200 text-brand-800 mb-4">
             Data Protection
           </span>
-          <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-ink mb-4">
             Privacy Policy
           </h1>
-          <p className="text-white/80 text-lg">
+          <p className="text-ink-muted text-lg">
             Last Updated: July 27, 2026. Your privacy is our highest priority. Learn how we handle your data.
           </p>
         </div>
