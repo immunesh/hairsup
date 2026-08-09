@@ -120,23 +120,27 @@ console.log("CARD", {
 />
           )}
 
-          {/* Badges */}
-          <div className="absolute top-2 left-2 flex flex-col gap-1">
+          {/* Badges. items-start matters: a flex column stretches its children
+              by default, which sized the short discount badge to the width of
+              "Best Seller" and pushed it into the gender badge on narrow cards. */}
+          <div className="absolute top-2 left-2 flex flex-col items-start gap-1 max-w-[58%]">
             {discountPct > 0 && (
-              <span className="badge-sale text-xs font-bold">-{discountPct}%</span>
+              <span className="badge badge-sale">-{discountPct}%</span>
             )}
             {product.isNewArrival && (
-              <span className="badge-new text-xs">New</span>
+              <span className="badge badge-new">New</span>
             )}
             {product.isBestSeller && (
-              <span className="badge-best text-xs">Best Seller</span>
+              <span className="badge badge-best">Best Seller</span>
             )}
           </div>
 
-          {/* Gender badge */}
-          <div className="absolute top-2 right-2">
+          {/* Gender badge. Hidden on the narrowest cards, where "Best Seller"
+              on the left leaves no room — the category line directly beneath
+              the image already reads "Women's Wigs" / "Men's Wigs". */}
+          <div className="absolute top-2 right-2 max-w-[40%] hidden min-[420px]:block">
             <span className={cn(
-              'badge text-xs',
+              'badge',
               product.gender === 'WOMEN' ? 'bg-cream text-ink-soft' : 'bg-mist text-ink-soft'
             )}>
               {product.gender === 'WOMEN' ? 'Women' : 'Men'}

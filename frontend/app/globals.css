@@ -142,9 +142,12 @@
     @apply lg:col-span-5 lg:col-start-8;
   }
 
+  /* Compact by design — these sit over product photography and several can
+     stack in one corner, so they must not take more room than their text. */
   .badge {
-    @apply inline-flex items-center font-ui px-2.5 py-1
-           rounded-sm text-[11px] font-semibold uppercase tracking-button;
+    @apply inline-flex items-center self-start shrink-0 whitespace-nowrap
+           font-ui px-2 py-[3px] rounded-sm
+           text-[10px] leading-none font-semibold uppercase tracking-button;
   }
 
   .badge-sale {
