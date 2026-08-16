@@ -69,7 +69,7 @@ export default async function TryOnPage({
       {/* Main try-on tool */}
       <section className="py-12 bg-gray-50">
         <div className="container-custom">
-      <VirtualTryOn selectedProductId={wig} />
+      <VirtualTryOn selectedProductId={wig} selectedProduct={selectedProduct} />
         </div>
       </section>
 

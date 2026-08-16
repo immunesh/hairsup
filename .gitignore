@@ -27,6 +27,9 @@ build-output.txt
 .env.production
 .env.development
 
+# Local-only backup of original (pre-cutout) wig product photos
+frontend/.wig-originals-backup/
+
 # IDE
 .vscode/
 .idea/

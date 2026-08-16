@@ -2,6 +2,11 @@ import { HeadPose } from "./headPose";
 import { WigConfig } from "./wigConfig";
 import { getAngleBlend } from "./angleInterpolation";
 
+function resolveAngleConfig(config: WigConfig, angleKey: string): WigConfig {
+  const override = config.angleOverrides?.[angleKey];
+  return override ? { ...config, ...override } : config;
+}
+
 export interface WigRenderOptions {
   scale?: number;
   xOffset?: number;
@@ -32,52 +37,58 @@ export function drawWigPose(
   // 2. Compute blending angles based on current head yaw
   const blend = getAngleBlend(pose.yaw, availableAngles);
 
-  // 3. Compute target 3D anchor position relative to the skull center
-  // Offsets are scaled dynamically by the head's physical dimensions (width/height)
-  const anchor3D = {
-    x:
-      pose.skullCenter.x +
-      pose.vRight.x * (config.offsetX * pose.headWidth) +
-      pose.vUp.x * (-config.offsetY * pose.headHeight) +
-      pose.vBack.x * (config.foreheadOffset * pose.faceWidth),
-    y:
-      pose.skullCenter.y +
-      pose.vRight.y * (config.offsetX * pose.headWidth) +
-      pose.vUp.y * (-config.offsetY * pose.headHeight) +
-      pose.vBack.y * (config.foreheadOffset * pose.faceWidth),
-    z:
-      pose.skullCenter.z +
-      pose.vRight.z * (config.offsetX * pose.headWidth) +
-      pose.vUp.z * (-config.offsetY * pose.headHeight) +
-      pose.vBack.z * (config.foreheadOffset * pose.faceWidth),
-  };
-
-  // 4. Perspective projection calculation
   const F = Math.max(canvasWidth, canvasHeight) * 1.2;
-  const relativeZ = anchor3D.z - pose.skullCenter.z;
-  const perspectiveScale = F / (F + relativeZ);
-
-  // 5. Dynamic scale adjustments for pitch and yaw projection compression
-  const pitchScaleMult = config.pitchScaleMultiplier ?? 0.2;
-  const yawScaleMult = config.yawScaleMultiplier ?? 0.1;
-
-  // As the user tilts their head, the projected height changes
-  const pitchFactor = 1.0 + Math.abs(pose.pitch) * pitchScaleMult;
-  // As the user turns side profile, horizontal width compresses
-  const yawFactor = 1.0 - Math.abs(pose.yaw) * yawScaleMult;
-
-  const baseWigWidth = pose.headWidth * config.scale;
-  const finalWigWidth = baseWigWidth * perspectiveScale * yawFactor;
-
-  // Project 3D anchor point to screen 2D coordinates
   const cx = canvasWidth / 2;
   const cy = canvasHeight / 2;
-  const screenX = (anchor3D.x - cx) * perspectiveScale + cx;
-  const screenY = (anchor3D.y - cy) * perspectiveScale + cy;
 
-  // Draw helper with custom alpha blending
-  const drawWigAsset = (img: HTMLImageElement, opacity: number) => {
+  // Draw helper with custom alpha blending. Each angle resolves its own merged
+  // config (see WigConfig.angleOverrides) so a turned-view photo whose hair mass
+  // isn't framed identically to the front photo can still anchor to the head
+  // correctly instead of inheriting the front image's offsets verbatim.
+  const drawWigAsset = (img: HTMLImageElement, opacity: number, angleKey: string) => {
     if (opacity <= 0.005) return;
+
+    const cfg = resolveAngleConfig(config, angleKey);
+
+    // 3. Compute target 3D anchor position relative to the skull center
+    // Offsets are scaled dynamically by the head's physical dimensions (width/height)
+    const anchor3D = {
+      x:
+        pose.skullCenter.x +
+        pose.vRight.x * (cfg.offsetX * pose.headWidth) +
+        pose.vUp.x * (-cfg.offsetY * pose.headHeight) +
+        pose.vBack.x * (cfg.foreheadOffset * pose.faceWidth),
+      y:
+        pose.skullCenter.y +
+        pose.vRight.y * (cfg.offsetX * pose.headWidth) +
+        pose.vUp.y * (-cfg.offsetY * pose.headHeight) +
+        pose.vBack.y * (cfg.foreheadOffset * pose.faceWidth),
+      z:
+        pose.skullCenter.z +
+        pose.vRight.z * (cfg.offsetX * pose.headWidth) +
+        pose.vUp.z * (-cfg.offsetY * pose.headHeight) +
+        pose.vBack.z * (cfg.foreheadOffset * pose.faceWidth),
+    };
+
+    // 4. Perspective projection calculation
+    const relativeZ = anchor3D.z - pose.skullCenter.z;
+    const perspectiveScale = F / (F + relativeZ);
+
+    // 5. Dynamic scale adjustments for pitch and yaw projection compression
+    const pitchScaleMult = cfg.pitchScaleMultiplier ?? 0.2;
+    const yawScaleMult = cfg.yawScaleMultiplier ?? 0.1;
+
+    // As the user tilts their head, the projected height changes
+    const pitchFactor = 1.0 + Math.abs(pose.pitch) * pitchScaleMult;
+    // As the user turns side profile, horizontal width compresses
+    const yawFactor = 1.0 - Math.abs(pose.yaw) * yawScaleMult;
+
+    const baseWigWidth = pose.headWidth * cfg.scale;
+    const finalWigWidth = baseWigWidth * perspectiveScale * yawFactor;
+
+    // Project 3D anchor point to screen 2D coordinates
+    const screenX = (anchor3D.x - cx) * perspectiveScale + cx;
+    const screenY = (anchor3D.y - cy) * perspectiveScale + cy;
 
     const aspect = img.height / img.width;
     const finalWigHeight = finalWigWidth * aspect * pitchFactor;
@@ -88,16 +99,20 @@ export function drawWigPose(
     ctx.translate(screenX, screenY);
 
     // Rotate canvas around anchor point by Roll + Offset
-    ctx.rotate(pose.roll + config.rotationOffset);
+    ctx.rotate(pose.roll + cfg.rotationOffset);
 
     // Position image so the hairline aligns naturally.
-    // The top ~15% of the wig typically represents the space above the hairline anchor.
-    const verticalAlignOffset = finalWigHeight * 0.15;
+    // See WigConfig.hairlineRatio - live-tuned per wig, not derived from the PNG.
+    const verticalAlignOffset = finalWigHeight * (cfg.hairlineRatio ?? 0.15);
+    // Horizontal counterpart - see WigConfig.centerXRatio. Pure local draw-space
+    // shift, computed independently of the 3D pose so it can't destabilize the
+    // perspective projection the way perturbing offsetX/vRight would.
+    const horizontalAlignOffset = finalWigWidth * (cfg.centerXRatio ?? 0.5);
 
     ctx.globalAlpha = opacity;
     ctx.drawImage(
       img,
-      -finalWigWidth / 2,
+      -horizontalAlignOffset,
       -verticalAlignOffset,
       finalWigWidth,
       finalWigHeight
@@ -110,8 +125,8 @@ export function drawWigPose(
   const imgA = wigImages[blend.angleA];
   const imgB = wigImages[blend.angleB];
 
-  if (imgA) drawWigAsset(imgA, blend.opacityA);
-  if (imgB) drawWigAsset(imgB, blend.opacityB);
+  if (imgA) drawWigAsset(imgA, blend.opacityA, blend.angleA);
+  if (imgB) drawWigAsset(imgB, blend.opacityB, blend.angleB);
 
   // Restore opacity state
   ctx.globalAlpha = 1.0;
