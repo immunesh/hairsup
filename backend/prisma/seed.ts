@@ -80,6 +80,11 @@ async function main() {
         // during try-on (see wigImages angle-blend logic in wigRenderer.ts/angleInterpolation.ts).
         { url: '/wigs/wig7/men left view.png', isPrimary: false, angle: 315, isTryOn: true },
         { url: '/wigs/wig7/men right view.png', isPrimary: false, angle: 45, isTryOn: true },
+        // Back-of-head shot: gallery/360-view only, not used in the try-on face-angle
+        // blend (a live webcam feed never shows the back of the user's head).
+        { url: '/wigs/wig7/men back view.png', isPrimary: false, angle: 180, isTryOn: false },
+        // Top-down shot: gallery/360-view only, same reasoning as the back view.
+        { url: '/wigs/wig7/men top view.png', isPrimary: false, angle: 90, isTryOn: false },
       ],
     },
     {

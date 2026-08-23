@@ -23,7 +23,13 @@ export function drawWigPose(
   pose: HeadPose,
   config: WigConfig,
   canvasWidth: number,
-  canvasHeight: number
+  canvasHeight: number,
+  // When true, overlays the live pose numbers and the projected anchor of every drawn
+  // asset. The angle keys are screen-space yaw, but which SIGN of yaw corresponds to
+  // which direction of turn depends on MediaPipe's runtime z convention, which cannot
+  // be settled by reading the code - turn your head and read the HUD. Enabled with
+  // ?debug=1 on the try-on page.
+  debug: boolean = false
 ): void {
   // 1. Get all loaded available angles
   const availableAngles = Object.keys(wigImages).filter(
@@ -45,6 +51,8 @@ export function drawWigPose(
   // config (see WigConfig.angleOverrides) so a turned-view photo whose hair mass
   // isn't framed identically to the front photo can still anchor to the head
   // correctly instead of inheriting the front image's offsets verbatim.
+  const drawnAnchors: { x: number; y: number; label: string }[] = [];
+
   const drawWigAsset = (img: HTMLImageElement, opacity: number, angleKey: string) => {
     if (opacity <= 0.005) return;
 
@@ -119,6 +127,14 @@ export function drawWigPose(
     );
 
     ctx.restore();
+
+    if (debug) {
+      drawnAnchors.push({
+        x: screenX,
+        y: screenY,
+        label: `${angleKey} @ ${opacity.toFixed(2)}  w=${Math.round(finalWigWidth)}`,
+      });
+    }
   };
 
   // Render both neighboring angles for cross-fade blending
@@ -130,6 +146,70 @@ export function drawWigPose(
 
   // Restore opacity state
   ctx.globalAlpha = 1.0;
+
+  if (debug) {
+    drawPoseDebug(ctx, pose, blend, availableAngles, drawnAnchors, canvasWidth);
+  }
+}
+
+const DEG = 180 / Math.PI;
+
+/**
+ * Diagnostic overlay for tuning wigConfig. Shows the pose the renderer is actually
+ * working from, which asset(s) the yaw selected, and where each one got anchored, so
+ * the sign of yaw and the accuracy of centerXRatio/hairlineRatio can be read off the
+ * screen instead of inferred.
+ */
+function drawPoseDebug(
+  ctx: CanvasRenderingContext2D,
+  pose: HeadPose,
+  blend: { angleA: string; opacityA: number; angleB: string; opacityB: number },
+  availableAngles: string[],
+  anchors: { x: number; y: number; label: string }[],
+  canvasWidth: number
+): void {
+  ctx.save();
+  ctx.globalAlpha = 1;
+
+  // Crosshair + label on every anchor the renderer used this frame.
+  for (const a of anchors) {
+    ctx.strokeStyle = "#00ff88";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(a.x - 18, a.y);
+    ctx.lineTo(a.x + 18, a.y);
+    ctx.moveTo(a.x, a.y - 18);
+    ctx.lineTo(a.x, a.y + 18);
+    ctx.stroke();
+
+    ctx.font = "600 15px monospace";
+    ctx.fillStyle = "#00ff88";
+    ctx.fillText(a.label, a.x + 22, a.y - 4);
+  }
+
+  // Hairline landmark (10) for reference - the anchor should sit above it.
+  ctx.fillStyle = "#ff3b6b";
+  ctx.beginPath();
+  ctx.arc(pose.hairlinePos.x, pose.hairlinePos.y, 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  const lines = [
+    `yaw   ${(pose.yaw * DEG).toFixed(1)}deg   <- turn head, note the sign`,
+    `pitch ${(pose.pitch * DEG).toFixed(1)}deg`,
+    `roll  ${(pose.roll * DEG).toFixed(1)}deg`,
+    `assets [${availableAngles.join(", ")}]`,
+    `blend  A=${blend.angleA} (${blend.opacityA.toFixed(2)})  B=${blend.angleB} (${blend.opacityB.toFixed(2)})`,
+    `headW ${Math.round(pose.headWidth)}  faceW ${Math.round(pose.faceWidth)}`,
+  ];
+
+  ctx.font = "600 17px monospace";
+  const boxW = Math.min(canvasWidth - 20, 430);
+  ctx.fillStyle = "rgba(0, 0, 0, 0.62)";
+  ctx.fillRect(10, 10, boxW, 24 * lines.length + 14);
+  ctx.fillStyle = "#ffffff";
+  lines.forEach((line, i) => ctx.fillText(line, 20, 34 + i * 24));
+
+  ctx.restore();
 }
 
 /**

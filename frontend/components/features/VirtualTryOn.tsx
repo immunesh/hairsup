@@ -60,6 +60,16 @@ export default function VirtualTryOn({
 
   const faceDetectedRef = useRef(false);
 
+  // ?debug=1 turns on the pose/asset-selection overlay drawn by drawWigPose. Held in a
+  // ref because startRendering's loop closes over its scope once and would never see a
+  // state update.
+  const debugRef = useRef(false);
+
+  useEffect(() => {
+    debugRef.current =
+      new URLSearchParams(window.location.search).get("debug") === "1";
+  }, []);
+
   const [faceDetected, setFaceDetected] = useState(false);
 
   const [mode, setMode] = useState<"camera" | "upload">("camera");
@@ -196,7 +206,8 @@ export default function VirtualTryOn({
             pose,
             config,
             canvas.width,
-            canvas.height
+            canvas.height,
+            debugRef.current
           );
         }
       } else {
@@ -288,7 +299,8 @@ export default function VirtualTryOn({
             pose,
             config,
             canvas.width,
-            canvas.height
+            canvas.height,
+            debugRef.current
           );
         }
       };
