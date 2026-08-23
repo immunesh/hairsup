@@ -109,8 +109,8 @@ export default function Product360View({ images, productName }: Product360ViewPr
     const tick = () => {
       // autoplay advances position continuously
       if (isAutoPlayingRef.current && length > 0) {
-        // rotate at ~6 frames per second
-        positionRef.current = positionRef.current + 6 / 60; // 6 fps
+        // rotate at ~2 frames per second
+        positionRef.current = positionRef.current + 2 / 60; // 2 fps
       }
 
       // inertia damping when not dragging
