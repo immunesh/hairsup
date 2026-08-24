@@ -90,10 +90,11 @@ export default function VirtualTryOn({
   const startCamera = useCallback(async () => {
     setCameraError(null);
     try {
+      const isPortrait = window.innerWidth < window.innerHeight;
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
+          width: { ideal: isPortrait ? 720 : 1280 },
+          height: { ideal: isPortrait ? 1280 : 720 },
           facingMode: "user",
         },
         audio: false,
@@ -492,7 +493,7 @@ export default function VirtualTryOn({
             </div>
 
             {/* Main view */}
-            <div className="relative bg-gray-950 rounded-2xl overflow-hidden aspect-video">
+            <div className="relative bg-gray-950 rounded-2xl overflow-hidden aspect-[3/4] lg:aspect-video">
               {/* Hidden video element */}
               <video
                 ref={videoRef}

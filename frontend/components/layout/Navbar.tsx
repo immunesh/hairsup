@@ -61,12 +61,32 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  const desktopNavRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Mega menus open on hover for mouse users; touch devices (including
+  // tablets/landscape phones wide enough to hit the `lg` breakpoint) get no
+  // mouseenter, so the chevron button below toggles them on tap instead.
+  // Since there's no mouseleave on tap, close on any outside press.
+  useEffect(() => {
+    if (!activeMenu) return;
+    const handlePointerDown = (e: MouseEvent | TouchEvent) => {
+      if (desktopNavRef.current && !desktopNavRef.current.contains(e.target as Node)) {
+        setActiveMenu(null);
+      }
+    };
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+    };
+  }, [activeMenu]);
 
   useEffect(() => {
     if (isSearchOpen) searchRef.current?.focus();
@@ -128,24 +148,44 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-9 ml-12 flex-1">
+            <nav ref={desktopNavRef} className="hidden lg:flex items-center gap-9 ml-12 flex-1">
               {NAV_LINKS.map((link) => (
                 <div
                   key={link.label}
                   className="relative"
-                  onMouseEnter={() => link.mega && setActiveMenu(link.label)}
-                  onMouseLeave={() => setActiveMenu(null)}
+                  onMouseEnter={() => {
+                    // Touchscreens fire a synthetic mouseenter/click pair after a tap;
+                    // without this guard that reopens the menu right after the chevron's
+                    // onClick toggle closes it. Real mice/trackpads report `hover: hover`.
+                    if (link.mega && window.matchMedia('(hover: hover)').matches) {
+                      setActiveMenu(link.label);
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    if (window.matchMedia('(hover: hover)').matches) {
+                      setActiveMenu(null);
+                    }
+                  }}
                 >
-                  <Link
-                    href={link.href}
+                  <div
                     data-active={activeMenu === link.label ? 'true' : undefined}
-                    className={cn(
-                      'nav-link flex items-center gap-1.5'
-                    )}
+                    className="nav-link flex items-center gap-1.5"
                   >
-                    {link.label}
-                    {link.mega && <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', activeMenu === link.label && 'rotate-180')} />}
-                  </Link>
+                    <Link href={link.href}>{link.label}</Link>
+                    {link.mega && (
+                      <button
+                        type="button"
+                        aria-expanded={activeMenu === link.label}
+                        aria-label={`${activeMenu === link.label ? 'Close' : 'Open'} ${link.label} menu`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveMenu((prev) => (prev === link.label ? null : link.label));
+                        }}
+                      >
+                        <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', activeMenu === link.label && 'rotate-180')} />
+                      </button>
+                    )}
+                  </div>
 
                   {/* Mega Menu */}
                   {link.mega && activeMenu === link.label && (
@@ -155,6 +195,7 @@ export default function Navbar() {
                           <Link
                             key={item.label}
                             href={item.href}
+                            onClick={() => setActiveMenu(null)}
                             className="text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 px-3 py-2 rounded-lg transition-colors"
                           >
                             {item.label}
@@ -164,6 +205,7 @@ export default function Navbar() {
                       <div className="mt-3 pt-3 border-t border-gray-100">
                         <Link
                           href={link.href}
+                          onClick={() => setActiveMenu(null)}
                           className="text-sm font-semibold text-brand-600 hover:underline"
                         >
                           View All {link.label} →
