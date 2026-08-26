@@ -140,11 +140,13 @@ export default function Navbar() {
         <div className="container-custom">
           <div className="flex items-center h-16 lg:h-24 gap-4">
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0 flex items-center gap-2" onClick={closeMobileMenu}>
-              <div className="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center">
+            <Link href="/" className="flex items-center gap-2 min-w-0" onClick={closeMobileMenu}>
+              <div className="w-10 h-10 flex-shrink-0 bg-brand-100 rounded-full flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-brand-700" />
               </div>
-              <span className="text-[28px] font-display font-bold text-ink">HairsUp</span>
+              <span className="text-2xl lg:text-[28px] font-display font-bold text-ink truncate">
+                HairsUp
+              </span>
             </Link>
 
             {/* Desktop Nav */}
@@ -218,18 +220,21 @@ export default function Navbar() {
             </nav>
 
             {/* Right actions */}
-            <div className="flex items-center gap-1 ml-auto">
+            <div className="flex items-center gap-1 ml-auto flex-shrink-0">
               {/* Search */}
               <button
                 onClick={toggleSearch}
-                className="p-2 rounded-xl hover:bg-gray-100 transition-colors relative"
+                className="hidden lg:flex p-2 rounded-card hover:bg-brand-50 transition-colors relative"
                 aria-label="Search"
               >
                 <Search className="w-5 h-5 text-gray-700" />
               </button>
 
               {/* Wishlist */}
-              <Link href="/wishlist" className="p-2 rounded-xl hover:bg-gray-100 transition-colors relative">
+              <Link
+                href="/wishlist"
+                className="hidden lg:flex p-2 rounded-card hover:bg-brand-50 transition-colors relative"
+              >
                 <Heart className="w-5 h-5 text-gray-700" />
                 {wishlistItems.length > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
@@ -239,12 +244,14 @@ export default function Navbar() {
               </Link>
 
               {/* Notifications */}
-              <NotificationBell />
+              <div className="hidden lg:block">
+                <NotificationBell />
+              </div>
 
               {/* Cart */}
               <button
                 onClick={cartStore.toggleCart}
-                className="p-2 rounded-xl hover:bg-gray-100 transition-colors relative"
+                className="p-2 rounded-card hover:bg-brand-50 transition-colors relative"
                 aria-label="Cart"
               >
                 <ShoppingBag className="w-5 h-5 text-gray-700" />
@@ -257,7 +264,7 @@ export default function Navbar() {
 
               {/* User */}
               {isAuthenticated ? (
-                <div className="relative">
+                <div className="relative hidden lg:block">
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                     className="flex items-center gap-2 p-2 rounded-xl hover:bg-gray-100 transition-colors"
@@ -307,7 +314,9 @@ export default function Navbar() {
               {/* Mobile menu */}
               <button
                 onClick={toggleMobileMenu}
-                className="lg:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors ml-1"
+                className="lg:hidden flex-shrink-0 p-2 rounded-card hover:bg-brand-50 transition-colors ml-1"
+                aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={isMobileMenuOpen}
               >
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -374,6 +383,29 @@ export default function Navbar() {
                   </div>
                 </div>
               )}
+
+              {/* Search and Wishlist live here rather than in the bar, so the
+                  menu button always has room on narrow screens. */}
+              <button
+                type="button"
+                onClick={() => { closeMobileMenu(); toggleSearch(); }}
+                className="flex items-center gap-3 w-full p-3 mb-2 rounded-card hover:bg-brand-50 font-medium text-ink"
+              >
+                <Search className="w-5 h-5 text-ink-muted" /> Search
+              </button>
+
+              <Link
+                href="/wishlist"
+                onClick={closeMobileMenu}
+                className="flex items-center gap-3 p-3 mb-4 rounded-card hover:bg-brand-50 font-medium text-ink"
+              >
+                <Heart className="w-5 h-5 text-ink-muted" /> Wishlist
+                {wishlistItems.length > 0 && (
+                  <span className="ml-auto min-w-[20px] h-5 px-1.5 bg-coral-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {wishlistItems.length}
+                  </span>
+                )}
+              </Link>
 
               {NAV_LINKS.map((link) => (
                 <div key={link.label} className="mb-2">

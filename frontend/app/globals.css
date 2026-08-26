@@ -79,6 +79,26 @@
            transition-shadow duration-300;
   }
 
+  /* A padded card used as a side panel or tool surface. Same square corners and
+     quiet shadow as .card, but static - these do not respond to hover the way a
+     clickable product card does. */
+  .card-panel {
+    @apply bg-white rounded-card border border-gray-100 shadow-product p-4;
+  }
+
+  /* Accent variant for supporting/help panels. */
+  .card-panel-accent {
+    @apply bg-brand-50 rounded-card border border-brand-100 p-4;
+  }
+
+  /* Heading inside a panel. Uses the same small-caps UI treatment as
+     .section-eyebrow so panels read as part of the theme's type system rather
+     than as generic bold sans headings. */
+  .card-title {
+    @apply font-ui text-xs font-semibold uppercase tracking-label text-brand-600
+           flex items-center gap-2 mb-3;
+  }
+
   .input-field {
     @apply w-full px-4 py-3 bg-white
            border border-gray-200 rounded-card

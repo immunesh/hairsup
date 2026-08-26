@@ -183,12 +183,6 @@ console.log("CARD", {
             </div>
           )}
 
-          {/* Low stock warning */}
-          {product.stock > 0 && product.stock <= 5 && (
-            <div className="absolute bottom-14 left-2 right-2 bg-orange-500 text-white text-xs text-center py-1 rounded-lg font-medium">
-              Only {product.stock} left!
-            </div>
-          )}
         </div>
 
         {/* Product info */}
@@ -235,6 +229,14 @@ console.log("CARD", {
               </span>
             )}
           </div>
+
+          {/* Low stock warning. Sits under the price rather than over the
+              photograph - the overlay bar cut straight across the model. */}
+          {product.stock > 0 && product.stock <= 5 && (
+            <p className="mt-1 font-ui text-xs font-semibold text-coral-600">
+              Only {product.stock} left!
+            </p>
+          )}
 
           {/* Try-on hint */}
           <div className="flex items-center gap-1 mt-2 text-xs text-brand-600 font-medium">
