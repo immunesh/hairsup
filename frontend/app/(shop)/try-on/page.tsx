@@ -39,7 +39,6 @@ export default async function TryOnPage({
     selectedProduct = data.data;
   }
 
-  console.log(selectedProduct);
 
   return (
     <div>
@@ -67,7 +66,7 @@ export default async function TryOnPage({
       </div>
 
       {/* Main try-on tool */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-mist">
         <div className="container-custom">
       <VirtualTryOn selectedProductId={wig} selectedProduct={selectedProduct} />
         </div>
@@ -79,17 +78,19 @@ export default async function TryOnPage({
         <p className="section-subtitle text-center mb-12">Get your perfect look in 4 simple steps</p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {HOW_IT_WORKS.map(({ step, icon: Icon, title, desc }) => (
-            <div key={step} className="text-center">
+            <div key={step} className="card-panel text-center">
               <div className="relative w-16 h-16 mx-auto mb-4">
-                <div className="w-16 h-16 bg-brand-100 rounded-2xl flex items-center justify-center">
-                  <Icon className="w-7 h-7 text-brand-600" />
+                <div className="w-16 h-16 bg-brand-100 rounded-card flex items-center justify-center">
+                  <Icon className="w-7 h-7 text-brand-700" />
                 </div>
-                <span className="absolute -top-2 -right-2 w-6 h-6 bg-brand-600 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 w-6 h-6 bg-ink text-white font-ui text-[10px] font-semibold rounded-full flex items-center justify-center">
                   {step.slice(1)}
                 </span>
               </div>
-              <h3 className="font-bold text-gray-900 mb-2">{title}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
+              <h3 className="font-display text-lg font-bold text-ink mb-2">
+                {title}
+              </h3>
+              <p className="text-sm text-ink-muted leading-relaxed">{desc}</p>
             </div>
           ))}
         </div>
@@ -98,8 +99,10 @@ export default async function TryOnPage({
       {/* CTA */}
       <section className="py-12 bg-brand-50 border-t border-brand-100">
         <div className="container-custom text-center">
-          <h2 className="text-2xl font-display font-bold text-gray-900 mb-3">Found Your Perfect Match?</h2>
-          <p className="text-gray-500 mb-6">Shop the style you just tried on and have it delivered to your door.</p>
+          <h2 className="section-title">Found Your Perfect Match?</h2>
+          <p className="section-subtitle mb-6">
+            Shop the style you just tried on and have it delivered to your door.
+          </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/women" className="btn-primary">Shop Women&apos;s Wigs</Link>
             <Link href="/men" className="btn-secondary">Shop Men&apos;s Hair Systems</Link>

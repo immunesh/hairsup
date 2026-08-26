@@ -65,10 +65,27 @@ export default function VirtualTryOn({
   // state update.
   const debugRef = useRef(false);
 
+  // Live fit tuning, also gated behind ?debug=1. Fitting a wig is a judgement
+  // call that has to be made against a real face, so these override scale and
+  // hairlineRatio in place and print the values to paste into wigConfig.ts.
+  const [showTuner, setShowTuner] = useState(false);
+  const [tune, setTune] = useState({
+    scale: 1.35,
+    fringeDrop: 0.03,
+    foreheadOffset: 0.22,
+  });
+  const tuneRef = useRef(tune);
+
   useEffect(() => {
-    debugRef.current =
+    const debugEnabled =
       new URLSearchParams(window.location.search).get("debug") === "1";
+    debugRef.current = debugEnabled;
+    setShowTuner(debugEnabled);
   }, []);
+
+  useEffect(() => {
+    tuneRef.current = tune;
+  }, [tune]);
 
   const [faceDetected, setFaceDetected] = useState(false);
 
@@ -86,6 +103,19 @@ export default function VirtualTryOn({
 
   const displayProducts = products.length > 0 ? products : [];
   const activeProduct = selectedProduct || displayProducts[selectedProductIdx];
+
+  const activeSlug = activeProduct?.slug || activeProduct?.id;
+
+  // Start the sliders wherever this product already sits, so nudging one does
+  // not jump the wig.
+  useEffect(() => {
+    const config = getWigConfig(activeSlug);
+    setTune({
+      scale: config.scale,
+      fringeDrop: config.fringeDrop ?? 0.03,
+      foreheadOffset: config.foreheadOffset,
+    });
+  }, [activeSlug]);
 
   const startCamera = useCallback(async () => {
     setCameraError(null);
@@ -198,7 +228,12 @@ export default function VirtualTryOn({
 
         if (pose) {
           // 3. Get the product configuration
-          const config = getWigConfig(activeProduct?.slug || activeProduct?.id);
+          const baseConfig = getWigConfig(
+            activeProduct?.slug || activeProduct?.id,
+          );
+          const config = debugRef.current
+            ? { ...baseConfig, ...tuneRef.current }
+            : baseConfig;
 
           // 4. Render wig using skull-anchoring and dual-angle cross-fading
           drawWigPose(
@@ -291,7 +326,12 @@ export default function VirtualTryOn({
 
         if (pose) {
           // Get the product configuration
-          const config = getWigConfig(activeProduct?.slug || activeProduct?.id);
+          const baseConfig = getWigConfig(
+            activeProduct?.slug || activeProduct?.id,
+          );
+          const config = debugRef.current
+            ? { ...baseConfig, ...tuneRef.current }
+            : baseConfig;
 
           // Render wig using skull-anchoring and dual-angle cross-fading
           drawWigPose(
@@ -308,7 +348,7 @@ export default function VirtualTryOn({
     };
 
     processImage();
-  }, [uploadedImage]);
+  }, [uploadedImage, tune]);
 
   useEffect(() => {
     if (!selectedProductId) return;
@@ -319,7 +359,6 @@ export default function VirtualTryOn({
 
         const data = await res.json();
 
-        console.log("PRODUCT DATA", data);
 
         const images = (data.data.images || []).filter(
           (img: any) => img.isTryOn,
@@ -329,17 +368,21 @@ export default function VirtualTryOn({
 
         const loadedImages: Record<string, HTMLImageElement> = {};
 
-        images.forEach((img: any, index: number) => {
+        images.forEach((img: any) => {
           const image = new window.Image();
+
+          // Wig assets are served from Cloudinary, so they are cross-origin.
+          // Drawing an unclean image taints the canvas and makes the capture
+          // button's toDataURL() throw a SecurityError - Cloudinary sends
+          // Access-Control-Allow-Origin: *, so requesting CORS keeps it clean.
+          image.crossOrigin = "anonymous";
 
           image.src = img.url;
 
           loadedImages[String(img.angle)] = image;
         });
-        console.log(wigImagesRef.current);
         wigImagesRef.current = loadedImages;
 
-        console.log("Loaded Images", loadedImages);
       } catch (error) {
         console.error(error);
       }
@@ -403,14 +446,14 @@ export default function VirtualTryOn({
       {/* No-product modal (triggered by Start Camera / Choose Photo) */}
       {showNoProductModal && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
-          <div className="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 text-center shadow-xl">
-            <div className="w-16 h-16 bg-brand-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
-              <Zap className="w-8 h-8 text-brand-600" />
+          <div className="bg-white rounded-card border border-gray-100 p-8 max-w-sm w-full mx-4 text-center shadow-product-hover">
+            <div className="w-16 h-16 bg-brand-100 rounded-card flex items-center justify-center mx-auto mb-5">
+              <Zap className="w-8 h-8 text-brand-700" />
             </div>
-            <h2 className="text-xl font-display font-bold text-gray-900 mb-2">
+            <h2 className="font-display text-2xl font-bold text-ink mb-2">
               Please choose a product to try on
             </h2>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-ink-muted mb-6">
               Browse our collection and tap &quot;Try On&quot; on any product to
               see how it looks on you.
             </p>
@@ -425,7 +468,7 @@ export default function VirtualTryOn({
       )}
       {showCropper && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
-          <div className="bg-white rounded-xl p-4 w-[600px]">
+          <div className="bg-white rounded-card border border-gray-100 shadow-product-hover p-4 w-[600px] max-w-[calc(100vw-2rem)]">
             <div className="relative h-[400px]">
               <Cropper
                 image={cropImage || ""}
@@ -461,17 +504,17 @@ export default function VirtualTryOn({
           {/* Camera / Preview panel */}
           <div className="lg:col-span-2 space-y-4">
             {/* Mode tabs */}
-            <div className="flex gap-2 bg-gray-100 p-1 rounded-xl">
+            <div className="flex gap-2 bg-mist border border-gray-100 p-1 rounded-card">
               <button
                 onClick={() => {
                   setMode("camera");
                   setCapturedImage(null);
                 }}
                 className={cn(
-                  "flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all",
+                  "flex-1 py-2 px-4 rounded-card font-ui text-xs font-semibold uppercase tracking-button transition-colors",
                   mode === "camera"
-                    ? "bg-white shadow text-brand-600"
-                    : "text-gray-600 hover:text-gray-900",
+                    ? "bg-white shadow-product text-brand-700"
+                    : "text-ink-muted hover:text-ink",
                 )}
               >
                 Live Camera
@@ -482,10 +525,10 @@ export default function VirtualTryOn({
                   stopCamera();
                 }}
                 className={cn(
-                  "flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all",
+                  "flex-1 py-2 px-4 rounded-card font-ui text-xs font-semibold uppercase tracking-button transition-colors",
                   mode === "upload"
-                    ? "bg-white shadow text-brand-600"
-                    : "text-gray-600 hover:text-gray-900",
+                    ? "bg-white shadow-product text-brand-700"
+                    : "text-ink-muted hover:text-ink",
                 )}
               >
                 Upload Photo
@@ -493,7 +536,7 @@ export default function VirtualTryOn({
             </div>
 
             {/* Main view */}
-            <div className="relative bg-gray-950 rounded-2xl overflow-hidden aspect-[3/4] lg:aspect-video">
+            <div className="relative bg-ink rounded-card overflow-hidden aspect-[3/4] lg:aspect-video">
               {/* Hidden video element */}
               <video
                 ref={videoRef}
@@ -518,16 +561,16 @@ export default function VirtualTryOn({
                         <Camera className="w-10 h-10 text-brand-400" />
                       </div>
                       <div className="text-center">
-                        <h3 className="text-xl font-bold mb-2">
+                        <h3 className="font-display text-2xl font-bold mb-2">
                           Virtual Try-On
                         </h3>
-                        <p className="text-gray-400 text-sm max-w-xs">
+                        <p className="text-white/70 text-sm max-w-xs">
                           See how any HairsUp wig looks on you — in real time
                           using your camera.
                         </p>
                       </div>
                       {cameraError && (
-                        <div className="flex items-start gap-2 bg-red-900/50 border border-red-500/30 rounded-xl p-3 max-w-xs text-left">
+                        <div className="flex items-start gap-2 bg-coral-600/40 border border-coral-500/40 rounded-card p-3 max-w-xs text-left">
                           <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
                           <p className="text-xs text-red-300">{cameraError}</p>
                         </div>
@@ -578,8 +621,10 @@ export default function VirtualTryOn({
                         <Camera className="w-8 h-8 text-brand-400" />
                       </div>
                       <div className="text-center">
-                        <p className="font-semibold mb-1">Upload your photo</p>
-                        <p className="text-sm text-gray-400">
+                        <p className="font-display text-lg font-bold mb-1">
+                          Upload your photo
+                        </p>
+                        <p className="font-ui text-xs uppercase tracking-label text-white/60">
                           JPG, PNG, WEBP up to 10MB
                         </p>
                       </div>
@@ -593,8 +638,10 @@ export default function VirtualTryOn({
                         <Camera className="w-8 h-8 text-brand-400" />
                       </div>
                       <div className="text-center">
-                        <p className="font-semibold mb-1">Upload your photo</p>
-                        <p className="text-sm text-gray-400">
+                        <p className="font-display text-lg font-bold mb-1">
+                          Upload your photo
+                        </p>
+                        <p className="font-ui text-xs uppercase tracking-label text-white/60">
                           JPG, PNG, WEBP up to 10MB
                         </p>
                       </div>
@@ -623,13 +670,13 @@ export default function VirtualTryOn({
                   <div className="absolute top-3 right-3 flex gap-2">
                     <button
                       onClick={downloadCapture}
-                      className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-xl transition-colors shadow"
+                      className="bg-white/90 hover:bg-white text-ink p-2 rounded-card transition-colors shadow-product"
                     >
                       <Download className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setCapturedImage(null)}
-                      className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-xl transition-colors shadow"
+                      className="bg-white/90 hover:bg-white text-ink p-2 rounded-card transition-colors shadow-product"
                     >
                       <RefreshCw className="w-4 h-4" />
                     </button>
@@ -657,10 +704,101 @@ export default function VirtualTryOn({
                 </button>
                 <button
                   onClick={stopCamera}
-                  className="w-14 h-14 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 transition-all flex items-center justify-center"
+                  className="w-14 h-14 rounded-full bg-white border-2 border-ink text-ink hover:bg-ink hover:text-white transition-colors flex items-center justify-center"
                 >
                   <CameraOff className="w-6 h-6" />
                 </button>
+              </div>
+            )}
+
+            {/* Fit tuner (?debug=1). Applies to both the live camera and an
+                uploaded photo, so a wig can be fitted against whichever is
+                easier to judge. */}
+            {showTuner && (
+              <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 text-sm">
+                <div className="mb-3 font-semibold text-gray-900">
+                  Fit tuning
+                  <span className="ml-2 font-normal text-gray-400">
+                    {activeSlug || "no product"}
+                  </span>
+                </div>
+
+                <label className="block mb-3">
+                  <span className="flex justify-between text-gray-600">
+                    <span>Size</span>
+                    <span className="font-mono">{tune.scale.toFixed(2)}</span>
+                  </span>
+                  <input
+                    type="range"
+                    min={0.6}
+                    max={2.2}
+                    step={0.01}
+                    value={tune.scale}
+                    onChange={(e) =>
+                      setTune((current) => ({
+                        ...current,
+                        scale: Number(e.target.value),
+                      }))
+                    }
+                    className="w-full"
+                  />
+                </label>
+
+                <label className="block mb-3">
+                  <span className="flex justify-between text-gray-600">
+                    <span>Fringe (lower = higher on the head)</span>
+                    <span className="font-mono">
+                      {tune.fringeDrop.toFixed(2)}
+                    </span>
+                  </span>
+                  <input
+                    type="range"
+                    min={-0.15}
+                    max={0.25}
+                    step={0.01}
+                    value={tune.fringeDrop}
+                    onChange={(e) =>
+                      setTune((current) => ({
+                        ...current,
+                        fringeDrop: Number(e.target.value),
+                      }))
+                    }
+                    className="w-full"
+                  />
+                </label>
+
+                <label className="block mb-3">
+                  <span className="flex justify-between text-gray-600">
+                    <span>Depth (higher = seated further back)</span>
+                    <span className="font-mono">
+                      {tune.foreheadOffset.toFixed(2)}
+                    </span>
+                  </span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={0.6}
+                    step={0.01}
+                    value={tune.foreheadOffset}
+                    onChange={(e) =>
+                      setTune((current) => ({
+                        ...current,
+                        foreheadOffset: Number(e.target.value),
+                      }))
+                    }
+                    className="w-full"
+                  />
+                </label>
+
+                <pre className="overflow-x-auto rounded-xl bg-gray-900 p-3 text-xs text-gray-100">
+{`scale: ${tune.scale.toFixed(2)},
+fringeDrop: ${tune.fringeDrop.toFixed(2)},
+foreheadOffset: ${tune.foreheadOffset.toFixed(2)},`}
+                </pre>
+                <p className="mt-2 text-xs text-gray-500">
+                  Paste into DEFAULT_WIG_CONFIG, or into a per-slug entry in
+                  lib/wigConfig.ts, to make it stick.
+                </p>
               </div>
             )}
           </div>
@@ -668,24 +806,24 @@ export default function VirtualTryOn({
           {/* Controls panel */}
           <div className="space-y-5">
             {/* Wig style selector */}
-            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-3 text-sm flex items-center gap-2">
-                <Zap className="w-4 h-4 text-brand-600" /> Style & Color
+            <div className="card-panel">
+              <h3 className="card-title">
+                <Zap className="w-4 h-4" /> Style &amp; Color
               </h3>
               <div className="space-y-2">
                 {selectedProduct && (
-                  <div className="border rounded-xl p-3">
+                  <div className="border border-gray-100 rounded-card p-3">
                     <img
                       src={selectedProduct.images?.[0]?.url}
                       alt={selectedProduct.name}
-                      className="w-full h-40 object-cover rounded-lg"
+                      className="w-full h-40 object-cover rounded-card"
                     />
 
-                    <h4 className="mt-3 font-semibold">
+                    <h4 className="mt-3 font-display text-lg leading-snug font-bold text-ink line-clamp-3">
                       {selectedProduct.name}
                     </h4>
 
-                    <p className="text-sm text-gray-500">
+                    <p className="mt-1 font-ui text-sm font-semibold text-ink">
                       ₹{selectedProduct.salePrice || selectedProduct.basePrice}
                     </p>
                   </div>
@@ -695,27 +833,25 @@ export default function VirtualTryOn({
 
             {/* Product selection */}
             {displayProducts.length > 0 && (
-              <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-                <h3 className="font-semibold text-gray-900 mb-3 text-sm">
-                  Try These Wigs
-                </h3>
+              <div className="card-panel">
+                <h3 className="card-title">Try These Wigs</h3>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() =>
                       setSelectedProductIdx(Math.max(0, selectedProductIdx - 1))
                     }
                     disabled={selectedProductIdx === 0}
-                    className="p-1.5 rounded-lg hover:bg-gray-100 disabled:opacity-40 transition-colors"
+                    className="p-1.5 rounded-card text-ink hover:bg-brand-50 disabled:opacity-40 transition-colors"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                   <div className="flex-1 text-center">
                     {activeProduct && (
-                      <p className="text-sm font-medium text-gray-800 line-clamp-2">
+                      <p className="font-display text-base leading-snug font-bold text-ink line-clamp-2">
                         {activeProduct.name}
                       </p>
                     )}
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="font-ui text-xs text-ink-muted mt-0.5">
                       {selectedProductIdx + 1} of {displayProducts.length}
                     </p>
                   </div>
@@ -729,7 +865,7 @@ export default function VirtualTryOn({
                       )
                     }
                     disabled={selectedProductIdx === displayProducts.length - 1}
-                    className="p-1.5 rounded-lg hover:bg-gray-100 disabled:opacity-40 transition-colors"
+                    className="p-1.5 rounded-card text-ink hover:bg-brand-50 disabled:opacity-40 transition-colors"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
@@ -738,18 +874,10 @@ export default function VirtualTryOn({
             )}
 
             {/* Tips */}
-            <div className="bg-brand-50 rounded-2xl p-4 border border-brand-100">
-              <h4
-                className="font-semibold text-brand-800 mb-3"
-                style={{ fontSize: "18px" }}
-              >
-                Tips for best results
-              </h4>
+            <div className="card-panel-accent">
+              <h4 className="card-title text-brand-700">Tips for best results</h4>
 
-              <ul
-                className="space-y-2 text-brand-700"
-                style={{ fontSize: "16px", lineHeight: "1.6" }}
-              >
+              <ul className="space-y-2 text-sm leading-relaxed text-ink-soft">
                 <li className="flex items-start gap-2">
                   <span>•</span>
                   Find good, even lighting

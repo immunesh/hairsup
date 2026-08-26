@@ -1,6 +1,7 @@
 import { HeadPose } from "./headPose";
 import { WigConfig } from "./wigConfig";
 import { getAngleBlend } from "./angleInterpolation";
+import { getSilhouetteBox } from "./wigSilhouette";
 
 function resolveAngleConfig(config: WigConfig, angleKey: string): WigConfig {
   const override = config.angleOverrides?.[angleKey];
@@ -78,6 +79,13 @@ export function drawWigPose(
         pose.vBack.z * (cfg.foreheadOffset * pose.faceWidth),
     };
 
+    // Everything below sizes and anchors against the hair itself rather than the
+    // image frame. Assets differ enormously in how tightly they are cropped (the
+    // seeded PNGs carry 10-30% empty margin, admin-uploaded cut-outs about 2%),
+    // so frame-relative numbers meant something different on every asset and a
+    // wig tuned on one sat over the wearer's eyes on another.
+    const box = getSilhouetteBox(img);
+
     // 4. Perspective projection calculation
     const relativeZ = anchor3D.z - pose.skullCenter.z;
     const perspectiveScale = F / (F + relativeZ);
@@ -91,14 +99,28 @@ export function drawWigPose(
     // As the user turns side profile, horizontal width compresses
     const yawFactor = 1.0 - Math.abs(pose.yaw) * yawScaleMult;
 
-    const baseWigWidth = pose.headWidth * cfg.scale;
+    const sourceX = box.x * img.naturalWidth;
+    const sourceY = box.y * img.naturalHeight;
+    const sourceWidth = box.width * img.naturalWidth;
+    const sourceHeight = box.height * img.naturalHeight;
+
+    // scale sizes the wig's CAP - the head-covering part - to the wearer's head,
+    // not the full silhouette. On a short wig those are the same thing, but a
+    // long wig is roughly twice as wide at shoulder level as it is across the
+    // temples, so sizing the silhouette would shrink its cap to about 0.74 of
+    // head width and leave it hanging over the face instead of fitting the
+    // skull. Dividing by capWidth keeps the cap on the head and lets the length
+    // fall wherever the wig's own proportions put it.
+    const capWidth = Math.max(0.3, Math.min(1, box.capWidth));
+
+    const baseWigWidth = (pose.headWidth * cfg.scale) / capWidth;
     const finalWigWidth = baseWigWidth * perspectiveScale * yawFactor;
 
     // Project 3D anchor point to screen 2D coordinates
     const screenX = (anchor3D.x - cx) * perspectiveScale + cx;
     const screenY = (anchor3D.y - cy) * perspectiveScale + cy;
 
-    const aspect = img.height / img.width;
+    const aspect = sourceHeight / sourceWidth;
     const finalWigHeight = finalWigWidth * aspect * pitchFactor;
 
     ctx.save();
@@ -109,9 +131,29 @@ export function drawWigPose(
     // Rotate canvas around anchor point by Roll + Offset
     ctx.rotate(pose.roll + cfg.rotationOffset);
 
-    // Position image so the hairline aligns naturally.
-    // See WigConfig.hairlineRatio - live-tuned per wig, not derived from the PNG.
-    const verticalAlignOffset = finalWigHeight * (cfg.hairlineRatio ?? 0.15);
+    // Vertical anchoring. Derived per asset from where its own fringe sits,
+    // rather than from a shared constant - see WigConfig.fringeDrop.
+    //
+    // The anchor's height is fixed by the pose: with headHeight = 1.25 *
+    // faceHeight, offsetY puts it (-offsetY * 1.25 - 0.5) face-heights above the
+    // hairline landmark p10. Putting the fringe a chosen distance below p10 is
+    // then solved directly:
+    //   fringe_y = anchor_y + (fringe - r) * H  =  p10 + fringeDrop * faceHeight
+    //   => r = fringe - (fringeDrop + anchorAboveHairline) * faceHeight / H
+    const anchorAboveHairline = -cfg.offsetY * 1.25 - 0.5;
+    const fringeDrop = cfg.fringeDrop ?? 0.03;
+
+    const derivedRatio =
+      box.fringe > 0 && finalWigHeight > 0
+        ? box.fringe -
+          ((fringeDrop + anchorAboveHairline) * pose.faceHeight) /
+            finalWigHeight
+        : (cfg.hairlineRatio ?? 0.289);
+
+    // Clamped so a bad measurement can never fling the wig off the head.
+    const hairlineRatio = Math.max(0, Math.min(0.95, derivedRatio));
+
+    const verticalAlignOffset = finalWigHeight * hairlineRatio;
     // Horizontal counterpart - see WigConfig.centerXRatio. Pure local draw-space
     // shift, computed independently of the 3D pose so it can't destabilize the
     // perspective projection the way perturbing offsetX/vRight would.
@@ -120,6 +162,10 @@ export function drawWigPose(
     ctx.globalAlpha = opacity;
     ctx.drawImage(
       img,
+      sourceX,
+      sourceY,
+      sourceWidth,
+      sourceHeight,
       -horizontalAlignOffset,
       -verticalAlignOffset,
       finalWigWidth,
