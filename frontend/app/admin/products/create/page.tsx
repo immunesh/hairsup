@@ -4,6 +4,17 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_URL } from '@/lib/config';
 
+// Head angles a try-on asset can be shot at, in degrees clockwise from front-on.
+// The try-on renderer cross-fades between the two angles nearest the viewer's
+// current head yaw, so a front (0) plus both profiles (45 / 315) is the useful
+// minimum. Back (180) and top (90) views belong to the 360 gallery, not try-on.
+const ANGLE_OPTIONS = [0, 45, 90, 135, 180, 225, 270, 315];
+
+interface ImageMeta {
+  angle: number;
+  isTryOn: boolean;
+}
+
 export default function CreateProductPage() {
   const router = useRouter();
 const [categories, setCategories] = useState([]);
@@ -20,6 +31,15 @@ const [mainPreview, setMainPreview] =
 
 const [galleryPreviews, setGalleryPreviews] =
   useState<string[]>([]);
+
+// Per-image try-on metadata. Virtual try-on only ever loads images flagged
+// isTryOn, and keys them by angle - an image saved without these is invisible
+// to it no matter how good the cutout is.
+const [mainMeta, setMainMeta] =
+  useState<ImageMeta>({ angle: 0, isTryOn: false });
+
+const [galleryMeta, setGalleryMeta] =
+  useState<ImageMeta[]>([]);
 const [form, setForm] = useState({
   name: "",
   slug: "",
@@ -126,13 +146,29 @@ console.log(uploadRes.status);
         uploadData.url;
     }
 
-    const imageUrls: string[] = [];
+    const productImages: {
+      url: string;
+      angle: number;
+      isPrimary: boolean;
+      isTryOn: boolean;
+    }[] = [];
 
 if (mainImageUrl) {
-  imageUrls.push(mainImageUrl);
+  productImages.push({
+    url: mainImageUrl,
+    angle: mainMeta.angle,
+    isPrimary: true,
+    isTryOn: mainMeta.isTryOn,
+  });
 }
 
-for (const image of galleryImages) {
+for (
+  let index = 0;
+  index < galleryImages.length;
+  index++
+) {
+  const image = galleryImages[index];
+
   const formData = new FormData();
 
   formData.append(
@@ -152,9 +188,17 @@ for (const image of galleryImages) {
     await uploadRes.json();
 
   if (uploadRes.ok) {
-    imageUrls.push(
-      uploadData.url
-    );
+    const meta = galleryMeta[index] ?? {
+      angle: 0,
+      isTryOn: false,
+    };
+
+    productImages.push({
+      url: uploadData.url,
+      angle: meta.angle,
+      isPrimary: productImages.length === 0,
+      isTryOn: meta.isTryOn,
+    });
   }
 }
 
@@ -205,7 +249,7 @@ body: JSON.stringify({
   isBestSeller: form.isBestSeller,
   isNewArrival: form.isNewArrival,
 
-images: imageUrls,
+images: productImages,
 
 features,
 faqs,
@@ -1092,27 +1136,82 @@ includedItems,
         />
 
         {mainPreview && (
-          <img
-            src={mainPreview}
-            alt="Preview"
-            className="
-            mt-4
-            w-40
-            h-40
-            object-cover
-            rounded-2xl
+          <div className="mt-4 w-40 space-y-2">
+            <img
+              src={mainPreview}
+              alt="Preview"
+              className="
+              w-40
+              h-40
+              object-cover
+              rounded-2xl
+              border
+              border-white/10
+              "
+            />
+
+            <select
+              value={mainMeta.angle}
+              onChange={(e) =>
+                setMainMeta((meta) => ({
+                  ...meta,
+                  angle: Number(e.target.value),
+                }))
+              }
+              className="
+            w-full
+            px-3
+            py-2
+            rounded-xl
+            bg-white/5
             border
             border-white/10
+            text-sm
+            text-slate-300
             "
-          />
+            >
+              {ANGLE_OPTIONS.map((angle) => (
+                <option
+                  key={angle}
+                  value={angle}
+                  className="bg-slate-900"
+                >
+                  {angle}&deg;
+                  {angle === 0 ? " (front)" : ""}
+                </option>
+              ))}
+            </select>
+
+            <label className="flex items-center gap-2 text-sm text-slate-300">
+              <input
+                type="checkbox"
+                checked={mainMeta.isTryOn}
+                onChange={(e) =>
+                  setMainMeta((meta) => ({
+                    ...meta,
+                    isTryOn: e.target.checked,
+                  }))
+                }
+              />
+              Use for try-on
+            </label>
+          </div>
         )}
       </div>
 
       {/* Gallery Images */}
       <div>
-        <label className="block mb-2 text-sm font-medium text-slate-300">
+        <label className="block mb-1 text-sm font-medium text-slate-300">
           360 Product Images
         </label>
+
+        <p className="mb-3 text-xs text-slate-500">
+          Tick &ldquo;Use for try-on&rdquo; on the transparent wig cut-outs and set
+          the angle each one was shot at. Virtual try-on loads only these, and
+          cross-fades between the two nearest the viewer&rsquo;s head angle &mdash;
+          a front (0&deg;) plus both profiles (45&deg; and 315&deg;) is the useful
+          minimum.
+        </p>
 
         <input
           type="file"
@@ -1140,6 +1239,13 @@ includedItems,
                 URL.createObjectURL(file)
               )
             );
+
+            setGalleryMeta(
+              files.map(() => ({
+                angle: 0,
+                isTryOn: false,
+              }))
+            );
           }}
         />
 
@@ -1147,19 +1253,86 @@ includedItems,
           <div className="grid grid-cols-4 gap-4 mt-4">
             {galleryPreviews.map(
               (image, index) => (
-                <img
-                  key={index}
-                  src={image}
-                  alt={`Preview ${index}`}
-                  className="
-                  w-28
-                  h-28
-                  object-cover
-                  rounded-2xl
-                  border
-                  border-white/10
-                  "
-                />
+                <div key={index} className="space-y-2">
+                  <img
+                    src={image}
+                    alt={`Preview ${index}`}
+                    className="
+                    w-28
+                    h-28
+                    object-cover
+                    rounded-2xl
+                    border
+                    border-white/10
+                    "
+                  />
+
+                  <select
+                    value={
+                      galleryMeta[index]?.angle ?? 0
+                    }
+                    onChange={(e) =>
+                      setGalleryMeta((meta) =>
+                        meta.map((item, i) =>
+                          i === index
+                            ? {
+                                ...item,
+                                angle: Number(
+                                  e.target.value
+                                ),
+                              }
+                            : item
+                        )
+                      )
+                    }
+                    className="
+            w-full
+            px-3
+            py-2
+            rounded-xl
+            bg-white/5
+            border
+            border-white/10
+            text-sm
+            text-slate-300
+            "
+                  >
+                    {ANGLE_OPTIONS.map((angle) => (
+                      <option
+                        key={angle}
+                        value={angle}
+                        className="bg-slate-900"
+                      >
+                        {angle}&deg;
+                        {angle === 0 ? " (front)" : ""}
+                      </option>
+                    ))}
+                  </select>
+
+                  <label className="flex items-center gap-2 text-xs text-slate-300">
+                    <input
+                      type="checkbox"
+                      checked={
+                        galleryMeta[index]?.isTryOn ??
+                        false
+                      }
+                      onChange={(e) =>
+                        setGalleryMeta((meta) =>
+                          meta.map((item, i) =>
+                            i === index
+                              ? {
+                                  ...item,
+                                  isTryOn:
+                                    e.target.checked,
+                                }
+                              : item
+                          )
+                        )
+                      }
+                    />
+                    Use for try-on
+                  </label>
+                </div>
               )
             )}
           </div>

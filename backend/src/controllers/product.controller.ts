@@ -2,6 +2,67 @@ import { Request, Response } from "express";
 import { prisma } from "../db/prisma";
 import { AppError } from "../middleware/error.middleware";
 
+/**
+ * Product images arrive from the admin form as either plain URL strings (the
+ * legacy shape) or objects carrying the per-image metadata the storefront needs.
+ *
+ * `angle` and `isTryOn` are not cosmetic: the virtual try-on picks its wig assets
+ * by filtering images on `isTryOn` and keying them by `angle` (see
+ * VirtualTryOn.tsx / wigRenderer.ts). The previous version of this mapper built
+ * rows from the URL alone, so every image fell back to `angle: 0, isTryOn: false`
+ * and try-on had nothing to render — and because updateProduct deletes and
+ * recreates the image rows, editing a product in admin also wiped flags that had
+ * been set by the seed.
+ */
+type ProductImageInput =
+  | string
+  | {
+      url?: unknown;
+      alt?: unknown;
+      angle?: unknown;
+      isPrimary?: unknown;
+      isTryOn?: unknown;
+    };
+
+interface NormalizedProductImage {
+  url: string;
+  alt: string | null;
+  angle: number;
+  isPrimary: boolean;
+  isTryOn: boolean;
+}
+
+const normalizeProductImages = (
+  images: unknown
+): NormalizedProductImage[] => {
+  if (!Array.isArray(images)) return [];
+
+  return (images as ProductImageInput[])
+    .map((image, index): NormalizedProductImage | null => {
+      const raw = typeof image === "string" ? { url: image } : image ?? {};
+      const url = typeof raw.url === "string" ? raw.url.trim() : "";
+
+      if (!url) return null;
+
+      // Angles are stored as degrees in [0, 360) so the try-on angle blend can
+      // wrap cleanly between, say, 315 and 0.
+      const angle = Number(raw.angle);
+      const normalizedAngle = Number.isFinite(angle)
+        ? ((Math.round(angle) % 360) + 360) % 360
+        : 0;
+
+      return {
+        url,
+        alt: typeof raw.alt === "string" ? raw.alt : null,
+        angle: normalizedAngle,
+        isPrimary:
+          typeof raw.isPrimary === "boolean" ? raw.isPrimary : index === 0,
+        isTryOn: raw.isTryOn === true,
+      };
+    })
+    .filter((image): image is NormalizedProductImage => image !== null);
+};
+
 export const getProducts = async (
   req: Request,
   res: Response
@@ -350,23 +411,7 @@ isNewArrival,
             brand || "HairsUp",
 
           images: {
-            create:
-              Array.isArray(
-                images
-              )
-                ? images.map(
-                  
-                    (
-                      url: string,
-                      index: number
-                    ) => ({
-                      url,
-                      isPrimary:
-                        index === 0,
-                        
-                    })
-                  )
-                : [],
+            create: normalizeProductImages(images),
           },
           
           features: {
@@ -533,18 +578,7 @@ isNewArrival,
       ),
 
       images: {
-        create: Array.isArray(images)
-          ? images.map(
-              (
-                url: string,
-                index: number
-              ) => ({
-                url,
-                isPrimary:
-                  index === 0,
-              })
-            )
-          : [],
+        create: normalizeProductImages(images),
       },
       features: {
   create: Array.isArray(features)

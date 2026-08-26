@@ -5,6 +5,19 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { API_URL } from '@/lib/config';
 
+// Head angles a try-on asset can be shot at, in degrees clockwise from front-on.
+// The try-on renderer cross-fades between the two angles nearest the viewer's
+// current head yaw, so a front (0) plus both profiles (45 / 315) is the useful
+// minimum. Back (180) and top (90) views belong to the 360 gallery, not try-on.
+const ANGLE_OPTIONS = [0, 45, 90, 135, 180, 225, 270, 315];
+
+interface ProductImage {
+  url: string;
+  angle: number;
+  isPrimary: boolean;
+  isTryOn: boolean;
+}
+
 export default function EditProductPage() {
 const params = useParams();
 const router = useRouter();
@@ -17,7 +30,14 @@ const [galleryImages, setGalleryImages] = useState<File[]>([]);
 const [mainPreview, setMainPreview] = useState("");
 const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
 
-const [existingImages, setExistingImages] = useState<string[]>([]);
+// Existing rows are kept as full objects, not bare URLs. updateProduct deletes
+// and recreates every image row, so whatever is missing here is destroyed on
+// save - which is how the products in the catalogue lost their try-on flags.
+const [existingImages, setExistingImages] = useState<ProductImage[]>([]);
+
+const [galleryMeta, setGalleryMeta] = useState<
+  { angle: number; isTryOn: boolean }[]
+>([]);
 const [form, setForm] = useState({
   name: "",
   slug: "",
@@ -110,7 +130,15 @@ const res = await fetch(
   const data = await res.json();
   const product = data.data;
 setExistingImages(
-  product.images?.map((img: any) => img.url) || []
+  product.images?.map((img: any, index: number) => ({
+    url: img.url,
+    angle: Number(img.angle) || 0,
+    isPrimary:
+      typeof img.isPrimary === "boolean"
+        ? img.isPrimary
+        : index === 0,
+    isTryOn: img.isTryOn === true,
+  })) || []
 );
 
 if (product.images?.length) {
@@ -205,8 +233,11 @@ e.preventDefault();
 
 
 try {
-  let imageUrls = [...existingImages];
-  // Upload main image
+  let productImages: ProductImage[] = [
+    ...existingImages,
+  ];
+  // Upload main image. This replaces the primary image only - it used to
+  // discard the whole gallery, taking every try-on asset with it.
 if (mainImage) {
   const fd = new FormData();
 
@@ -223,11 +254,32 @@ if (mainImage) {
   const uploadData = await uploadRes.json();
 
   if (uploadRes.ok) {
-    imageUrls = [uploadData.url];
+    const previousPrimary = productImages.find(
+      (image) => image.isPrimary
+    );
+
+    const replacement: ProductImage = {
+      url: uploadData.url,
+      angle: previousPrimary?.angle ?? 0,
+      isPrimary: true,
+      isTryOn: previousPrimary?.isTryOn ?? false,
+    };
+
+    productImages = previousPrimary
+      ? productImages.map((image) =>
+          image.isPrimary ? replacement : image
+        )
+      : [replacement, ...productImages];
   }
 }
 // Upload gallery images
-for (const image of galleryImages) {
+for (
+  let index = 0;
+  index < galleryImages.length;
+  index++
+) {
+  const image = galleryImages[index];
+
   const fd = new FormData();
 
   fd.append("image", image);
@@ -243,7 +295,17 @@ for (const image of galleryImages) {
   const uploadData = await uploadRes.json();
 
   if (uploadRes.ok) {
-    imageUrls.push(uploadData.url);
+    const meta = galleryMeta[index] ?? {
+      angle: 0,
+      isTryOn: false,
+    };
+
+    productImages.push({
+      url: uploadData.url,
+      angle: meta.angle,
+      isPrimary: productImages.length === 0,
+      isTryOn: meta.isTryOn,
+    });
   }
 }
   const res = await fetch(
@@ -266,7 +328,7 @@ for (const image of galleryImages) {
     .map((tag) => tag.trim())
     .filter(Boolean),
 
- images: imageUrls,
+ images: productImages,
 
 features,
 faqs,
@@ -969,6 +1031,96 @@ return (
     </div>
   ))}
 </div>
+{/* Existing Images */}
+<div className="mt-6">
+  <label className="block mb-1 text-sm font-medium text-slate-300">
+    Existing Images
+  </label>
+
+  <p className="mb-3 text-xs text-slate-500">
+    Tick &ldquo;Use for try-on&rdquo; on the transparent wig cut-outs and set the
+    angle each one was shot at. Virtual try-on loads only these, and cross-fades
+    between the two nearest the viewer&rsquo;s head angle &mdash; a front (0&deg;)
+    plus both profiles (45&deg; and 315&deg;) is the useful minimum.
+  </p>
+
+  {existingImages.length === 0 ? (
+    <p className="text-sm text-slate-500">No images yet.</p>
+  ) : (
+    <div className="grid grid-cols-4 gap-4">
+      {existingImages.map((image, index) => (
+        <div key={image.url + index} className="space-y-2">
+          <img
+            src={image.url}
+            alt={`Image ${index + 1}`}
+            className="w-28 h-28 object-cover rounded-2xl border border-white/10"
+          />
+
+          <select
+            value={image.angle}
+            onChange={(e) =>
+              setExistingImages((images) =>
+                images.map((item, i) =>
+                  i === index
+                    ? {
+                        ...item,
+                        angle: Number(e.target.value),
+                      }
+                    : item
+                )
+              )
+            }
+            className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-slate-300"
+          >
+            {ANGLE_OPTIONS.map((angle) => (
+              <option
+                key={angle}
+                value={angle}
+                className="bg-slate-900"
+              >
+                {angle}&deg;
+                {angle === 0 ? " (front)" : ""}
+              </option>
+            ))}
+          </select>
+
+          <label className="flex items-center gap-2 text-xs text-slate-300">
+            <input
+              type="checkbox"
+              checked={image.isTryOn}
+              onChange={(e) =>
+                setExistingImages((images) =>
+                  images.map((item, i) =>
+                    i === index
+                      ? {
+                          ...item,
+                          isTryOn: e.target.checked,
+                        }
+                      : item
+                  )
+                )
+              }
+            />
+            Use for try-on
+          </label>
+
+          <button
+            type="button"
+            onClick={() =>
+              setExistingImages((images) =>
+                images.filter((_, i) => i !== index)
+              )
+            }
+            className="w-full px-3 py-1.5 rounded-xl bg-red-500/80 text-white text-xs"
+          >
+            Remove
+          </button>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
 {/* Main Image */}
 <div className="mt-6">
   <label className="block mb-2 text-sm font-medium text-slate-300">
@@ -1019,17 +1171,76 @@ return (
           URL.createObjectURL(file)
         )
       );
+
+      setGalleryMeta(
+        files.map(() => ({
+          angle: 0,
+          isTryOn: false,
+        }))
+      );
     }}
   />
 
   {galleryPreviews.length > 0 && (
     <div className="grid grid-cols-4 gap-4 mt-4">
       {galleryPreviews.map((img, index) => (
-        <img
-          key={index}
-          src={img}
-          className="w-28 h-28 object-cover rounded-2xl border border-white/10"
-        />
+        <div key={index} className="space-y-2">
+          <img
+            src={img}
+            alt={`New image ${index + 1}`}
+            className="w-28 h-28 object-cover rounded-2xl border border-white/10"
+          />
+
+          <select
+            value={galleryMeta[index]?.angle ?? 0}
+            onChange={(e) =>
+              setGalleryMeta((meta) =>
+                meta.map((item, i) =>
+                  i === index
+                    ? {
+                        ...item,
+                        angle: Number(e.target.value),
+                      }
+                    : item
+                )
+              )
+            }
+            className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-slate-300"
+          >
+            {ANGLE_OPTIONS.map((angle) => (
+              <option
+                key={angle}
+                value={angle}
+                className="bg-slate-900"
+              >
+                {angle}&deg;
+                {angle === 0 ? " (front)" : ""}
+              </option>
+            ))}
+          </select>
+
+          <label className="flex items-center gap-2 text-xs text-slate-300">
+            <input
+              type="checkbox"
+              checked={
+                galleryMeta[index]?.isTryOn ?? false
+              }
+              onChange={(e) =>
+                setGalleryMeta((meta) =>
+                  meta.map((item, i) =>
+                    i === index
+                      ? {
+                          ...item,
+                          isTryOn: e.target.checked,
+                        }
+                      : item
+                  )
+                )
+              }
+            />
+            Use for try-on
+          </label>
+        </div>
       ))}
     </div>
   )}
