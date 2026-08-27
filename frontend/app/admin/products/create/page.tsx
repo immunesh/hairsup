@@ -8,6 +8,18 @@ import { API_URL } from '@/lib/config';
 // The try-on renderer cross-fades between the two angles nearest the viewer's
 // current head yaw, so a front (0) plus both profiles (45 / 315) is the useful
 // minimum. Back (180) and top (90) views belong to the 360 gallery, not try-on.
+// Product URLs are /products/<slug>. The field used to post through as typed,
+// which stored slugs with spaces and trailing whitespace whose links then 404'd.
+// The API normalises on write now; this keeps the field honest about what will
+// actually be saved. Hyphens are preserved while typing.
+const toSlug = (value: string): string =>
+  value
+    .normalize("NFKD")
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+/, "")
+    .slice(0, 80);
+
 const ANGLE_OPTIONS = [0, 45, 90, 135, 180, 225, 270, 315];
 
 interface ImageMeta {
@@ -378,7 +390,7 @@ includedItems,
           onChange={(e) =>
             setForm({
               ...form,
-              slug: e.target.value,
+              slug: toSlug(e.target.value),
             })
           }
           className="

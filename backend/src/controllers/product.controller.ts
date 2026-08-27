@@ -325,6 +325,50 @@ export const getRelatedProducts = async (
   });
 };
 
+
+/**
+ * Product URLs are /products/<slug>, and getProductById matches the path
+ * segment against slug or id. The admin form takes the slug as free text and
+ * posted it through untouched, so a product was stored with the slug
+ * "Natural Looking Synthetic Hair Wig for Men " - capitals, spaces, and a
+ * trailing space. The card linked to it, the browser dropped the trailing
+ * space, and the lookup missed: the listing worked while the detail page 404'd.
+ *
+ * Normalise on write instead of trusting the client, and guarantee uniqueness
+ * so the @unique constraint can't reject an otherwise valid save.
+ */
+const toSlug = (value: string): string =>
+  String(value ?? "")
+    .normalize("NFKD")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80)
+    .replace(/-+$/, "");
+
+const uniqueProductSlug = async (
+  desired: string,
+  fallback: string,
+  excludeId?: string
+): Promise<string> => {
+  const root = toSlug(desired) || toSlug(fallback) || `product-${Date.now()}`;
+
+  for (let attempt = 0; attempt < 50; attempt++) {
+    const candidate = attempt === 0 ? root : `${root}-${attempt + 1}`;
+    const clash = await prisma.product.findFirst({
+      where: {
+        slug: candidate,
+        ...(excludeId ? { id: { not: excludeId } } : {}),
+      },
+      select: { id: true },
+    });
+
+    if (!clash) return candidate;
+  }
+
+  return `${root}-${Date.now()}`;
+};
+
 /* -------------------- ADMIN CRUD -------------------- */
 
 export const createProduct = async (
@@ -367,12 +411,13 @@ includedItems,
 
 } = req.body;
 console.log("IMAGES RECEIVED:");
-console.log(images);
+    const finalSlug = await uniqueProductSlug(slug, name);
+
     const product =
       await prisma.product.create({
     data: {
   name,
-  slug,
+  slug: finalSlug,
   description,
   shortDesc,
 material,
@@ -537,12 +582,14 @@ await prisma.includedItem.deleteMany({
     productId: id,
   },
 });
+  const finalSlug = await uniqueProductSlug(slug, name, id);
+
   const product = await prisma.product.update({
     where: { id },
 
     data: {
       name,
-      slug,
+      slug: finalSlug,
       shortDesc,
       description,
       categoryId,
