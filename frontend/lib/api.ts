@@ -81,9 +81,20 @@ export const authApi = {
   resetPassword: (data: Record<string, string>) => api.post('/auth/reset-password', data),
 };
 
+// How many products a storefront listing pulls in one request. Large enough to
+// hold the whole catalogue; if it ever grows past this, these pages need real
+// pagination rather than a bigger number.
+const STOREFRONT_PAGE_SIZE = 200;
+
 // Products
 export const productsApi = {
-  getAll: (params?: Record<string, unknown>) => api.get('/products', { params }),
+  // Every storefront listing page (shop, women, men, search, home) fetches the
+  // catalogue once and filters it client-side, so it needs the whole set. The
+  // API defaults to 12 per page, which silently truncated those lists: with a
+  // createdAt-desc sort, a 13th product would push the oldest off the storefront
+  // entirely with no pagination UI to reach it. Callers can still override.
+  getAll: (params?: Record<string, unknown>) =>
+    api.get('/products', { params: { limit: STOREFRONT_PAGE_SIZE, ...params } }),
   getById: (id: string) => api.get(`/products/${id}`),
   getFeatured: () => api.get('/products/featured'),
   getCategories: () => api.get('/products/categories'),
