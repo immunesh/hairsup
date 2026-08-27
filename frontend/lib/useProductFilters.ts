@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { productsApi } from '@/lib/api';
+import { API_URL } from '@/lib/config';
 import { Product } from '@/types';
 
 /* ─── types ─── */
@@ -231,7 +232,11 @@ export function useProductFilters(
         let list = (res.data.data || []) as Product[];
         list = applyGenderFilter(list, genderLock);
         if (mounted) setAllProducts(list);
-      } catch {
+      } catch (error) {
+        // Surface the reason. Swallowing this rendered "No products found -
+        // try adjusting your filters" for what was actually a failed request,
+        // which is indistinguishable from a genuinely empty catalogue.
+        console.error('Failed to load products from', API_URL, error);
         if (mounted) setAllProducts([]);
       }
     };
