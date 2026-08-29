@@ -1,19 +1,14 @@
 import Link from "next/link";
 import EditCategoryForm from "@/components/admin/EditCategoryForm";
-import { API_URL } from '@/lib/config';
+import { API_URL } from "@/lib/config";
 
 async function getCategory(id: string) {
-  const res = await fetch(
-    `${API_URL}/categories/${id}`,
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch(`${API_URL}/categories/${id}`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
-    throw new Error(
-      "Failed to fetch category"
-    );
+    throw new Error("Failed to fetch category");
   }
 
   return res.json();
@@ -24,27 +19,21 @@ export default async function EditCategoryPage({
 }: {
   params: { id: string };
 }) {
-  const category = await getCategory(
-    params.id
-  );
+  const category = await getCategory(params.id);
 
- return (
-  <div className="p-8">
-    {/* Header */}
-    <div className="flex items-center justify-between mb-8">
-      <div>
-        <h1 className="text-4xl font-bold text-white">
-          Edit Category
-        </h1>
+  return (
+    <div className="p-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-4xl font-bold text-white">Edit Category</h1>
 
-        <p className="text-slate-400 mt-2">
-          Update category information
-        </p>
-      </div>
+          <p className="text-slate-400 mt-2">Update category information</p>
+        </div>
 
-      <Link
-        href="/admin/categories"
-        className="
+        <Link
+          href="/admin/categories"
+          className="
         px-5
         py-3
 
@@ -62,14 +51,14 @@ export default async function EditCategoryPage({
         transition-all
         duration-300
         "
-      >
-        ← Back
-      </Link>
-    </div>
+        >
+          ← Back
+        </Link>
+      </div>
 
-    {/* Form Card */}
-    <div
-      className="
+      {/* Form Card */}
+      <div
+        className="
       rounded-3xl
 
       bg-white/5
@@ -80,11 +69,9 @@ export default async function EditCategoryPage({
 
       p-8
       "
-    >
-      <EditCategoryForm
-        category={category}
-      />
+      >
+        <EditCategoryForm category={category} />
+      </div>
     </div>
-  </div>
-);
+  );
 }

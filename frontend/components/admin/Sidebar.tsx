@@ -5,34 +5,34 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export default function Sidebar() {
-const pathname = usePathname();
-const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
-useEffect(() => {
-setIsOpen(false);
-}, [pathname]);
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
-const menuItems = [
-{ name: "Dashboard", href: "/admin" },
-{ name: "Products", href: "/admin/products" },
-{ name: "Categories", href: "/admin/categories" },
-{ name: "Hero Slides", href: "/admin/hero-slides" },
-{ name: "Orders", href: "/admin/orders" },
-{ name: "Users", href: "/admin/users" },
-{ name: "Cart", href: "/admin/carts" },
-{ name: "Wishlist", href: "/admin/wishlist" },
-{ name: "Reviews", href: "/admin/reviews" },
-{ name: "Coupons", href: "/admin/coupons" },
-{ name: "Blogs", href: "/admin/blogs" },
-{ name: "Stores", href: "/admin/stores" },
-];
+  const menuItems = [
+    { name: "Dashboard", href: "/admin" },
+    { name: "Products", href: "/admin/products" },
+    { name: "Categories", href: "/admin/categories" },
+    { name: "Hero Slides", href: "/admin/hero-slides" },
+    { name: "Orders", href: "/admin/orders" },
+    { name: "Users", href: "/admin/users" },
+    { name: "Cart", href: "/admin/carts" },
+    { name: "Wishlist", href: "/admin/wishlist" },
+    { name: "Reviews", href: "/admin/reviews" },
+    { name: "Coupons", href: "/admin/coupons" },
+    { name: "Blogs", href: "/admin/blogs" },
+    { name: "Stores", href: "/admin/stores" },
+  ];
 
-return (
-<>
-{/* Mobile Menu Button */}
-<button
-onClick={() => setIsOpen(true)}
-className={`           fixed top-4 left-4 z-[9999]
+  return (
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className={`           fixed top-4 left-4 z-[9999]
           w-12 h-12
           rounded-xl
           bg-[#141827]
@@ -43,21 +43,21 @@ className={`           fixed top-4 left-4 z-[9999]
           md:hidden
           ${isOpen ? "hidden" : "flex"}
         `}
->
-☰ </button>
+      >
+        ☰{" "}
+      </button>
 
+      {/* Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 z-[9998] md:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
 
-  {/* Overlay */}
-  {isOpen && (
-    <div
-      className="fixed inset-0 bg-black/60 z-[9998] md:hidden"
-      onClick={() => setIsOpen(false)}
-    />
-  )}
-
-  {/* Sidebar */}
-<aside
-  className={`
+      {/* Sidebar */}
+      <aside
+        className={`
  sticky
 top-0
 h-screen
@@ -81,17 +81,17 @@ self-start
 
     ${isOpen ? "block" : "hidden md:flex"}
   `}
->
-  {/* Glow */}
-  <div className="absolute -top-24 -left-24 w-72 h-72 bg-cyan-500/20 blur-[120px]" />
-  <div className="absolute bottom-0 -right-24 w-72 h-72 bg-brand-500/20 blur-[120px]" />
+      >
+        {/* Glow */}
+        <div className="absolute -top-24 -left-24 w-72 h-72 bg-cyan-500/20 blur-[120px]" />
+        <div className="absolute bottom-0 -right-24 w-72 h-72 bg-brand-500/20 blur-[120px]" />
 
-  {/* Header */}
-  <div className="relative z-10 p-6">
-    <div className="flex items-center justify-between mb-10">
-      <div className="flex items-center gap-3">
-        <div
-          className="
+        {/* Header */}
+        <div className="relative z-10 p-6">
+          <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center gap-3">
+              <div
+                className="
             w-14 h-14
             rounded-2xl
             bg-gradient-to-br
@@ -102,13 +102,13 @@ self-start
             text-xl font-bold
             shadow-[0_0_30px_rgba(56,189,248,0.5)]
           "
-        >
-          ✦
-        </div>
+              >
+                ✦
+              </div>
 
-        <div>
-          <h1
-            className="
+              <div>
+                <h1
+                  className="
               text-2xl font-bold
               bg-gradient-to-r
               from-cyan-300
@@ -117,39 +117,36 @@ self-start
               bg-clip-text
               text-transparent
             "
-          >
-            HairsUp
-          </h1>
+                >
+                  HairsUp
+                </h1>
 
-          <p className="text-xs text-slate-400">
-            Admin Dashboard
-          </p>
-        </div>
-      </div>
+                <p className="text-xs text-slate-400">Admin Dashboard</p>
+              </div>
+            </div>
 
-      {/* Close Button */}
-      <button
-        onClick={() => setIsOpen(false)}
-        className="md:hidden text-3xl text-white"
-      >
-        ✕
-      </button>
-    </div>
+            {/* Close Button */}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="md:hidden text-3xl text-white"
+            >
+              ✕
+            </button>
+          </div>
 
-    {/* Navigation */}
-    <nav className="space-y-2">
-      {menuItems.map((item) => {
-        const isActive =
-          pathname === item.href ||
-          (item.href !== "/admin" &&
-            pathname.startsWith(item.href));
+          {/* Navigation */}
+          <nav className="space-y-2">
+            {menuItems.map((item) => {
+              const isActive =
+                pathname === item.href ||
+                (item.href !== "/admin" && pathname.startsWith(item.href));
 
-        return (
-          <Link
-            key={item.name}
-            href={item.href}
-            onClick={() => setIsOpen(false)}
-            className={`
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`
               group
               flex
               items-center
@@ -176,9 +173,9 @@ self-start
                   `
               }
             `}
-          >
-            <span
-              className={`
+                >
+                  <span
+                    className={`
                 w-2 h-2 rounded-full
                 ${
                   isActive
@@ -186,20 +183,18 @@ self-start
                     : "bg-brand-500"
                 }
               `}
-            />
+                  />
 
-            {item.name}
-          </Link>
-        );
-      })}
-    </nav>
-  </div>
+                  {item.name}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
 
-  {/* Bottom */}
-  <div className="mt-auto p-6 relative z-10"></div>
-</aside>
-</>
-
-
-);
+        {/* Bottom */}
+        <div className="mt-auto p-6 relative z-10"></div>
+      </aside>
+    </>
+  );
 }

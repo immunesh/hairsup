@@ -29,7 +29,9 @@ export default function UpdateOrderStatus({
     try {
       setLoading(true);
       await updateOrderStatus(orderId, status);
-      showToast(`Order status updated to ${ADMIN_STATUS_LABELS[status] || status}`);
+      showToast(
+        `Order status updated to ${ADMIN_STATUS_LABELS[status] || status}`,
+      );
       setStatus("");
       onUpdated();
     } catch (err: any) {

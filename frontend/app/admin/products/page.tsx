@@ -1,14 +1,11 @@
 import Link from "next/link";
 import DeleteProductButton from "@/components/DeleteProductButton";
-import { API_URL } from '@/lib/config';
+import { API_URL } from "@/lib/config";
 
 async function getProducts() {
-  const res = await fetch(
-    `${API_URL}/products`,
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch(`${API_URL}/products`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     throw new Error("Failed to fetch products");
@@ -27,13 +24,9 @@ export default async function ProductsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-white">
-            Products
-          </h1>
+          <h1 className="text-4xl font-bold text-white">Products</h1>
 
-          <p className="text-slate-400 mt-2">
-            Manage all products
-          </p>
+          <p className="text-slate-400 mt-2">Manage all products</p>
         </div>
 
         <Link
@@ -78,98 +71,51 @@ export default async function ProductsPage() {
         <table className="w-full min-w-[2600px]">
           <thead>
             <tr className="border-b border-white/10 bg-white/5">
-              <th className="text-left p-5 text-slate-300">
-                Image
-              </th>
+              <th className="text-left p-5 text-slate-300">Image</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Product Name
-              </th>
+              <th className="text-left p-5 text-slate-300">Product Name</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Slug
-              </th>
+              <th className="text-left p-5 text-slate-300">Slug</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Category
-              </th>
+              <th className="text-left p-5 text-slate-300">Category</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Base Price
-              </th>
+              <th className="text-left p-5 text-slate-300">Base Price</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Sale Price
-              </th>
+              <th className="text-left p-5 text-slate-300">Sale Price</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Stock
-              </th>
-              <th className="text-left p-5 text-slate-300">
-                Material
-              </th>
+              <th className="text-left p-5 text-slate-300">Stock</th>
+              <th className="text-left p-5 text-slate-300">Material</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Length
-              </th>
+              <th className="text-left p-5 text-slate-300">Length</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Density
-              </th>
+              <th className="text-left p-5 text-slate-300">Density</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Texture
-              </th>
+              <th className="text-left p-5 text-slate-300">Texture</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Color
-              </th>
+              <th className="text-left p-5 text-slate-300">Color</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Rating
-              </th>
+              <th className="text-left p-5 text-slate-300">Rating</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Featured
-              </th>
+              <th className="text-left p-5 text-slate-300">Featured</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Best Seller
-              </th>
+              <th className="text-left p-5 text-slate-300">Best Seller</th>
 
-              <th className="text-left p-5 text-slate-300">
-                New Arrival
-              </th>
+              <th className="text-left p-5 text-slate-300">New Arrival</th>
               <th className="text-left p-5 text-slate-300">
                 Short Description
               </th>
 
-              <th className="text-left p-5 text-slate-300">
-                Full Description
-              </th>
+              <th className="text-left p-5 text-slate-300">Full Description</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Tags
-              </th>
-              <th className="text-left p-5 text-slate-300">
-                Features
-              </th>
+              <th className="text-left p-5 text-slate-300">Tags</th>
+              <th className="text-left p-5 text-slate-300">Features</th>
 
-              <th className="text-left p-5 text-slate-300">
-                FAQs
-              </th>
+              <th className="text-left p-5 text-slate-300">FAQs</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Care Guides
-              </th>
+              <th className="text-left p-5 text-slate-300">Care Guides</th>
 
-              <th className="text-left p-5 text-slate-300">
-                Included Items
-              </th>
-              <th className="text-left p-5 text-slate-300">
-                Actions
-              </th>
-
+              <th className="text-left p-5 text-slate-300">Included Items</th>
+              <th className="text-left p-5 text-slate-300">Actions</th>
             </tr>
           </thead>
 
@@ -243,14 +189,10 @@ export default async function ProductsPage() {
                   </td>
 
                   {/* Name */}
-                  <td className="p-5 text-white font-medium">
-                    {product.name}
-                  </td>
+                  <td className="p-5 text-white font-medium">{product.name}</td>
 
                   {/* Slug */}
-                  <td className="p-5 text-slate-300">
-                    {product.slug || "-"}
-                  </td>
+                  <td className="p-5 text-slate-300">{product.slug || "-"}</td>
 
                   {/* Category */}
                   <td className="p-5 text-slate-300">
@@ -258,9 +200,7 @@ export default async function ProductsPage() {
                   </td>
 
                   {/* Base Price */}
-                  <td className="p-5 text-white">
-                    ₹{product.basePrice}
-                  </td>
+                  <td className="p-5 text-white">₹{product.basePrice}</td>
 
                   {/* Sale Price */}
                   <td className="p-5 text-cyan-300">
@@ -270,10 +210,11 @@ export default async function ProductsPage() {
                   {/* Stock */}
                   <td className="p-5">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${product.stock > 0
-                        ? "bg-emerald-500/20 text-emerald-400"
-                        : "bg-red-500/20 text-red-400"
-                        }`}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        product.stock > 0
+                          ? "bg-emerald-500/20 text-emerald-400"
+                          : "bg-red-500/20 text-red-400"
+                      }`}
                     >
                       {product.stock}
                     </span>
@@ -299,9 +240,7 @@ export default async function ProductsPage() {
                   </td>
 
                   {/* Color */}
-                  <td className="p-5 text-slate-300">
-                    {product.color || "-"}
-                  </td>
+                  <td className="p-5 text-slate-300">{product.color || "-"}</td>
 
                   {/* Rating */}
                   <td className="p-5 text-yellow-400">
@@ -309,19 +248,13 @@ export default async function ProductsPage() {
                   </td>
 
                   {/* Featured */}
-                  <td className="p-5">
-                    {product.isFeatured ? "✅" : "❌"}
-                  </td>
+                  <td className="p-5">{product.isFeatured ? "✅" : "❌"}</td>
 
                   {/* Best Seller */}
-                  <td className="p-5">
-                    {product.isBestSeller ? "✅" : "❌"}
-                  </td>
+                  <td className="p-5">{product.isBestSeller ? "✅" : "❌"}</td>
 
                   {/* New Arrival */}
-                  <td className="p-5">
-                    {product.isNewArrival ? "✅" : "❌"}
-                  </td>
+                  <td className="p-5">{product.isNewArrival ? "✅" : "❌"}</td>
                   {/* Short Desc */}
                   <td
                     className="
@@ -361,9 +294,7 @@ export default async function ProductsPage() {
                   {/* Features */}
                   <td className="p-5 text-slate-300 max-w-[250px]">
                     {product.features?.length
-                      ? product.features
-                        .map((f: any) => f.title)
-                        .join(", ")
+                      ? product.features.map((f: any) => f.title).join(", ")
                       : "-"}
                   </td>
 
@@ -380,9 +311,7 @@ export default async function ProductsPage() {
                   {/* Included Items */}
                   <td className="p-5 text-slate-300 max-w-[250px]">
                     {product.includedItems?.length
-                      ? product.includedItems
-                        .map((i: any) => i.text)
-                        .join(", ")
+                      ? product.includedItems.map((i: any) => i.text).join(", ")
                       : "-"}
                   </td>
                   {/* Actions */}
@@ -410,9 +339,7 @@ export default async function ProductsPage() {
                         Edit
                       </Link>
 
-                      <DeleteProductButton
-                        id={product.id}
-                      />
+                      <DeleteProductButton id={product.id} />
                     </div>
                   </td>
                 </tr>

@@ -15,8 +15,7 @@ export default function AdminLayout({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [checkingAuth, setCheckingAuth] =
-    useState(true);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
     if (pathname === "/admin/login") {
@@ -24,11 +23,9 @@ export default function AdminLayout({
       return;
     }
 
-    const token =
-      localStorage.getItem("accessToken");
+    const token = localStorage.getItem("accessToken");
 
-    const role =
-      localStorage.getItem("role");
+    const role = localStorage.getItem("role");
 
     if (!token || role !== "ADMIN") {
       router.replace("/admin/login");
@@ -61,8 +58,8 @@ export default function AdminLayout({
   }
 
   return (
-  <div
-    className="
+    <div
+      className="
     min-h-screen
     flex
 
@@ -71,31 +68,31 @@ export default function AdminLayout({
     via-[#131827]
     to-[#1b1634]
     "
-  >
-    <Sidebar />
+    >
+      <Sidebar />
 
-    <div
-      className="
+      <div
+        className="
       flex-1
       flex
       flex-col
       min-w-0
       "
-    >
-      <AdminHeader />
+      >
+        <AdminHeader />
 
-      <Toast />
+        <Toast />
 
-      <main
-        className="
+        <main
+          className="
         flex-1
         overflow-y-auto
         overflow-x-hidden
         "
-      >
-        {children}
-      </main>
+        >
+          {children}
+        </main>
+      </div>
     </div>
-  </div>
-);
+  );
 }

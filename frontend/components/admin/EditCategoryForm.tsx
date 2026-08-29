@@ -2,13 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { API_URL } from '@/lib/config';
+import { API_URL } from "@/lib/config";
 
-export default function EditCategoryForm({
-  category,
-}: {
-  category: any;
-}) {
+export default function EditCategoryForm({ category }: { category: any }) {
   const router = useRouter();
 
   const [form, setForm] = useState({
@@ -21,9 +17,7 @@ export default function EditCategoryForm({
   const [imagePreview, setImagePreview] = useState(category.image || "");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(
-    e: React.FormEvent
-  ) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     setLoading(true);
@@ -35,13 +29,10 @@ export default function EditCategoryForm({
         const imageFormData = new FormData();
         imageFormData.append("image", image);
 
-        const uploadRes = await fetch(
-          `${API_URL}/upload/image`,
-          {
-            method: "POST",
-            body: imageFormData,
-          }
-        );
+        const uploadRes = await fetch(`${API_URL}/upload/image`, {
+          method: "POST",
+          body: imageFormData,
+        });
 
         const uploadData = await uploadRes.json();
 
@@ -52,22 +43,16 @@ export default function EditCategoryForm({
         imageUrl = uploadData.url;
       }
 
-      const res = await fetch(
-        `${API_URL}/categories/${category.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({ ...form, image: imageUrl }),
-        }
-      );
+      const res = await fetch(`${API_URL}/categories/${category.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...form, image: imageUrl }),
+      });
 
       if (!res.ok) {
-        throw new Error(
-          "Failed to update category"
-        );
+        throw new Error("Failed to update category");
       }
 
       router.push("/admin/categories");
@@ -82,9 +67,7 @@ export default function EditCategoryForm({
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-4">
-        <label className="block mb-2 font-medium">
-          Name
-        </label>
+        <label className="block mb-2 font-medium">Name</label>
 
         <input
           value={form.name}
@@ -99,9 +82,7 @@ export default function EditCategoryForm({
       </div>
 
       <div className="mb-4">
-        <label className="block mb-2 font-medium">
-          Slug
-        </label>
+        <label className="block mb-2 font-medium">Slug</label>
 
         <input
           value={form.slug}
@@ -116,9 +97,7 @@ export default function EditCategoryForm({
       </div>
 
       <div className="mb-6">
-        <label className="block mb-2 font-medium">
-          Category Image
-        </label>
+        <label className="block mb-2 font-medium">Category Image</label>
 
         <input
           type="file"
@@ -144,9 +123,7 @@ export default function EditCategoryForm({
       </div>
 
       <div className="mb-6">
-        <label className="block mb-2 font-medium">
-          Gender
-        </label>
+        <label className="block mb-2 font-medium">Gender</label>
 
         <select
           value={form.gender}
@@ -158,16 +135,10 @@ export default function EditCategoryForm({
           }
           className="w-full border p-3 rounded"
         >
-          <option value="">
-            Select Gender
-          </option>
+          <option value="">Select Gender</option>
           <option value="MEN">MEN</option>
-          <option value="WOMEN">
-            WOMEN
-          </option>
-          <option value="UNISEX">
-            UNISEX
-          </option>
+          <option value="WOMEN">WOMEN</option>
+          <option value="UNISEX">UNISEX</option>
         </select>
       </div>
 
@@ -176,9 +147,7 @@ export default function EditCategoryForm({
         disabled={loading}
         className="bg-brand-600 text-white px-6 py-3 rounded-xl"
       >
-        {loading
-          ? "Updating..."
-          : "Update Category"}
+        {loading ? "Updating..." : "Update Category"}
       </button>
     </form>
   );

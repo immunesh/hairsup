@@ -353,8 +353,8 @@ export default function OrderDetailsPage() {
         ) : order.status === "PROCESSING" ? (
           <div>
             <p className="text-slate-400 mb-4">
-              This order is ready for dispatch. Assign a courier and AWB to
-              mark it as shipped.
+              This order is ready for dispatch. Assign a courier and AWB to mark
+              it as shipped.
             </p>
             <button
               onClick={() => setShipmentModalOpen(true)}

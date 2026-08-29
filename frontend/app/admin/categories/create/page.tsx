@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { API_URL } from '@/lib/config';
+import { API_URL } from "@/lib/config";
 
 export default function CreateCategoryPage() {
   const router = useRouter();
@@ -29,13 +29,10 @@ export default function CreateCategoryPage() {
         const imageFormData = new FormData();
         imageFormData.append("image", image);
 
-        const uploadRes = await fetch(
-          `${API_URL}/upload/image`,
-          {
-            method: "POST",
-            body: imageFormData,
-          }
-        );
+        const uploadRes = await fetch(`${API_URL}/upload/image`, {
+          method: "POST",
+          body: imageFormData,
+        });
 
         const uploadData = await uploadRes.json();
 
@@ -47,16 +44,13 @@ export default function CreateCategoryPage() {
         imageUrl = uploadData.url;
       }
 
-      const res = await fetch(
-        `${API_URL}/categories`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ...form, image: imageUrl }),
-        }
-      );
+      const res = await fetch(`${API_URL}/categories`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...form, image: imageUrl }),
+      });
 
       if (!res.ok) {
         const error = await res.text();
@@ -76,23 +70,21 @@ export default function CreateCategoryPage() {
       setSubmitting(false);
     }
   }
-return (
-  <div className="p-8">
-    {/* Header */}
-    <div className="mb-8">
-      <h1 className="text-4xl font-bold text-white">
-        Add Category
-      </h1>
+  return (
+    <div className="p-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-white">Add Category</h1>
 
-      <p className="mt-2 text-slate-400">
-        Create a new category for your products
-      </p>
-    </div>
+        <p className="mt-2 text-slate-400">
+          Create a new category for your products
+        </p>
+      </div>
 
-    {/* Form Card */}
-    <form
-      onSubmit={handleSubmit}
-      className="
+      {/* Form Card */}
+      <form
+        onSubmit={handleSubmit}
+        className="
       max-w-4xl
 
       rounded-3xl
@@ -107,23 +99,23 @@ return (
 
       space-y-6
       "
-    >
-      {/* Category Name */}
-      <div>
-        <label className="block mb-2 text-sm font-medium text-slate-300">
-          Category Name
-        </label>
+      >
+        {/* Category Name */}
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Category Name
+          </label>
 
-        <input
-          value={form.name}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              name: e.target.value,
-            })
-          }
-          placeholder="Human Hair Wigs"
-          className="
+          <input
+            value={form.name}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                name: e.target.value,
+              })
+            }
+            placeholder="Human Hair Wigs"
+            className="
           w-full
 
           px-4
@@ -143,25 +135,25 @@ return (
           focus:outline-none
           focus:border-cyan-500/50
           "
-        />
-      </div>
+          />
+        </div>
 
-      {/* Slug */}
-      <div>
-        <label className="block mb-2 text-sm font-medium text-slate-300">
-          Slug
-        </label>
+        {/* Slug */}
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Slug
+          </label>
 
-        <input
-          value={form.slug}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              slug: e.target.value,
-            })
-          }
-          placeholder="human-hair-wigs"
-          className="
+          <input
+            value={form.slug}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                slug: e.target.value,
+              })
+            }
+            placeholder="human-hair-wigs"
+            className="
           w-full
 
           px-4
@@ -181,26 +173,26 @@ return (
           focus:outline-none
           focus:border-cyan-500/50
           "
-        />
-      </div>
+          />
+        </div>
 
-      {/* Description */}
-      <div>
-        <label className="block mb-2 text-sm font-medium text-slate-300">
-          Description
-        </label>
+        {/* Description */}
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Description
+          </label>
 
-        <textarea
-          rows={5}
-          value={form.description}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              description: e.target.value,
-            })
-          }
-          placeholder="Category description..."
-          className="
+          <textarea
+            rows={5}
+            value={form.description}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                description: e.target.value,
+              })
+            }
+            placeholder="Category description..."
+            className="
           w-full
 
           px-4
@@ -220,19 +212,19 @@ return (
           focus:outline-none
           focus:border-cyan-500/50
           "
-        />
-      </div>
+          />
+        </div>
 
-      {/* Category Image */}
-      <div>
-        <label className="block mb-2 text-sm font-medium text-slate-300">
-          Category Image
-        </label>
+        {/* Category Image */}
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Category Image
+          </label>
 
-        <input
-          type="file"
-          accept="image/*"
-          className="
+          <input
+            type="file"
+            accept="image/*"
+            className="
           w-full
           px-4
           py-3
@@ -242,21 +234,21 @@ return (
           border-white/10
           text-slate-300
           "
-          onChange={(e) => {
-            const file = e.target.files?.[0];
+            onChange={(e) => {
+              const file = e.target.files?.[0];
 
-            if (!file) return;
+              if (!file) return;
 
-            setImage(file);
-            setImagePreview(URL.createObjectURL(file));
-          }}
-        />
+              setImage(file);
+              setImagePreview(URL.createObjectURL(file));
+            }}
+          />
 
-        {imagePreview && (
-          <img
-            src={imagePreview}
-            alt="Preview"
-            className="
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="
             mt-4
             w-40
             h-40
@@ -265,25 +257,25 @@ return (
             border
             border-white/10
             "
-          />
-        )}
-      </div>
+            />
+          )}
+        </div>
 
-      {/* Gender */}
-      <div>
-        <label className="block mb-2 text-sm font-medium text-slate-300">
-          Gender
-        </label>
+        {/* Gender */}
+        <div>
+          <label className="block mb-2 text-sm font-medium text-slate-300">
+            Gender
+          </label>
 
-        <select
-          value={form.gender}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              gender: e.target.value,
-            })
-          }
-          className="
+          <select
+            value={form.gender}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                gender: e.target.value,
+              })
+            }
+            className="
           w-full
 
           px-4
@@ -301,31 +293,23 @@ return (
           focus:outline-none
           focus:border-cyan-500/50
           "
-        >
-          <option value="">
-            Select Gender
-          </option>
+          >
+            <option value="">Select Gender</option>
 
-          <option value="MEN">
-            MEN
-          </option>
+            <option value="MEN">MEN</option>
 
-          <option value="WOMEN">
-            WOMEN
-          </option>
+            <option value="WOMEN">WOMEN</option>
 
-          <option value="UNISEX">
-            UNISEX
-          </option>
-        </select>
-      </div>
+            <option value="UNISEX">UNISEX</option>
+          </select>
+        </div>
 
-      {/* Submit Button */}
-      <div className="pt-2">
-        <button
-          type="submit"
-          disabled={submitting}
-          className="
+        {/* Submit Button */}
+        <div className="pt-2">
+          <button
+            type="submit"
+            disabled={submitting}
+            className="
           px-8
           py-3
 
@@ -348,11 +332,11 @@ return (
           disabled:opacity-50
           disabled:hover:scale-100
           "
-        >
-          {submitting ? "Saving..." : "Save Category"}
-        </button>
-      </div>
-    </form>
-  </div>
-);
+          >
+            {submitting ? "Saving..." : "Save Category"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }

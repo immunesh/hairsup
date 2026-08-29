@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { API_URL } from '@/lib/config';
+import { API_URL } from "@/lib/config";
 
 export default function CreateHeroSlidePage() {
   const router = useRouter();
@@ -39,13 +39,10 @@ export default function CreateHeroSlidePage() {
       const imageFormData = new FormData();
       imageFormData.append("image", image);
 
-      const uploadRes = await fetch(
-        `${API_URL}/upload/image`,
-        {
-          method: "POST",
-          body: imageFormData,
-        }
-      );
+      const uploadRes = await fetch(`${API_URL}/upload/image`, {
+        method: "POST",
+        body: imageFormData,
+      });
 
       const uploadData = await uploadRes.json();
 
@@ -56,20 +53,17 @@ export default function CreateHeroSlidePage() {
 
       const imageUrl = uploadData.url;
 
-      const res = await fetch(
-        `${API_URL}/hero-slides`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...form,
-            order: Number(form.order),
-            image: imageUrl,
-          }),
-        }
-      );
+      const res = await fetch(`${API_URL}/hero-slides`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...form,
+          order: Number(form.order),
+          image: imageUrl,
+        }),
+      });
 
       if (!res.ok) {
         const error = await res.text();
@@ -94,9 +88,7 @@ export default function CreateHeroSlidePage() {
     <div className="p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-white">
-          Add Hero Slide
-        </h1>
+        <h1 className="text-4xl font-bold text-white">Add Hero Slide</h1>
 
         <p className="mt-2 text-slate-400">
           Create a new slide for the homepage hero slider
@@ -130,9 +122,7 @@ export default function CreateHeroSlidePage() {
 
           <input
             value={form.headline}
-            onChange={(e) =>
-              setForm({ ...form, headline: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, headline: e.target.value })}
             placeholder="Transform Your Look"
             className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
@@ -146,9 +136,7 @@ export default function CreateHeroSlidePage() {
 
           <input
             value={form.subheadline}
-            onChange={(e) =>
-              setForm({ ...form, subheadline: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, subheadline: e.target.value })}
             placeholder="with Premium Human Hair Wigs"
             className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
@@ -163,9 +151,7 @@ export default function CreateHeroSlidePage() {
           <textarea
             rows={4}
             value={form.description}
-            onChange={(e) =>
-              setForm({ ...form, description: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
             placeholder="Slide description..."
             className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
@@ -208,9 +194,7 @@ export default function CreateHeroSlidePage() {
 
           <input
             value={form.badge}
-            onChange={(e) =>
-              setForm({ ...form, badge: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, badge: e.target.value })}
             placeholder="New Season Collection"
             className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
@@ -224,9 +208,7 @@ export default function CreateHeroSlidePage() {
 
           <input
             value={form.tag}
-            onChange={(e) =>
-              setForm({ ...form, tag: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, tag: e.target.value })}
             placeholder="WOMEN"
             className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
@@ -241,9 +223,7 @@ export default function CreateHeroSlidePage() {
 
             <input
               value={form.cta}
-              onChange={(e) =>
-                setForm({ ...form, cta: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, cta: e.target.value })}
               placeholder="Shop Women's Collection"
               className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
@@ -256,9 +236,7 @@ export default function CreateHeroSlidePage() {
 
             <input
               value={form.ctaLink}
-              onChange={(e) =>
-                setForm({ ...form, ctaLink: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, ctaLink: e.target.value })}
               placeholder="/women"
               className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
@@ -306,9 +284,7 @@ export default function CreateHeroSlidePage() {
 
           <input
             value={form.accent}
-            onChange={(e) =>
-              setForm({ ...form, accent: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, accent: e.target.value })}
             placeholder="from-brand-950 to-brand-700"
             className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
@@ -336,9 +312,7 @@ export default function CreateHeroSlidePage() {
               id="isActive"
               type="checkbox"
               checked={form.isActive}
-              onChange={(e) =>
-                setForm({ ...form, isActive: e.target.checked })
-              }
+              onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
               className="w-5 h-5 rounded accent-cyan-500"
             />
 

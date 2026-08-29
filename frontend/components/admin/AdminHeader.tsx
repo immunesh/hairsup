@@ -110,13 +110,9 @@ export default function AdminHeader() {
           </div>
 
           <div className="hidden sm:block">
-            <p className="text-sm font-medium text-white">
-              Admin
-            </p>
+            <p className="text-sm font-medium text-white">Admin</p>
 
-            <p className="text-xs text-slate-400">
-              Super Admin
-            </p>
+            <p className="text-xs text-slate-400">Super Admin</p>
           </div>
         </div>
 
@@ -147,13 +143,9 @@ export default function AdminHeader() {
           hover:shadow-[0_0_25px_rgba(239,68,68,0.35)]
           "
         >
-          <span className="hidden sm:inline">
-            Logout
-          </span>
+          <span className="hidden sm:inline">Logout</span>
 
-          <span className="sm:hidden">
-            Logout
-          </span>
+          <span className="sm:hidden">Logout</span>
         </button>
       </div>
     </header>

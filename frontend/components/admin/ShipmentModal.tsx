@@ -43,21 +43,26 @@ export default function ShipmentModal({
     !!existing?.courier && COURIERS.includes(existing.courier);
 
   const [courierSelect, setCourierSelect] = useState(
-    isPredefinedCourier ? (existing!.courier as string) : existing?.courier ? "Other" : COURIERS[0]
+    isPredefinedCourier
+      ? (existing!.courier as string)
+      : existing?.courier
+        ? "Other"
+        : COURIERS[0],
   );
   const [customCourier, setCustomCourier] = useState(
-    isPredefinedCourier ? "" : existing?.courier || ""
+    isPredefinedCourier ? "" : existing?.courier || "",
   );
   const [awbNumber, setAwbNumber] = useState(existing?.awbNumber || "");
   const [trackingUrl, setTrackingUrl] = useState(existing?.trackingUrl || "");
   const [estimatedDelivery, setEstimatedDelivery] = useState(
-    existing?.estimatedDelivery ? existing.estimatedDelivery.slice(0, 10) : ""
+    existing?.estimatedDelivery ? existing.estimatedDelivery.slice(0, 10) : "",
   );
   const [notes, setNotes] = useState(existing?.shipmentNotes || "");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const courier = courierSelect === "Other" ? customCourier.trim() : courierSelect;
+  const courier =
+    courierSelect === "Other" ? customCourier.trim() : courierSelect;
 
   const handleSave = async () => {
     setError("");

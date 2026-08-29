@@ -1,14 +1,11 @@
 import Link from "next/link";
 import DeleteCategoryButton from "@/components/admin/DeleteCategoryButton";
-import { API_URL } from '@/lib/config';
+import { API_URL } from "@/lib/config";
 
 async function getCategories() {
-  const res = await fetch(
-    `${API_URL}/categories`,
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch(`${API_URL}/categories`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     throw new Error("Failed to fetch categories");
@@ -20,23 +17,23 @@ async function getCategories() {
 export default async function CategoriesPage() {
   const categories = await getCategories();
 
-return (
-  <div className="p-4 sm:p-6 lg:p-8">
-    {/* Header */}
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-      <div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
-          Categories
-        </h1>
+  return (
+    <div className="p-4 sm:p-6 lg:p-8">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
+            Categories
+          </h1>
 
-        <p className="text-slate-400 mt-2 text-sm sm:text-base">
-          Manage product categories
-        </p>
-      </div>
+          <p className="text-slate-400 mt-2 text-sm sm:text-base">
+            Manage product categories
+          </p>
+        </div>
 
-      <Link
-        href="/admin/categories/create"
-        className="
+        <Link
+          href="/admin/categories/create"
+          className="
         w-full
         sm:w-auto
         text-center
@@ -60,14 +57,14 @@ return (
 
         shadow-[0_0_25px_rgba(56,189,248,0.35)]
         "
-      >
-        + Add Category
-      </Link>
-    </div>
+        >
+          + Add Category
+        </Link>
+      </div>
 
-    {/* Categories Card */}
-    <div
-      className="
+      {/* Categories Card */}
+      <div
+        className="
       rounded-3xl
       border
       border-white/10
@@ -75,56 +72,56 @@ return (
       backdrop-blur-xl
       overflow-hidden
       "
-    >
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[700px]">
-          <thead>
-            <tr className="border-b border-white/10 bg-white/5">
-              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
-                Image
-              </th>
+      >
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[700px]">
+            <thead>
+              <tr className="border-b border-white/10 bg-white/5">
+                <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                  Image
+                </th>
 
-              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
-                Name
-              </th>
+                <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                  Name
+                </th>
 
-              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
-                Slug
-              </th>
+                <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                  Slug
+                </th>
 
-              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
-                Gender
-              </th>
+                <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                  Gender
+                </th>
 
-              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
-                Products
-              </th>
+                <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                  Products
+                </th>
 
-              <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
-                Actions
-              </th>
-            </tr>
-          </thead>
+                <th className="text-left p-3 sm:p-5 text-slate-300 text-sm">
+                  Actions
+                </th>
+              </tr>
+            </thead>
 
-          <tbody>
-            {categories.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={6}
-                  className="
+            <tbody>
+              {categories.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="
                   p-8 sm:p-12
                   text-center
                   text-slate-500
                   "
-                >
-                  No categories found
-                </td>
-              </tr>
-            ) : (
-              categories.map((category: any) => (
-                <tr
-                  key={category.id}
-                  className="
+                  >
+                    No categories found
+                  </td>
+                </tr>
+              ) : (
+                categories.map((category: any) => (
+                  <tr
+                    key={category.id}
+                    className="
                   border-b
                   border-white/5
 
@@ -133,39 +130,39 @@ return (
                   transition-all
                   duration-300
                   "
-                >
-                  {/* Image */}
-                  <td className="p-3 sm:p-5">
-                    {category.image ? (
-                      <img
-                        src={category.image}
-                        alt={category.name}
-                        className="w-12 h-12 rounded-xl object-cover border border-white/10"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 text-xs">
-                        —
+                  >
+                    {/* Image */}
+                    <td className="p-3 sm:p-5">
+                      {category.image ? (
+                        <img
+                          src={category.image}
+                          alt={category.name}
+                          className="w-12 h-12 rounded-xl object-cover border border-white/10"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 text-xs">
+                          —
+                        </div>
+                      )}
+                    </td>
+
+                    {/* Name */}
+                    <td className="p-3 sm:p-5">
+                      <div className="font-medium text-white">
+                        {category.name}
                       </div>
-                    )}
-                  </td>
+                    </td>
 
-                  {/* Name */}
-                  <td className="p-3 sm:p-5">
-                    <div className="font-medium text-white">
-                      {category.name}
-                    </div>
-                  </td>
+                    {/* Slug */}
+                    <td className="p-3 sm:p-5 text-slate-400">
+                      {category.slug}
+                    </td>
 
-                  {/* Slug */}
-                  <td className="p-3 sm:p-5 text-slate-400">
-                    {category.slug}
-                  </td>
-
-                  {/* Gender */}
-                  <td className="p-3 sm:p-5">
-                    {category.gender ? (
-                      <span
-                        className="
+                    {/* Gender */}
+                    <td className="p-3 sm:p-5">
+                      {category.gender ? (
+                        <span
+                          className="
                         inline-flex
                         items-center
 
@@ -183,20 +180,18 @@ return (
                         border
                         border-brand-500/20
                         "
-                      >
-                        {category.gender}
-                      </span>
-                    ) : (
-                      <span className="text-slate-500">
-                        —
-                      </span>
-                    )}
-                  </td>
+                        >
+                          {category.gender}
+                        </span>
+                      ) : (
+                        <span className="text-slate-500">—</span>
+                      )}
+                    </td>
 
-                  {/* Product Count */}
-                  <td className="p-3 sm:p-5">
-                    <span
-                      className="
+                    {/* Product Count */}
+                    <td className="p-3 sm:p-5">
+                      <span
+                        className="
                       inline-flex
                       items-center
 
@@ -214,17 +209,17 @@ return (
                       border
                       border-cyan-500/20
                       "
-                    >
-                      {category._count?.products ?? 0}
-                    </span>
-                  </td>
+                      >
+                        {category._count?.products ?? 0}
+                      </span>
+                    </td>
 
-                  {/* Actions */}
-                  <td className="p-3 sm:p-5">
-                    <div className="flex items-center gap-2">
-                    <Link
-                      href={`/admin/categories/edit/${category.id}`}
-                      className="
+                    {/* Actions */}
+                    <td className="p-3 sm:p-5">
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/admin/categories/edit/${category.id}`}
+                          className="
                       inline-flex
                       items-center
                       justify-center
@@ -250,23 +245,23 @@ return (
 
                       hover:shadow-[0_0_15px_rgba(34,211,238,0.25)]
                       "
-                    >
-                      Edit
-                    </Link>
+                        >
+                          Edit
+                        </Link>
 
-                    <DeleteCategoryButton
-                      id={category.id}
-                      name={category.name}
-                    />
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                        <DeleteCategoryButton
+                          id={category.id}
+                          name={category.name}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 }

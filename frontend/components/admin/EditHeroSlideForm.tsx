@@ -2,13 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { API_URL } from '@/lib/config';
+import { API_URL } from "@/lib/config";
 
-export default function EditHeroSlideForm({
-  heroSlide,
-}: {
-  heroSlide: any;
-}) {
+export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
   const router = useRouter();
 
   const [form, setForm] = useState({
@@ -42,13 +38,10 @@ export default function EditHeroSlideForm({
         const imageFormData = new FormData();
         imageFormData.append("image", image);
 
-        const uploadRes = await fetch(
-          `${API_URL}/upload/image`,
-          {
-            method: "POST",
-            body: imageFormData,
-          }
-        );
+        const uploadRes = await fetch(`${API_URL}/upload/image`, {
+          method: "POST",
+          body: imageFormData,
+        });
 
         const uploadData = await uploadRes.json();
 
@@ -59,20 +52,17 @@ export default function EditHeroSlideForm({
         imageUrl = uploadData.url;
       }
 
-      const res = await fetch(
-        `${API_URL}/hero-slides/${heroSlide.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...form,
-            order: Number(form.order),
-            image: imageUrl,
-          }),
-        }
-      );
+      const res = await fetch(`${API_URL}/hero-slides/${heroSlide.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...form,
+          order: Number(form.order),
+          image: imageUrl,
+        }),
+      });
 
       if (!res.ok) {
         throw new Error("Failed to update hero slide");
@@ -96,9 +86,7 @@ export default function EditHeroSlideForm({
 
         <input
           value={form.headline}
-          onChange={(e) =>
-            setForm({ ...form, headline: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, headline: e.target.value })}
           className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
@@ -110,9 +98,7 @@ export default function EditHeroSlideForm({
 
         <input
           value={form.subheadline}
-          onChange={(e) =>
-            setForm({ ...form, subheadline: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, subheadline: e.target.value })}
           className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
@@ -125,9 +111,7 @@ export default function EditHeroSlideForm({
         <textarea
           rows={4}
           value={form.description}
-          onChange={(e) =>
-            setForm({ ...form, description: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, description: e.target.value })}
           className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
@@ -167,9 +151,7 @@ export default function EditHeroSlideForm({
 
         <input
           value={form.badge}
-          onChange={(e) =>
-            setForm({ ...form, badge: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, badge: e.target.value })}
           className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
@@ -181,9 +163,7 @@ export default function EditHeroSlideForm({
 
         <input
           value={form.tag}
-          onChange={(e) =>
-            setForm({ ...form, tag: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, tag: e.target.value })}
           className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
@@ -196,9 +176,7 @@ export default function EditHeroSlideForm({
 
           <input
             value={form.cta}
-            onChange={(e) =>
-              setForm({ ...form, cta: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, cta: e.target.value })}
             className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
           />
         </div>
@@ -210,9 +188,7 @@ export default function EditHeroSlideForm({
 
           <input
             value={form.ctaLink}
-            onChange={(e) =>
-              setForm({ ...form, ctaLink: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, ctaLink: e.target.value })}
             className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
           />
         </div>
@@ -224,9 +200,7 @@ export default function EditHeroSlideForm({
 
           <input
             value={form.ctaSecondary}
-            onChange={(e) =>
-              setForm({ ...form, ctaSecondary: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, ctaSecondary: e.target.value })}
             className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
           />
         </div>
@@ -253,9 +227,7 @@ export default function EditHeroSlideForm({
 
         <input
           value={form.accent}
-          onChange={(e) =>
-            setForm({ ...form, accent: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, accent: e.target.value })}
           className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
@@ -281,9 +253,7 @@ export default function EditHeroSlideForm({
             id="isActive"
             type="checkbox"
             checked={form.isActive}
-            onChange={(e) =>
-              setForm({ ...form, isActive: e.target.checked })
-            }
+            onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
             className="w-5 h-5 rounded accent-cyan-500"
           />
 

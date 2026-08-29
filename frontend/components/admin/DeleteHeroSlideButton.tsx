@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2, Loader2 } from "lucide-react";
 import { useUIStore } from "@/lib/store";
-import { API_URL } from '@/lib/config';
+import { API_URL } from "@/lib/config";
 
 export default function DeleteHeroSlideButton({
   id,
@@ -19,7 +19,7 @@ export default function DeleteHeroSlideButton({
 
   async function handleDelete() {
     const confirmed = window.confirm(
-      `Are you sure you want to delete "${name || "this hero slide"}"? This cannot be undone.`
+      `Are you sure you want to delete "${name || "this hero slide"}"? This cannot be undone.`,
     );
 
     if (!confirmed) return;
@@ -27,12 +27,9 @@ export default function DeleteHeroSlideButton({
     try {
       setLoading(true);
 
-      const res = await fetch(
-        `${API_URL}/hero-slides/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const res = await fetch(`${API_URL}/hero-slides/${id}`, {
+        method: "DELETE",
+      });
 
       const data = await res.json().catch(() => ({}));
 

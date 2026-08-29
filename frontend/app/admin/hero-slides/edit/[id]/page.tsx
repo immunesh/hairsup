@@ -1,14 +1,11 @@
 import Link from "next/link";
 import EditHeroSlideForm from "@/components/admin/EditHeroSlideForm";
-import { API_URL } from '@/lib/config';
+import { API_URL } from "@/lib/config";
 
 async function getHeroSlide(id: string) {
-  const res = await fetch(
-    `${API_URL}/hero-slides/${id}`,
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch(`${API_URL}/hero-slides/${id}`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     throw new Error("Failed to fetch hero slide");
@@ -29,9 +26,7 @@ export default async function EditHeroSlidePage({
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-white">
-            Edit Hero Slide
-          </h1>
+          <h1 className="text-4xl font-bold text-white">Edit Hero Slide</h1>
 
           <p className="text-slate-400 mt-2">
             Update slide content and background image

@@ -20,50 +20,26 @@ export default function AdminLoginPage() {
       setLoading(true);
       setError("");
 
-      const response = await authApi.login(
-        email,
-        password
-      );
+      const response = await authApi.login(email, password);
 
-      const {
-        accessToken,
-        refreshToken,
-        user,
-      } = response.data.data;
+      const { accessToken, refreshToken, user } = response.data.data;
 
       if (user.role !== "ADMIN") {
-        setError(
-          "You are not an administrator"
-        );
+        setError("You are not an administrator");
         return;
       }
 
-      localStorage.setItem(
-        "accessToken",
-        accessToken
-      );
+      localStorage.setItem("accessToken", accessToken);
 
-      localStorage.setItem(
-        "refreshToken",
-        refreshToken
-      );
+      localStorage.setItem("refreshToken", refreshToken);
 
-      localStorage.setItem(
-        "role",
-        user.role
-      );
+      localStorage.setItem("role", user.role);
 
-      localStorage.setItem(
-        "userId",
-        user.id
-      );
+      localStorage.setItem("userId", user.id);
 
       router.replace("/admin");
     } catch (err: any) {
-      setError(
-        err?.response?.data?.message ||
-        "Login failed"
-      );
+      setError(err?.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -123,9 +99,7 @@ export default function AdminLoginPage() {
             HairsUp Admin
           </h1>
 
-          <p className="text-slate-400 mt-3">
-            Sign in to access dashboard
-          </p>
+          <p className="text-slate-400 mt-3">Sign in to access dashboard</p>
         </div>
 
         {/* Error */}
@@ -150,10 +124,7 @@ export default function AdminLoginPage() {
           </div>
         )}
 
-        <form
-          onSubmit={handleLogin}
-          className="space-y-5"
-        >
+        <form onSubmit={handleLogin} className="space-y-5">
           {/* Email */}
           <div>
             <label className="block text-sm text-slate-300 mb-2">
@@ -164,9 +135,7 @@ export default function AdminLoginPage() {
               type="email"
               placeholder="admin@example.com"
               value={email}
-              onChange={(e) =>
-                setEmail(e.target.value)
-              }
+              onChange={(e) => setEmail(e.target.value)}
               className="
             w-full
 
@@ -204,9 +173,7 @@ export default function AdminLoginPage() {
               type="password"
               placeholder="••••••••"
               value={password}
-              onChange={(e) =>
-                setPassword(e.target.value)
-              }
+              onChange={(e) => setPassword(e.target.value)}
               className="
             w-full
 
@@ -263,17 +230,13 @@ export default function AdminLoginPage() {
           shadow-[0_0_25px_rgba(56,189,248,0.35)]
           "
           >
-            {loading
-              ? "Logging in..."
-              : "Login to Dashboard"}
+            {loading ? "Logging in..." : "Login to Dashboard"}
           </button>
         </form>
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-xs text-slate-500">
-            HairsUp Administration Panel
-          </p>
+          <p className="text-xs text-slate-500">HairsUp Administration Panel</p>
         </div>
       </div>
     </div>

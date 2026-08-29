@@ -1,14 +1,11 @@
 import Link from "next/link";
 import DeleteHeroSlideButton from "@/components/admin/DeleteHeroSlideButton";
-import { API_URL } from '@/lib/config';
+import { API_URL } from "@/lib/config";
 
 async function getHeroSlides() {
-  const res = await fetch(
-    `${API_URL}/hero-slides`,
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch(`${API_URL}/hero-slides`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     throw new Error("Failed to fetch hero slides");
@@ -192,9 +189,7 @@ export default async function HeroSlidesPage() {
                     </td>
 
                     {/* Order */}
-                    <td className="p-3 sm:p-5 text-slate-400">
-                      {slide.order}
-                    </td>
+                    <td className="p-3 sm:p-5 text-slate-400">{slide.order}</td>
 
                     {/* Status */}
                     <td className="p-3 sm:p-5">
