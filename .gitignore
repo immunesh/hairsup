@@ -53,4 +53,9 @@ npm-debug.log*
 
 # Prisma
 .prisma/
+
+# Locally uploaded images. The app uploads to Cloudinary; this directory is
+# only written by the local-disk fallback in upload.routes.ts when Cloudinary
+# is unconfigured, and those files are per-developer scratch, not source.
+uploads/
 51673/
