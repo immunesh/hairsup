@@ -23,10 +23,6 @@ export default function ProductCard({ product, className }: ProductCardProps) {
   const { addItem: addToCart } = useCartStore();
   const { items: wishlistItems, addItem: addToWishlist, removeItem: removeFromWishlist } = useWishlistStore();
   const { showToast } = useUIStore();
-console.log("CARD", {
-  name: product.name,
-  images: product.images,
-});
 const primaryImage =
   product.images?.find((img) => img.isPrimary) ||
   product.images?.[0];
@@ -55,11 +51,9 @@ const hoverUrl = hoverImage?.url
     if (!isAuthenticated) { showToast('Please sign in to add to cart', 'error'); return; }
     setAddingToCart(true);
    try {
-  console.log("ADDING PRODUCT", product.id);
 
   const { data } = await cartApi.add(product.id, 1);
 
-  console.log("CART RESPONSE", data);
       addToCart(data.data);
       showToast('Added to cart!', 'success');
    } catch (error: any) {
@@ -94,10 +88,6 @@ const handleWishlist = async (e: React.MouseEvent) => {
       showToast('Something went wrong', 'error');
     }
   };
-console.log("CARD", {
-  name: product.name,
-  imageUrl,
-});
   return (
     <Link href={`/products/${product.slug}`}>
       <div

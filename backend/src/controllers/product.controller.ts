@@ -80,7 +80,6 @@ export const getProducts = async (
     bestSeller,
     newArrival,
     search,
-     images,
   } = req.query;
 
   const pageNum = parseInt(page as string);
@@ -376,7 +375,6 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
-    console.log(req.body);
 const {
   name,
   slug,
@@ -410,7 +408,6 @@ careGuides,
 includedItems,
 
 } = req.body;
-console.log("IMAGES RECEIVED:");
     const finalSlug = await uniqueProductSlug(slug, name);
 
     const product =

@@ -179,10 +179,6 @@ useEffect(() => {
       const list =
         res?.data?.data || [];
 
-      console.log(
-        "HOME PRODUCTS",
-        list
-      );
 
       setFeaturedProducts(
         list
@@ -225,26 +221,13 @@ useEffect(() => {
 
   loadProducts();
 }, []);
-console.log(
-  "FEATURED",
-  featuredProducts
-);
 
-console.log(
-  "NEW",
-  newArrivals
-);
 
-console.log(
-  "BEST",
-  bestSellers
-);
 useEffect(() => {
   const loadBlogs = async () => {
     try {
       const res = await blogApi.getAll();
 
-      console.log("BLOG RESPONSE", res.data);
 
       const blogList =
         res.data?.data ||

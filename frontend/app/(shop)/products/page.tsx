@@ -56,7 +56,6 @@ const loadProducts = async () => {
   try {
     const { data } = await productsApi.getAll();
 
-    console.log("Products API:", data);
 let filtered: Product[] = data.data || [];
 
 // Gender filter
@@ -114,13 +113,6 @@ if (filters.texture) {
     )
   );
 }
-console.log(
-  "Length Values",
-  filtered.map((p) => ({
-    name: p.name,
-    length: p.length,
-  }))
-);
 // Length filter
 if (filters.length) {
   filtered = filtered.filter((p: Product) => {
@@ -209,7 +201,6 @@ if (filters.collection) {
 }
 
 
-console.log(filtered[0]);
     setProducts(filtered);
   } catch (error) {
     console.error(error);
@@ -224,7 +215,6 @@ const handleFilterChange = (
   value: string | string[] | undefined
 ) => {
 
-  console.log("Filter Changed:", key, value);
 
   setFilters((prev) => ({
     ...prev,

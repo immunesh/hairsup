@@ -69,13 +69,6 @@ function WomenContent() {
       try {
         const res = await productsApi.getAll();
         let list = (res.data.data || []) as Product[];
-       console.log(
-  list.map((p) => ({
-    name: p.name,
-    gender: p.gender,
-    category: p.category?.name,
-  }))
-);
 list = list.filter((p) => {
   const gender =
     String(p.gender || "")
@@ -99,10 +92,6 @@ list = list.filter(
       .toUpperCase() === "WOMEN"
 );
 
-console.log(
-  "Women Products After Filter",
-  list
-);
 
         // apply active subcategory heuristics
         if (activeSubcat) {
@@ -173,12 +162,6 @@ if (filters.length) {
     }
   });
 }
-console.log(
-  list.map((p) => ({
-    name: p.name,
-    length: p.length,
-  }))
-);
 if (filters.price) {
   const [min, max] = String(filters.price)
     .split("-")

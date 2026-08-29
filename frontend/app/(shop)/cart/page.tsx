@@ -75,8 +75,6 @@ export default function CartPage() {
       0
     );
 
-  console.log("CALCULATED TOTAL", calculatedTotal);
-  console.log("CALCULATED COUNT", calculatedItemCount);
   const handleApplyCoupon =
     async () => {
       if (!couponInput.trim()) return;
@@ -109,7 +107,6 @@ export default function CartPage() {
     };
 
   if (!isAuthenticated) {
-    console.log("CART ITEMS", items);
 
     return (
       <div className="container-custom py-20 text-center">

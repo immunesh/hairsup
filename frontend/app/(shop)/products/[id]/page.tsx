@@ -75,8 +75,6 @@ export default function ProductDetailPage() {
       try {
         const reviewResponse = await reviewsApi.getByProduct(productData.id);
 
-        console.log("Reviews API:", reviewResponse.data);
-        console.log("Reviews Data", reviewResponse.data.data);
         setReviews(reviewResponse.data.data || []);
       } catch (error) {
         console.error("Review Error:", error);

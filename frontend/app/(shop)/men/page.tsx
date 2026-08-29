@@ -49,14 +49,6 @@ export default function MenPage() {
 
       let list = res.data.data || [];
 
-      console.log(
-        "ALL PRODUCTS",
-        list.map((p: any) => ({
-          name: p.name,
-          gender: p.gender,
-          category: p.category?.name,
-        }))
-      );
 
       // MEN PRODUCTS
       list = list.filter(
@@ -233,8 +225,6 @@ if (sort === "rating-desc") {
       (a.rating || 0)
   );
 }
-console.log("FILTERS", filters);
-console.log("RESULTS", list);
       setProducts(list);
     } catch (error) {
       console.error(error);

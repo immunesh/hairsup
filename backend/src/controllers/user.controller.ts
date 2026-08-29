@@ -145,7 +145,6 @@ export const getNotificationPreferences = async (
   res: Response
 ): Promise<void> => {
 
-  console.log("REQ USER =>", req.user);
 
   const user = await prisma.user.findUnique({
     where: {
