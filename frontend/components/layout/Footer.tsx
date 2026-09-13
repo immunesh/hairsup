@@ -81,8 +81,8 @@ export default function Footer() {
               that restore confidence and transform lives — for men and women alike.
             </p>
             <div className="space-y-2 text-sm">
-              <a href="tel:+911800hairsup" className="flex items-center gap-2 hover:text-brand-400 transition-colors">
-                <Phone className="w-4 h-4 text-brand-500" /> +91 1800-HAIRSUP (Free)
+              <a href="tel:+919027396563" className="flex items-center gap-2 hover:text-brand-400 transition-colors">
+                <Phone className="w-4 h-4 text-brand-500" /> +91 90273 96563
               </a>
               <a href="mailto:hello@hairsup.com" className="flex items-center gap-2 hover:text-brand-400 transition-colors">
                 <Mail className="w-4 h-4 text-brand-500" /> hello@hairsup.com

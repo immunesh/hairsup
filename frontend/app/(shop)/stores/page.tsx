@@ -64,7 +64,7 @@ export default async function StoresPage() {
             and help you with a professional fitting — all completely free.
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <a href="tel:+911800hairsup" className="btn-primary flex items-center gap-2">
+            <a href="tel:+919027396563" className="btn-primary flex items-center gap-2">
               <Phone className="w-4 h-4" /> Call to Book
             </a>
             <a href="mailto:hello@hairsup.com" className="btn-secondary flex items-center gap-2">

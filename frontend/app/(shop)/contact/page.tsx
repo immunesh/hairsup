@@ -133,7 +133,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-sm">Phone / WhatsApp</p>
-                    <a href="tel:+911800hairsup" className="text-sm text-brand-600 hover:underline block">+91 1800-HAIRSUP (Free)</a>
+                    <a href="tel:+919027396563" className="text-sm text-brand-600 hover:underline block">+91 90273 96563</a>
                     <a href="https://wa.me/918976543210" className="text-sm text-green-600 hover:underline">WhatsApp Chat</a>
                   </div>
                 </div>

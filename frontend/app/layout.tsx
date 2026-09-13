@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: '%s | HairsUp',
   },
   description:
-    "India's #1 hair wig brand. Shop premium human hair wigs, synthetic wigs, and hair systems for men and women. Virtual try-on available. Free shipping above ₹999.",
+    "India's #1 hair wig brand. Shop premium human hair wigs, synthetic wigs, and hair systems for men and women. Virtual try-on available. Free shipping.",
   keywords: [
     'hair wigs', 'human hair wigs', 'synthetic wigs', "men's hair system",
     "women's wigs", 'lace front wigs', 'HairsUp', 'buy wigs online India',

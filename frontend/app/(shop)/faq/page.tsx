@@ -134,8 +134,8 @@ export default function FAQPage() {
                 <h3 className="font-bold text-gray-900 mb-2">Still need help?</h3>
                 <p className="text-sm text-gray-600 mb-4">Our hair specialists are available 7 days a week.</p>
                 <div className="space-y-2">
-                  <a href="tel:+911800hairsup" className="flex items-center gap-2 text-sm text-brand-700 font-medium">
-                    <Phone className="w-4 h-4" /> +91 1800-HAIRSUP (Free)
+                  <a href="tel:+919027396563" className="flex items-center gap-2 text-sm text-brand-700 font-medium">
+                    <Phone className="w-4 h-4" /> +91 90273 96563
                   </a>
                   <a href="mailto:help@hairsup.com" className="flex items-center gap-2 text-sm text-brand-700 font-medium">
                     <Mail className="w-4 h-4" /> help@hairsup.com
