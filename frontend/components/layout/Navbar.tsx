@@ -118,16 +118,16 @@ export default function Navbar() {
         <div className="container-custom flex justify-between items-center">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5">
-              <Phone className="w-3 h-3" /> +91 1800-HairsUp (Free)
+              <Phone className="w-3 h-3" /> +91 90273 96563
             </span>
             <span className="flex items-center gap-1.5">
-              <MapPin className="w-3 h-3" /> 50+ Stores across India
+              <MapPin className="w-3 h-3" /> 2 Stores across Surat
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-brand-200">Free shipping above ₹999</span>
-            <Link href="/stores" className="hover:text-brand-300 transition-colors">Find a Store</Link>
-            <Link href="/blog" className="hover:text-brand-300 transition-colors">Hair Care Tips</Link>
+            <span className="text-brand-200">Free Shipping</span>
+            <Link href="/try-on" className="hover:text-brand-300 transition-colors">Virtual Try-On</Link>
+            <Link href="/shop" className="hover:text-brand-300 transition-colors">Shop</Link>
           </div>
         </div>
       </div>
