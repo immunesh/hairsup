@@ -141,7 +141,7 @@ export default function CheckoutPage() {
     setCouponInput(couponCode || '');
   }, [couponCode]);
 
-  const shipping = total >= 999 ? 0 : 99;
+  const shipping = 0;
   const tax = Math.max(total - discount, 0) * 0.18;
   const grandTotal = Math.max(total + shipping + tax - discount, 0);
 
@@ -467,7 +467,7 @@ export default function CheckoutPage() {
             </div>
 
             <div className="text-[11px] text-gray-400 space-y-1.5 pt-2 border-t border-gray-50">
-              <p>✓ Free delivery on orders above ₹999</p>
+              <p>✓ Free delivery on every order</p>
               <p>✓ Estimated delivery in 3–5 business days</p>
               <p>✓ 7-day hassle-free returns</p>
             </div>

@@ -33,7 +33,7 @@ const FAQ_SECTIONS = [
     icon: '🚚',
     faqs: [
       { q: 'How long does delivery take?', a: "Standard delivery takes 3–5 business days across India. Express delivery (1–2 business days) is available for an additional fee. Metro cities (Mumbai, Delhi, Bangalore, Chennai, Hyderabad) typically receive orders within 2–3 days." },
-      { q: 'Is shipping free?', a: "Shipping is free on all orders above ₹999. Orders below ₹999 incur a ₹99 shipping fee. We offer free express shipping on orders above ₹3,999." },
+      { q: 'Is shipping free?', a: 'Yes! Standard shipping is free on every order within India. Express delivery is available for an additional fee.' },
       { q: 'Can I track my order?', a: "Yes! You will receive an SMS and email with your tracking link as soon as your order is dispatched. You can also track your order in the 'My Orders' section of your HairsUp account." },
       { q: 'Do you ship internationally?', a: "We currently ship to UAE, Singapore, and the United Kingdom. International orders typically take 7–12 business days. Customs duties and taxes are the buyer's responsibility." },
     ],

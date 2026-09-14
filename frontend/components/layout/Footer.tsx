@@ -41,7 +41,7 @@ const SOCIAL_LINKS = [
 ];
 
 const FEATURES = [
-  { icon: '🚚', title: 'Free Shipping', desc: 'On orders above ₹999' },
+  { icon: '🚚', title: 'Free Shipping', desc: 'On every order' },
   { icon: '↩️', title: 'Easy Returns', desc: '7-day hassle-free returns' },
   { icon: '🔒', title: 'Secure Payment', desc: '100% encrypted & safe' },
   { icon: '💬', title: '24/7 Support', desc: 'Expert help anytime' },

@@ -1,41 +1,45 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+import { API_URL } from "./config";
 
 export const getAllStores = async () => {
-  const response = await fetch(
-    `${API_URL}/stores`,
-    {
-      cache: "no-store",
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to fetch stores"
+  try {
+    const response = await fetch(
+      `${API_URL}/stores`,
+      {
+        cache: "no-store",
+      }
     );
-  }
 
-  return data.data;
+    if (!response.ok) {
+      return [];
+    }
+
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    console.error("Store fetch error:", error);
+    return [];
+  }
 };
 
 export const getStoreById = async (
   id: string
 ) => {
-  const response = await fetch(
-    `${API_URL}/stores/${id}`,
-    {
-      cache: "no-store",
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to fetch store"
+  try {
+    const response = await fetch(
+      `${API_URL}/stores/${id}`,
+      {
+        cache: "no-store",
+      }
     );
-  }
 
-  return data.data;
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    return data.data || null;
+  } catch (error) {
+    console.error("Store fetch error:", error);
+    return null;
+  }
 };
