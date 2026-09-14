@@ -88,7 +88,7 @@ export default function CartSidebar() {
     }
   };
 
-  const shipping = calculatedTotal >= 999 ? 0 : 99;
+  const shipping = 0;
   const grandTotal = Math.max(calculatedTotal + shipping - discount, 0);
   if (!isOpen) return null;
 
@@ -113,24 +113,10 @@ export default function CartSidebar() {
           </button>
         </div>
 
-        {/* Free shipping progress */}
-        {items.length > 0 && calculatedTotal < 999 && (
-          <div className="px-6 py-3 bg-brand-50">
-            <p className="text-xs text-brand-700 font-medium mb-1.5">
-              Add {formatPrice(999 - calculatedTotal)} more for FREE shipping!
-            </p>
-            <div className="h-1.5 bg-brand-100 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-brand-600 rounded-full transition-all duration-500"
-                style={{ width: `${Math.min((calculatedTotal / 999) * 100, 100)}%` }}
-              />
-            </div>
-          </div>
-        )}
-        {items.length > 0 && calculatedTotal >= 999 && (
+        {items.length > 0 && (
           <div className="px-6 py-3 bg-green-50">
             <p className="text-xs text-green-700 font-semibold flex items-center gap-1.5">
-              <Gift className="w-3.5 h-3.5" /> Yay! You qualify for FREE shipping!
+              <Gift className="w-3.5 h-3.5" /> FREE shipping on every order!
             </p>
           </div>
         )}

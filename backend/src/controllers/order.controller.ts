@@ -90,7 +90,7 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<void
     }
   }
 
-  const shipping = subtotal > 999 ? 0 : 99;
+  const shipping = 0;
   const tax = (subtotal - discount) * 0.18;
   const total = subtotal - discount + shipping + tax;
 

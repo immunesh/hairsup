@@ -156,7 +156,7 @@ export default function TermsPage() {
               </h2>
               <div className="text-gray-600 space-y-3 leading-relaxed">
                 <p>
-                  <strong>Shipping:</strong> Standard shipping is free on orders above ₹999 within India. Orders below this threshold carry a standard shipping fee of ₹99. Delivery timeframes are estimates and not guaranteed delivery dates.
+                  <strong>Shipping:</strong> Standard shipping is free on every order within India. Express delivery may be available for an additional fee. Delivery timeframes are estimates and not guaranteed delivery dates.
                 </p>
                 <p>
                   <strong>Returns & Exchanges:</strong> Standard products can be returned or exchanged within 7 days of delivery, provided the item is completely unworn, unaltered, in its original packaging, and with all tags intact. For hygiene reasons, wigs that have been worn, cut, washed, styled, or modified in any manner cannot be returned.
