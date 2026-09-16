@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+import { API_URL } from "./config";
 
 export async function getAllBlogs() {
   try {
@@ -10,7 +10,7 @@ export async function getAllBlogs() {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch blogs");
+      return [];
     }
 
     const data = await response.json();

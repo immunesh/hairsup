@@ -8,7 +8,7 @@ import {
   ChevronLeft, ChevronRight, Zap, Award, Users, Heart
 } from 'lucide-react';
 import ProductCard from '@/components/ui/ProductCard';
-import { formatPrice } from '@/lib/utils';
+import { DEMO_PRODUCTS, formatPrice } from '@/lib/utils';
  
 import { Category, Product } from '@/types';
 import { productsApi, blogApi } from '@/lib/api';
@@ -70,7 +70,7 @@ const DEFAULT_HERO_SLIDES = [
 
 
 const TRUST_FEATURES = [
-  { icon: Truck, title: 'Free Shipping', desc: 'On orders above ₹999', color: 'text-brand-600 bg-brand-50' },
+  { icon: Truck, title: 'Free Shipping', desc: 'On every order', color: 'text-brand-600 bg-brand-50' },
   { icon: RotateCcw, title: '7-Day Returns', desc: 'Hassle-free exchanges', color: 'text-green-600 bg-green-50' },
   { icon: Shield, title: 'Genuine Products', desc: '100% authentic wigs', color: 'text-blue-600 bg-blue-50' },
   { icon: HeadphonesIcon, title: 'Expert Support', desc: 'Certified hair specialists', color: 'text-amber-600 bg-amber-50' },
@@ -108,6 +108,35 @@ const TESTIMONIALS = [
     product: 'Goddess Waves Body Wave Wig',
     image: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=100&q=80',
   },
+];
+
+const HOME_FAQS = [
+  {
+    question: 'What types of wigs do you offer?',
+    answer: 'We offer human hair wigs, synthetic wigs, men\'s hair systems, women\'s wigs, and hair patches in a range of styles and colours.',
+  },
+  {
+    question: 'Is shipping free on every order?',
+    answer: 'Yes. Standard shipping is free on every order within India. Express delivery may be available for an additional fee.',
+  },
+  {
+    question: 'Can I try a wig before buying it?',
+    answer: 'Yes. Use our virtual try-on to preview selected styles with your camera, or visit one of our stores for an in-person consultation.',
+  },
+  {
+    question: 'How do I choose the right wig size?',
+    answer: 'Measure around your natural hairline and compare the result with the size guide on each product page. Our adjustable caps provide a secure fit.',
+  },
+  {
+    question: 'Can I return or exchange my order?',
+    answer: 'Unused products in their original condition can be returned or exchanged within 7 days of delivery. Custom-made products are non-returnable.',
+  },
+];
+
+const FAQ_IMAGES = [
+  { src: '/wigs/wig8/women front hair wig.png', alt: "Women's wig" },
+  { src: '/wigs/wig7/men front hair wig.png', alt: "Men's hair wig" },
+  { src: '/wigs/wig6/wig6_view_1.png', alt: 'Hair wig detail' },
 ];
 
  
@@ -153,7 +182,6 @@ const [blogs, setBlogs] = useState<any[]>([]);
   const slide = heroSlides[heroSlide] || heroSlides[0];
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [newArrivals, setNewArrivals] = useState<Product[]>([]);
-  const [bestSellers, setBestSellers] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -176,17 +204,15 @@ useEffect(() => {
     try {
       const res = await productsApi.getAll();
 
-      const list =
-        res?.data?.data || [];
+      const apiProducts = res?.data?.data || [];
+      const list: Product[] = apiProducts.length > 0
+        ? apiProducts
+        : (DEMO_PRODUCTS as unknown as Product[]);
 
 
+      const featured = list.filter((p: Product) => p.isFeatured);
       setFeaturedProducts(
-        list
-          .filter(
-            (p: Product) =>
-              p.isFeatured
-          )
-          .slice(0, 8)
+        (featured.length > 0 ? featured : list).slice(0, 8)
       );
 
       setNewArrivals(
@@ -198,24 +224,15 @@ useEffect(() => {
           .slice(0, 4)
       );
 
-      setBestSellers(
-        list
-          .filter(
-            (p: Product) =>
-              p.isBestSeller
-          )
-          .slice(0, 4)
-      );
-      
     } catch (error) {
       console.error(
         "Homepage products error:",
         error
       );
 
-      setFeaturedProducts([]);
-      setNewArrivals([]);
-      setBestSellers([]);
+      const fallbackProducts = DEMO_PRODUCTS as unknown as Product[];
+      setFeaturedProducts(fallbackProducts.slice(0, 8));
+      setNewArrivals(fallbackProducts.filter((p) => p.isNewArrival).slice(0, 4));
     }
   };
 
@@ -440,9 +457,11 @@ useEffect(() => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide">
             {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <div key={product.id} className="w-[78vw] sm:w-[42vw] md:w-[30vw] lg:w-[23%] flex-shrink-0 snap-start">
+                <ProductCard product={product} />
+              </div>
             ))}
           </div>
 
@@ -557,21 +576,37 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* ─── BEST SELLERS ────────────────────────────────────────── */}
+      {/* ─── FAQ ────────────────────────────────────────────────── */}
       <section className="section-lg bg-mist">
         <div className="container-custom">
-          <div className="flex items-center justify-between mb-10">
-            <div>
-              <p className="section-eyebrow">Most Loved</p>
-              <h2 className="section-title heading-decorate">Best<br /><span className="rule" />Sellers</h2>
-              <p className="text-gray-500">Customer favourites, tried and loved</p>
-            </div>
-            <Link href="/products" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
-              View All <ArrowRight className="w-4 h-4" />
-            </Link>
+          <div className="text-center mb-10">
+            <p className="section-eyebrow">Need to Know</p>
+            <h2 className="section-title heading-decorate">Frequently Asked<br /><span className="rule" />Questions</h2>
+            <p className="section-subtitle">Quick answers before you choose your perfect style</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {bestSellers.map((p) => <ProductCard key={p.id} product={p} />)}
+
+          <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-8 items-start">
+            <div className="space-y-3">
+              {HOME_FAQS.map(({ question, answer }) => (
+                <div key={question} className="bg-white border border-gray-100 rounded-2xl shadow-sm p-5">
+                  <h3 className="font-semibold text-gray-900 mb-2">{question}</h3>
+                  <p className="text-sm leading-relaxed text-gray-600">{answer}</p>
+                </div>
+              ))}
+              <div className="pt-3">
+                <Link href="/faq" className="btn-secondary inline-flex items-center gap-2">
+                  View all FAQs <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 lg:grid-cols-1 gap-3">
+              {FAQ_IMAGES.map(({ src, alt }) => (
+                <div key={src} className="relative aspect-[4/3] lg:aspect-[4/3] overflow-hidden rounded-2xl bg-white">
+                  <Image src={src} alt={alt} fill className="object-cover" />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

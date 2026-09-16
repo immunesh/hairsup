@@ -60,8 +60,7 @@ export default function CartPage() {
     0
   );
 
-  const shipping =
-    calculatedTotal >= 999 ? 0 : 99;
+  const shipping = 0;
 
   const tax =
     Math.max(calculatedTotal - discount, 0) * 0.18;
@@ -145,20 +144,10 @@ export default function CartPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart items */}
           <div className="lg:col-span-2 space-y-4">
-            {calculatedTotal < 999 && (
-              <div className="bg-brand-50 border border-brand-200 rounded-2xl p-4">
-                <p className="text-sm text-brand-700 font-medium mb-2">
-                  Add {formatPrice(999 - calculatedTotal)} more for FREE shipping!
-                </p>
-                <div className="h-2 bg-brand-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-brand-600 rounded-full" style={{ width: `${Math.min((calculatedTotal / 999) * 100, 100)}%` }} />
-                </div>
-              </div>
-            )}
-            {calculatedTotal >= 999 && (
+            {items.length > 0 && (
               <div className="bg-green-50 border border-green-200 rounded-2xl p-4 flex items-center gap-2">
                 <Gift className="w-4 h-4 text-green-600" />
-                <p className="text-sm text-green-700 font-semibold">You qualify for FREE shipping!</p>
+                <p className="text-sm text-green-700 font-semibold">FREE shipping on every order!</p>
               </div>
             )}
 

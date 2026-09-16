@@ -13,35 +13,24 @@ import NotificationBell from '@/components/ui/NotificationBell';
 
 const NAV_LINKS = [
   {
-    label: 'Women',
-    href: '/women',
+    label: 'Services',
+    href: '/contact',
     mega: [
-      { label: 'Human Hair Wigs', href: '/women?material=human-hair' },
-      { label: 'Synthetic Wigs', href: '/women?material=synthetic' },
-      { label: 'Lace Front Wigs', href: '/women?texture=lace-front' },
-      { label: 'Body Wave', href: '/women?texture=body-wave' },
-      { label: 'Straight Wigs', href: '/women?texture=straight' },
-      { label: 'Curly Wigs', href: '/women?texture=curly' },
-      { label: 'Ombre Wigs', href: '/women?color=ombre' },
-      { label: 'Afro Wigs', href: '/women?texture=afro' },
-      { label: 'New Arrivals', href: '/women?newArrival=true' },
-      { label: 'Best Sellers', href: '/women?bestSeller=true' },
+      { label: 'Hair Bonding', href: '/contact?service=hair-bonding' },
+      { label: 'Hair Weaving', href: '/contact?service=hair-weaving' },
+      { label: 'Hair Extensions', href: '/contact?service=hair-extensions' },
+      { label: 'Hair Replacement', href: '/contact?service=hair-replacement' },
+      { label: 'Hair Fixing', href: '/contact?service=hair-fixing' },
     ],
   },
   {
-    label: 'Men',
-    href: '/men',
+    label: 'Products',
+    href: '/products',
     mega: [
-      { label: 'Hair Systems', href: '/men?category=hair-system' },
-      { label: 'Toupees', href: '/men?category=toupee' },
-      { label: 'Full Cap Wigs', href: '/men?category=full-cap' },
-      { label: 'Crown Cover', href: '/men?category=crown' },
-      { label: 'Sports Active', href: '/men?category=sports' },
-      { label: 'Salt & Pepper', href: '/men?color=salt-pepper' },
-      { label: 'Human Hair', href: '/men?material=human-hair' },
-      { label: 'Synthetic', href: '/men?material=synthetic' },
-      { label: 'New Arrivals', href: '/men?newArrival=true' },
-      { label: 'Best Sellers', href: '/men?bestSeller=true' },
+      { label: 'Hair Wig', href: '/products' },
+      { label: 'Men Hair Wig', href: '/products?category=men-wigs' },
+      { label: 'Women Hair Wig', href: '/products?category=women-wigs' },
+      { label: 'Hair Patch', href: '/search?q=hair%20patch' },
     ],
   },
   { label: 'Virtual Try-On', href: '/try-on' },
@@ -192,7 +181,7 @@ export default function Navbar() {
                   {/* Mega Menu */}
                   {link.mega && activeMenu === link.label && (
                     <div className="absolute top-full left-0 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 animate-fade-in">
-                      <div className="grid grid-cols-2 gap-1">
+                      <div className="grid grid-cols-1 gap-1">
                         {link.mega.map((item) => (
                           <Link
                             key={item.label}
