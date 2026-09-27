@@ -16,21 +16,21 @@ const NAV_LINKS = [
     label: 'Services',
     href: '/contact',
     mega: [
-      { label: 'Hair Bonding', href: '/contact?service=hair-bonding' },
-      { label: 'Hair Weaving', href: '/contact?service=hair-weaving' },
-      { label: 'Hair Extensions', href: '/contact?service=hair-extensions' },
-      { label: 'Hair Replacement', href: '/contact?service=hair-replacement' },
-      { label: 'Hair Fixing', href: '/contact?service=hair-fixing' },
+      { label: 'Hair Bonding', href: '/hair-bonding' },
+      { label: 'Hair Weaving', href: '/hair-weaving' },
+      { label: 'Hair Extensions', href: '/hair-extensions' },
+      { label: 'Hair Replacement', href: '/hair-replacement' },
+      { label: 'Hair Fixing', href: '/hair-fixing' },
     ],
   },
   {
     label: 'Products',
     href: '/products',
     mega: [
-      { label: 'Hair Wig', href: '/products' },
-      { label: 'Men Hair Wig', href: '/products?category=men-wigs' },
-      { label: 'Women Hair Wig', href: '/products?category=women-wigs' },
-      { label: 'Hair Patch', href: '/search?q=hair%20patch' },
+      { label: 'Hair Wig', href: '/hair-wig' },
+      { label: 'Men Hair Wig', href: '/men-hair-wig' },
+      { label: 'Women Hair Wig', href: '/women-hair-wig' },
+      { label: 'Hair Patch', href: '/hair-patch' },
     ],
   },
   { label: 'Virtual Try-On', href: '/try-on' },
@@ -194,13 +194,7 @@ export default function Navbar() {
                         ))}
                       </div>
                       <div className="mt-3 pt-3 border-t border-gray-100">
-                        <Link
-                          href={link.href}
-                          onClick={() => setActiveMenu(null)}
-                          className="text-sm font-semibold text-brand-600 hover:underline"
-                        >
-                          View All {link.label} →
-                        </Link>
+
                       </div>
                     </div>
                   )}

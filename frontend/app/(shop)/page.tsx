@@ -527,8 +527,12 @@ useEffect(() => {
               See All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {newArrivals.map((p) => <ProductCard key={p.id} product={p} />)}
+          <div className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide">
+            {newArrivals.map((p) => (
+              <div key={p.id} className="w-[80vw] sm:w-[280px] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] shrink-0 snap-start">
+                <ProductCard product={p} />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -585,7 +589,7 @@ useEffect(() => {
             <p className="section-subtitle">Quick answers before you choose your perfect style</p>
           </div>
 
-          <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-8 items-start">
+          <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:items-stretch">
             <div className="space-y-3">
               {HOME_FAQS.map(({ question, answer }) => (
                 <div key={question} className="bg-white border border-gray-100 rounded-2xl shadow-sm p-5">
@@ -600,12 +604,13 @@ useEffect(() => {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 lg:grid-cols-1 gap-3">
-              {FAQ_IMAGES.map(({ src, alt }) => (
-                <div key={src} className="relative aspect-[4/3] lg:aspect-[4/3] overflow-hidden rounded-2xl bg-white">
-                  <Image src={src} alt={alt} fill className="object-cover" />
-                </div>
-              ))}
+            <div className="relative h-[300px] lg:h-auto w-full rounded-3xl overflow-hidden shadow-sm">
+              <Image 
+                src="/faq-barber.jpg" 
+                alt="Hair Replacement Process" 
+                fill 
+                className="object-cover" 
+              />
             </div>
           </div>
         </div>
