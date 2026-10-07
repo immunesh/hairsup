@@ -154,8 +154,8 @@ export default function HairReplacementPage() {
               Ready to completely transform your appearance without surgery?
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/contact" className="btn-primary bg-white text-brand-900 hover:bg-brand-50 px-8 py-3.5">
-                Contact Specialists
+              <Link href="/products" className="btn-primary bg-white text-brand-900 hover:bg-brand-50 px-8 py-3.5">
+                Shop Now
               </Link>
             </div>
           </div>

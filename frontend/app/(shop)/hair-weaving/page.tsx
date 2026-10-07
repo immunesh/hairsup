@@ -161,8 +161,8 @@ export default function HairWeavingPage() {
               Our experts are ready to help you restore your hair and your confidence.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/contact" className="btn-primary bg-white text-brand-900 hover:bg-brand-50 px-8 py-3.5">
-                Consult With Us
+              <Link href="/products" className="btn-primary bg-white text-brand-900 hover:bg-brand-50 px-8 py-3.5">
+                Shop Now
               </Link>
             </div>
           </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -145,7 +145,15 @@ export default function HomePage() {
   const [heroSlides, setHeroSlides] = useState<any[]>(DEFAULT_HERO_SLIDES);
   const [heroSlide, setHeroSlide] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
-const [blogs, setBlogs] = useState<any[]>([]);
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const categoryScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollCategories = (dir: number) => {
+    if (categoryScrollRef.current) {
+      const scrollAmount = categoryScrollRef.current.offsetWidth * 0.8;
+      categoryScrollRef.current.scrollBy({ left: dir * scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const loadHeroSlides = async () => {
@@ -242,19 +250,34 @@ useEffect(() => {
 
 useEffect(() => {
   const loadBlogs = async () => {
+    const fakeBlogs = [
+      {
+        id: 'fake-1',
+        slug: 'how-to-maintain-your-human-hair-wig',
+        title: '5 Expert Tips to Maintain Your Human Hair Wig',
+        category: 'Hair Care',
+        image: 'https://images.unsplash.com/photo-1595476108010-b4d1f10d5e43?w=800&q=80',
+        excerpt: 'Learn the secrets to keeping your human hair wig looking natural, shiny, and tangle-free for months. Discover our expert maintenance routine.',
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'fake-2',
+        slug: 'understanding-different-lace-types',
+        title: 'Swiss Lace vs. HD Lace: Which is Right for You?',
+        category: 'Style Guide',
+        image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059e98b?w=800&q=80',
+        excerpt: 'Dive deep into the world of lace fronts. We compare the durability, invisibility, and comfort of different lace types to help you choose the best match.',
+        createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
+      }
+    ];
+
     try {
       const res = await blogApi.getAll();
-
-
-      const blogList =
-        res.data?.data ||
-        res.data?.blogs ||
-        [];
-
-      setBlogs(blogList);
+      const blogList = res.data?.data || res.data?.blogs || [];
+      setBlogs([...blogList, ...fakeBlogs]);
     } catch (error) {
       console.error("Blog fetch error", error);
-      setBlogs([]);
+      setBlogs(fakeBlogs);
     }
   };
 
@@ -378,7 +401,7 @@ useEffect(() => {
       </section>
 
       {/* ─── CATEGORIES ──────────────────────────────────────────────── */}
-     <section className="section-lg container-custom">
+     <section className="section-lg container-custom relative group">
   <div className="text-center mb-10">
     <p className="section-eyebrow">Collections</p>
     <h2 className="section-title heading-decorate">Shop by<br /><span className="rule" />Category</h2>
@@ -388,57 +411,76 @@ useEffect(() => {
   </div>
 
   {categories.length > 0 && (
-  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-    {categories.slice(0, 8).map((cat, i) => {
-      const productCount = cat._count?.products ?? 0;
-      const badge = (cat.gender && GENDER_BADGE[cat.gender]) || 'Shop Now';
+  <div className="relative">
+    <button
+      onClick={() => scrollCategories(-1)}
+      className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white shadow-md border border-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:text-brand-600 hover:shadow-lg transition-all md:opacity-0 group-hover:opacity-100 hidden sm:flex"
+    >
+      <ChevronLeft className="w-5 h-5" />
+    </button>
 
-      return (
-      <Link
-        key={cat.id}
-        href={`/products?category=${cat.slug}`}
-        className="group relative overflow-hidden rounded-2xl aspect-[3/4]"
-      >
-        <Image
-          src={cat.image || FALLBACK_CATEGORY_IMAGE}
-          alt={cat.name}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
-        />
+    <div 
+      ref={categoryScrollRef}
+      className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide"
+    >
+      {categories.map((cat, i) => {
+        const productCount = cat._count?.products ?? 0;
+        const badge = (cat.gender && GENDER_BADGE[cat.gender]) || 'Shop Now';
 
-        {/* Text sits along the bottom, so darken only that band and leave
-            the rest of the photograph its own colour. */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent transition-opacity duration-300 group-hover:from-black/70" />
+        return (
+        <Link
+          key={cat.id}
+          href={`/products?category=${cat.slug}`}
+          className="group/card relative overflow-hidden rounded-2xl w-[80vw] sm:w-[calc(50%-8px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] flex-shrink-0 snap-start aspect-[3/4]"
+        >
+          <Image
+            src={cat.image || FALLBACK_CATEGORY_IMAGE}
+            alt={cat.name}
+            fill
+            className="object-cover transition-transform duration-500 group-hover/card:scale-110"
+          />
 
-        <div className="absolute inset-0 p-4 flex flex-col justify-between">
-          <span className="inline-flex self-start bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-            {badge}
-          </span>
+          {/* Text sits along the bottom, so darken only that band and leave
+              the rest of the photograph its own colour. */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent transition-opacity duration-300 group-hover/card:from-black/70" />
 
-          <div>
-            <p className="text-white/70 text-xs mb-1">
-              {productCount} {productCount === 1 ? 'style' : 'styles'}
-            </p>
+          <div className="absolute inset-0 p-4 flex flex-col justify-between">
+            <span className="inline-flex self-start bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+              {badge}
+            </span>
 
-            <h3 className="text-white font-display font-bold text-lg leading-tight">
-              {cat.name}
-            </h3>
-
-            {cat.description && (
-              <p className="text-white/70 text-xs mt-1 hidden sm:block line-clamp-2">
-                {cat.description}
+            <div>
+              <p className="text-white/70 text-xs mb-1">
+                {productCount} {productCount === 1 ? 'style' : 'styles'}
               </p>
-            )}
 
-            <div className="flex items-center gap-1 mt-2 text-white/80 text-xs font-medium">
-              Shop Now
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+              <h3 className="text-white font-display font-bold text-lg leading-tight">
+                {cat.name}
+              </h3>
+
+              {cat.description && (
+                <p className="text-white/70 text-xs mt-1 hidden sm:block line-clamp-2">
+                  {cat.description}
+                </p>
+              )}
+
+              <div className="flex items-center gap-1 mt-2 text-white/80 text-xs font-medium">
+                Shop Now
+                <ArrowRight className="w-3 h-3 group-hover/card:translate-x-1 transition-transform" />
+              </div>
             </div>
           </div>
-        </div>
-      </Link>
-      );
-    })}
+        </Link>
+        );
+      })}
+    </div>
+
+    <button
+      onClick={() => scrollCategories(1)}
+      className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white shadow-md border border-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:text-brand-600 hover:shadow-lg transition-all md:opacity-0 group-hover:opacity-100 hidden sm:flex"
+    >
+      <ChevronRight className="w-5 h-5" />
+    </button>
   </div>
   )}
 </section>

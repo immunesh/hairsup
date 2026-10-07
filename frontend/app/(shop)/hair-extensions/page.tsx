@@ -160,8 +160,8 @@ export default function HairExtensionsPage() {
               Ready for long, voluminous hair? Book a free consultation with our experts.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/contact" className="btn-primary bg-white text-brand-900 hover:bg-brand-50 px-8 py-3.5">
-                Book Consultation
+              <Link href="/products" className="btn-primary bg-white text-brand-900 hover:bg-brand-50 px-8 py-3.5">
+                Shop Now
               </Link>
             </div>
           </div>

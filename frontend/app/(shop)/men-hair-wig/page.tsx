@@ -184,10 +184,7 @@ export default function MenHairWigPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link href="/products" className="btn-primary bg-white text-brand-900 hover:bg-brand-50 px-8 py-3.5">
-                Shop Men's Wigs
-              </Link>
-              <Link href="/contact" className="border border-white/30 hover:border-white hover:bg-white/10 text-white font-semibold rounded-full px-8 py-3.5 transition-all">
-                Contact Us
+                Shop Now
               </Link>
             </div>
           </div>

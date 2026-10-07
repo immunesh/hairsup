@@ -196,11 +196,8 @@ export default function HairFixingPage() {
               If you have tried various solutions and are dissatisfied with the results, contact us. We will make sure your requirements are fulfilled.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/contact" className="btn-primary bg-white text-brand-900 hover:bg-brand-50 px-8 py-3.5">
-                Book an Appointment
-              </Link>
-              <Link href="/contact" className="border border-white/30 hover:border-white hover:bg-white/10 text-white font-semibold rounded-full px-8 py-3.5 transition-all">
-                Contact Us
+              <Link href="/products" className="btn-primary bg-white text-brand-900 hover:bg-brand-50 px-8 py-3.5">
+                Shop Now
               </Link>
             </div>
           </div>
