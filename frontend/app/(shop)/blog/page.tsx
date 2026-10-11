@@ -22,7 +22,31 @@ const TAG_COLORS: Record<string, string> = {
 const CATEGORIES = ['All', 'Beginner Guide', 'Care Tips', "Men's Hair", 'Style Guide', 'Buying Guide', 'Medical'];
 
 export default async function BlogPage() {
-  const blogs = await getAllBlogs();
+  const fetchedBlogs = await getAllBlogs();
+  const fakeBlogs = [
+    {
+      id: 'fake-1',
+      slug: 'how-to-maintain-your-human-hair-wig',
+      title: '5 Expert Tips to Maintain Your Human Hair Wig',
+      category: 'Hair Care',
+      image: 'https://images.unsplash.com/photo-1595476108010-b4d1f10d5e43?w=800&q=80',
+      excerpt: 'Learn the secrets to keeping your human hair wig looking natural, shiny, and tangle-free for months. Discover our expert maintenance routine.',
+      createdAt: new Date().toISOString(),
+      author: 'HairsUp Expert Team'
+    },
+    {
+      id: 'fake-2',
+      slug: 'understanding-different-lace-types',
+      title: 'Swiss Lace vs. HD Lace: Which is Right for You?',
+      category: 'Style Guide',
+      image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059e98b?w=800&q=80',
+      excerpt: 'Dive deep into the world of lace fronts. We compare the durability, invisibility, and comfort of different lace types to help you choose the best match.',
+      createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+      author: 'HairsUp Expert Team'
+    }
+  ];
+
+  const blogs = [...fetchedBlogs, ...fakeBlogs];
 
   const featured = blogs.slice(0, 2);
   const rest = blogs.slice(2);

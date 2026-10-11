@@ -89,9 +89,9 @@ const handleWishlist = async (e: React.MouseEvent) => {
     }
   };
   return (
-    <Link href={`/products/${product.slug}`}>
+    <Link href={`/products/${product.slug}`} className="block h-full">
       <div
-        className={cn('card group cursor-pointer overflow-hidden', className)}
+        className={cn('card group cursor-pointer overflow-hidden flex flex-col h-full', className)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -176,7 +176,7 @@ const handleWishlist = async (e: React.MouseEvent) => {
         </div>
 
         {/* Product info */}
-        <div className="p-3">
+        <div className="p-3 flex flex-col flex-1">
           <p className="text-xs text-gray-400 mb-0.5 font-medium uppercase tracking-wide">
             {product.category?.name}
           </p>
@@ -190,8 +190,9 @@ const handleWishlist = async (e: React.MouseEvent) => {
             {product.length && <><span>·</span><span>{product.length}</span></>}
           </div>
 
-          {/* Rating */}
-          <div className="flex items-center gap-1 mb-2">
+          <div className="mt-auto">
+            {/* Rating */}
+            <div className="flex items-center gap-1 mb-2">
             <div className="flex items-center">
               {[1, 2, 3, 4, 5].map((s) => (
                 <Star
@@ -232,6 +233,7 @@ const handleWishlist = async (e: React.MouseEvent) => {
           <div className="flex items-center gap-1 mt-2 text-xs text-brand-600 font-medium">
             <Zap className="w-3 h-3" />
             <span>Try it virtually</span>
+          </div>
           </div>
         </div>
       </div>
