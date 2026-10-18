@@ -35,8 +35,6 @@ const NAV_LINKS = [
   },
   { label: 'Virtual Try-On', href: '/try-on' },
   { label: 'Blog', href: '/blog' },
-  { label: 'Shop', href: '/shop' },
-  { label: 'Stores', href: '/stores' },
 ];
 
 export default function Navbar() {
@@ -116,7 +114,6 @@ export default function Navbar() {
           <div className="flex items-center gap-4">
             <span className="text-brand-200">Free Shipping</span>
             <Link href="/try-on" className="hover:text-brand-300 transition-colors">Virtual Try-On</Link>
-            <Link href="/shop" className="hover:text-brand-300 transition-colors">Shop</Link>
           </div>
         </div>
       </div>
