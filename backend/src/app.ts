@@ -23,7 +23,6 @@ import {
   notFound,
 } from "./middleware/error.middleware";
 import blogRoutes from "./routes/blog.routes";
-import storeRoutes from "./routes/store.routes";
 import notificationRoutes from "./routes/notification.routes";
 const app = express();
 
@@ -170,10 +169,7 @@ app.use(
   "/api/blogs",
   blogRoutes
 );
-app.use(
-  "/api/stores",
-  storeRoutes
-);
+
 app.use(
   "/api/notifications",
   notificationRoutes
