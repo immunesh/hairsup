@@ -24,7 +24,6 @@ const FOOTER_LINKS = {
   ],
   'Company': [
     { label: 'About HairsUp', href: '/about' },
-    { label: 'Our Stores', href: '/stores' },
     { label: 'Blog & Tips', href: '/blog' },
     { label: 'Careers', href: '/about#careers' },
     { label: 'Privacy Policy', href: '/privacy' },

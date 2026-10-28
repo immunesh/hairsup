@@ -36,7 +36,6 @@ const NAV_LINKS = [
   { label: 'Virtual Try-On', href: '/try-on' },
   { label: 'Blog', href: '/blog' },
   { label: 'Shop', href: '/shop' },
-  { label: 'Stores', href: '/stores' },
 ];
 
 export default function Navbar() {

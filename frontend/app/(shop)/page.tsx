@@ -147,6 +147,24 @@ export default function HomePage() {
   const [isSliding, setIsSliding] = useState(false);
   const [blogs, setBlogs] = useState<any[]>([]);
   const categoryScrollRef = useRef<HTMLDivElement>(null);
+  const newArrivalsScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollArrivalsLeft, setCanScrollArrivalsLeft] = useState(false);
+  const [canScrollArrivalsRight, setCanScrollArrivalsRight] = useState(true);
+
+  const checkArrivalsScroll = () => {
+    if (newArrivalsScrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = newArrivalsScrollRef.current;
+      setCanScrollArrivalsLeft(scrollLeft > 10);
+      setCanScrollArrivalsRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  const scrollNewArrivals = (dir: number) => {
+    if (newArrivalsScrollRef.current) {
+      const scrollAmount = newArrivalsScrollRef.current.offsetWidth * 0.8;
+      newArrivalsScrollRef.current.scrollBy({ left: dir * scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   const scrollCategories = (dir: number) => {
     if (categoryScrollRef.current) {
@@ -223,13 +241,11 @@ useEffect(() => {
         (featured.length > 0 ? featured : list).slice(0, 8)
       );
 
+      const arrivals = list.filter(
+        (p: Product) => p.isNewArrival
+      );
       setNewArrivals(
-        list
-          .filter(
-            (p: Product) =>
-              p.isNewArrival
-          )
-          .slice(0, 4)
+        arrivals.length > 0 ? arrivals : list
       );
 
     } catch (error) {
@@ -240,12 +256,25 @@ useEffect(() => {
 
       const fallbackProducts = DEMO_PRODUCTS as unknown as Product[];
       setFeaturedProducts(fallbackProducts.slice(0, 8));
-      setNewArrivals(fallbackProducts.filter((p) => p.isNewArrival).slice(0, 4));
+      const fallbackArrivals = fallbackProducts.filter((p) => p.isNewArrival);
+      setNewArrivals(fallbackArrivals.length > 0 ? fallbackArrivals : fallbackProducts);
     }
   };
 
   loadProducts();
 }, []);
+
+  useEffect(() => {
+    const el = newArrivalsScrollRef.current;
+    if (!el) return;
+    checkArrivalsScroll();
+    el.addEventListener('scroll', checkArrivalsScroll, { passive: true });
+    window.addEventListener('resize', checkArrivalsScroll);
+    return () => {
+      el.removeEventListener('scroll', checkArrivalsScroll);
+      window.removeEventListener('resize', checkArrivalsScroll);
+    };
+  }, [newArrivals]);
 
 
 useEffect(() => {
@@ -559,22 +588,89 @@ useEffect(() => {
       {/* ─── NEW ARRIVALS ────────────────────────────────────────── */}
       <section className="section-md bg-mist">
         <div className="container-custom">
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex items-end justify-between mb-8 sm:mb-10">
             <div>
               <p className="section-eyebrow">Just In</p>
               <h2 className="section-title heading-decorate">New<br /><span className="rule" />Arrivals</h2>
               <p className="text-gray-500">Fresh styles just landed</p>
             </div>
-            <Link href="/products" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
-              See All <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <div className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide">
-            {newArrivals.map((p) => (
-              <div key={p.id} className="w-[80vw] sm:w-[280px] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] shrink-0 snap-start">
-                <ProductCard product={p} />
+            
+            <div className="flex items-center gap-3">
+              <Link href="/products" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
+                See All <ArrowRight className="w-4 h-4" />
+              </Link>
+
+              {/* Navigation arrows in header */}
+              <div className="hidden sm:flex items-center gap-2">
+                <button
+                  type="button"
+                  aria-label="Previous styles"
+                  onClick={() => scrollNewArrivals(-1)}
+                  disabled={!canScrollArrivalsLeft}
+                  className="w-10 h-10 rounded-full border border-gray-300 bg-white flex items-center justify-center text-gray-700 transition-all hover:bg-brand-50 hover:text-brand-700 hover:border-brand-300 active:scale-95 disabled:opacity-35 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-gray-700 shadow-sm"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next styles"
+                  onClick={() => scrollNewArrivals(1)}
+                  disabled={!canScrollArrivalsRight}
+                  className="w-10 h-10 rounded-full border border-gray-300 bg-white flex items-center justify-center text-gray-700 transition-all hover:bg-brand-50 hover:text-brand-700 hover:border-brand-300 active:scale-95 disabled:opacity-35 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-gray-700 shadow-sm"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
               </div>
-            ))}
+            </div>
+          </div>
+
+          {/* Carousel with side arrows */}
+          <div className="relative group">
+            {/* Floating Left Arrow */}
+            <button
+              type="button"
+              aria-label="Previous styles"
+              onClick={() => scrollNewArrivals(-1)}
+              className={`absolute -left-3 lg:-left-5 top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-white/95 backdrop-blur-sm shadow-md border border-gray-100 rounded-full flex items-center justify-center text-gray-700 hover:text-brand-700 hover:shadow-xl transition-all duration-300 active:scale-95 hidden sm:flex ${
+                !canScrollArrivalsLeft ? 'opacity-0 pointer-events-none' : 'opacity-90 group-hover:opacity-100'
+              }`}
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            {/* Scroll Container */}
+            <div
+              ref={newArrivalsScrollRef}
+              className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 px-1 scrollbar-hide scroll-smooth"
+            >
+              {newArrivals.map((p) => (
+                <div
+                  key={p.id}
+                  className="w-[80vw] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] shrink-0 snap-start flex flex-col"
+                >
+                  <ProductCard product={p} />
+                </div>
+              ))}
+            </div>
+
+            {/* Floating Right Arrow */}
+            <button
+              type="button"
+              aria-label="Next styles"
+              onClick={() => scrollNewArrivals(1)}
+              className={`absolute -right-3 lg:-right-5 top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-white/95 backdrop-blur-sm shadow-md border border-gray-100 rounded-full flex items-center justify-center text-gray-700 hover:text-brand-700 hover:shadow-xl transition-all duration-300 active:scale-95 hidden sm:flex ${
+                !canScrollArrivalsRight ? 'opacity-0 pointer-events-none' : 'opacity-90 group-hover:opacity-100'
+              }`}
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* Mobile See All */}
+          <div className="text-center mt-6 sm:hidden">
+            <Link href="/products" className="btn-secondary inline-flex items-center gap-2">
+              See All Arrivals <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>
