@@ -14,9 +14,10 @@ import { API_ORIGIN } from '@/lib/config';
 interface ProductCardProps {
   product: Product;
   className?: string;
+  compact?: boolean;
 }
 
-export default function ProductCard({ product, className }: ProductCardProps) {
+export default function ProductCard({ product, className, compact = false }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
   const { isAuthenticated } = useAuthStore();
@@ -96,7 +97,7 @@ const handleWishlist = async (e: React.MouseEvent) => {
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Image container */}
-        <div className="relative aspect-product bg-gray-50 overflow-hidden">
+        <div className={cn("relative bg-gray-50 overflow-hidden", compact ? "aspect-[4/4.5]" : "aspect-product")}>
           {primaryImage && (
             <Image
   src={
@@ -115,13 +116,13 @@ const handleWishlist = async (e: React.MouseEvent) => {
               "Best Seller" and pushed it into the gender badge on narrow cards. */}
           <div className="absolute top-2 left-2 flex flex-col items-start gap-1 max-w-[58%]">
             {discountPct > 0 && (
-              <span className="badge badge-sale">-{discountPct}%</span>
+              <span className={cn("badge badge-sale", compact && "px-1.5 py-0.5 text-[9px]")}>-{discountPct}%</span>
             )}
             {product.isNewArrival && (
-              <span className="badge badge-new">New</span>
+              <span className={cn("badge badge-new", compact && "px-1.5 py-0.5 text-[9px]")}>New</span>
             )}
             {product.isBestSeller && (
-              <span className="badge badge-best">Best Seller</span>
+              <span className={cn("badge badge-best", compact && "px-1.5 py-0.5 text-[9px]")}>Best Seller</span>
             )}
           </div>
 
@@ -131,6 +132,7 @@ const handleWishlist = async (e: React.MouseEvent) => {
           <div className="absolute top-2 right-2 max-w-[40%] hidden min-[420px]:block">
             <span className={cn(
               'badge',
+              compact && 'px-1.5 py-0.5 text-[9px]',
               product.gender === 'WOMEN' ? 'bg-cream text-ink-soft' : 'bg-mist text-ink-soft'
             )}>
               {product.gender === 'WOMEN' ? 'Women' : 'Men'}
@@ -139,28 +141,32 @@ const handleWishlist = async (e: React.MouseEvent) => {
 
           {/* Action buttons on hover */}
           <div className={cn(
-            'absolute inset-x-2 bottom-2 flex gap-2 transition-all duration-300',
+            'absolute inset-x-2 bottom-2 flex gap-1.5 transition-all duration-300',
             isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           )}>
             <button
               onClick={handleAddToCart}
               disabled={addingToCart || product.stock === 0}
-              className="flex-1 bg-white/95 hover:bg-brand-600 hover:text-white text-gray-800 text-xs font-semibold py-2 px-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+              className={cn(
+                "flex-1 bg-white/95 hover:bg-brand-600 hover:text-white text-gray-800 font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-1 shadow-sm disabled:opacity-50",
+                compact ? "text-[11px] py-1.5 px-2" : "text-xs py-2 px-3"
+              )}
             >
               {product.stock === 0 ? 'Out of Stock' : (
-                <><ShoppingBag className="w-3.5 h-3.5" /> {addingToCart ? 'Adding…' : 'Add to Bag'}</>
+                <><ShoppingBag className={compact ? "w-3 h-3" : "w-3.5 h-3.5"} /> {addingToCart ? 'Adding…' : 'Add to Bag'}</>
               )}
             </button>
             <button
               onClick={handleWishlist}
               className={cn(
-                'w-9 h-9 rounded-xl flex items-center justify-center shadow-sm transition-all duration-200',
+                'rounded-xl flex items-center justify-center shadow-sm transition-all duration-200',
+                compact ? 'w-7 h-7' : 'w-9 h-9',
                 isWishlisted
                   ? 'bg-red-500 text-white'
                   : 'bg-white/95 hover:bg-red-500 hover:text-white text-gray-600'
               )}
             >
-              <Heart className={cn('w-4 h-4', isWishlisted && 'fill-current')} />
+              <Heart className={cn(compact ? 'w-3.5 h-3.5' : 'w-4 h-4', isWishlisted && 'fill-current')} />
             </button>
           </div>
 
@@ -176,46 +182,46 @@ const handleWishlist = async (e: React.MouseEvent) => {
         </div>
 
         {/* Product info */}
-        <div className="p-3 flex flex-col flex-1">
-          <p className="text-xs text-gray-400 mb-0.5 font-medium uppercase tracking-wide">
+        <div className={cn("flex flex-col flex-1", compact ? "p-2.5" : "p-3")}>
+          <p className={cn("text-gray-400 font-medium uppercase tracking-wide", compact ? "text-[10px] mb-0.5" : "text-xs mb-0.5")}>
             {product.category?.name}
           </p>
-          <h3 className="font-semibold text-gray-900 text-sm leading-tight mb-1 line-clamp-2 group-hover:text-brand-600 transition-colors">
+          <h3 className={cn("font-semibold text-gray-900 leading-tight group-hover:text-brand-600 transition-colors line-clamp-2", compact ? "text-xs mb-1" : "text-sm mb-1")}>
             {product.name}
           </h3>
 
           {/* Specs */}
-          <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+          <div className={cn("flex items-center gap-1.5 text-gray-500", compact ? "text-[11px] mb-1.5" : "text-xs mb-2")}>
             {product.texture && <span>{product.texture}</span>}
             {product.length && <><span>·</span><span>{product.length}</span></>}
           </div>
 
           <div className="mt-auto">
             {/* Rating */}
-            <div className="flex items-center gap-1 mb-2">
+            <div className={cn("flex items-center gap-1", compact ? "mb-1" : "mb-2")}>
             <div className="flex items-center">
               {[1, 2, 3, 4, 5].map((s) => (
                 <Star
                   key={s}
-                  className={cn('w-3 h-3', s <= Math.round(product.rating) ? 'star-filled' : 'star-empty')}
+                  className={cn(compact ? 'w-2.5 h-2.5' : 'w-3 h-3', s <= Math.round(product.rating) ? 'star-filled' : 'star-empty')}
                 />
               ))}
             </div>
-            <span className="text-xs text-gray-500">({product.reviewCount})</span>
+            <span className={cn("text-gray-500", compact ? "text-[11px]" : "text-xs")}>({product.reviewCount})</span>
           </div>
 
           {/* Price */}
           <div className="flex items-center flex-wrap gap-1">
-            <span className="font-bold text-gray-900">
+            <span className={cn("font-bold text-gray-900", compact ? "text-sm" : "text-base")}>
               {formatPrice(product.salePrice || product.basePrice)}
             </span>
             {product.salePrice && (
-              <span className="text-xs text-gray-400 line-through">
+              <span className={cn("text-gray-400 line-through", compact ? "text-[11px]" : "text-xs")}>
                 {formatPrice(product.basePrice)}
               </span>
             )}
             {discountPct > 0 && (
-              <span className="text-xs font-semibold text-green-600">
+              <span className={cn("font-semibold text-green-600", compact ? "text-[11px]" : "text-xs")}>
                 {discountPct}% off
               </span>
             )}
@@ -224,19 +230,19 @@ const handleWishlist = async (e: React.MouseEvent) => {
           {/* Low stock warning. Sits under the price rather than over the
               photograph - the overlay bar cut straight across the model. */}
           {product.stock > 0 && product.stock <= 5 && (
-            <p className="mt-1 font-ui text-xs font-semibold text-coral-600">
+            <p className={cn("mt-1 font-ui font-semibold text-coral-600", compact ? "text-[11px]" : "text-xs")}>
               Only {product.stock} left!
             </p>
           )}
 
           {/* Try-on hint */}
-          <div className="flex items-center gap-1 mt-2 text-xs text-brand-600 font-medium">
-            <Zap className="w-3 h-3" />
+          <div className={cn("flex items-center gap-1 font-medium text-brand-600", compact ? "mt-1.5 text-[11px]" : "mt-2 text-xs")}>
+            <Zap className={compact ? "w-2.5 h-2.5" : "w-3 h-3"} />
             <span>Try it virtually</span>
-          </div>
           </div>
         </div>
       </div>
-    </Link>
-  );
+    </div>
+  </Link>
+);
 }

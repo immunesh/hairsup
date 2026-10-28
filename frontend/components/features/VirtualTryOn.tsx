@@ -458,7 +458,7 @@ export default function VirtualTryOn({
               see how it looks on you.
             </p>
             <button
-              onClick={() => router.push("/shop")}
+              onClick={() => router.push("/products")}
               className="btn-primary w-full"
             >
               Shop Now
