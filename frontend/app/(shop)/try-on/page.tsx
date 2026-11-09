@@ -6,7 +6,7 @@ import { API_URL } from '@/lib/config';
 
 export const metadata: Metadata = {
   title: 'Virtual Try-On — See How Any Wig Looks on You',
-  description: 'Use HairsUp AI-powered virtual try-on to see how any wig looks on your face in real time — completely free. No download needed.',
+  description: 'Use Glamour Hair Studios AI-powered virtual try-on to see how any wig looks on your face in real time — completely free. No download needed.',
 };
 
 const HOW_IT_WORKS = [
@@ -52,7 +52,7 @@ export default async function TryOnPage({
             See It On You Before You Buy
           </h1>
           <p className="text-ink-muted text-lg max-w-xl mx-auto mb-6">
-            Try on any HairsUp wig in real time using your camera. Our AI technology places the wig
+            Try on any Glamour Hair Studios wig in real time using your camera. Our AI technology places the wig
             on your head instantly — no app download required.
           </p>
           <div className="flex items-center justify-center gap-6 text-sm text-ink-muted">

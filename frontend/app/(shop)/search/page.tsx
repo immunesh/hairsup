@@ -122,7 +122,7 @@ function SearchContent() {
       {!query && (
         <div className="text-center py-16">
           <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Search HairsUp</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Search Glamour Hair Studios</h2>
           <p className="text-gray-500">Find the perfect wig or hair system for you</p>
         </div>
       )}

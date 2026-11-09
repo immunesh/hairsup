@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Best Quality Hair Wig Manufacturer | HairsUp',
+  title: 'Best Quality Hair Wig Manufacturer | Glamour Hair Studios',
   description: 'Buy the best quality natural hair wigs and designer wigs at reasonable prices. Explore our wide range of full lace, front lace, and silk base wigs.',
 };
 

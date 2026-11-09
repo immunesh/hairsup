@@ -156,17 +156,17 @@ export default function ResetPasswordPage() {
           <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
-          <span className="text-2xl font-display font-bold text-white">HairsUp</span>
+          <span className="text-2xl font-display font-bold text-white">Glamour Hair Studios</span>
         </Link>
         <div className="relative z-10">
           <h2 className="text-4xl font-display font-bold text-white mb-4">
             Secured Access
           </h2>
           <p className="text-white/70 text-lg">
-            Choose a strong password to secure your HairsUp account and protect your orders and personal data.
+            Choose a strong password to secure your Glamour Hair Studios account and protect your orders and personal data.
           </p>
         </div>
-        <p className="text-white/40 text-xs relative z-10">© 2025 HairsUp Technologies Pvt. Ltd.</p>
+        <p className="text-white/40 text-xs relative z-10">© 2025 Glamour Hair Studios Pvt. Ltd.</p>
       </div>
 
       {/* Right panel */}
@@ -174,7 +174,7 @@ export default function ResetPasswordPage() {
         <div className="max-w-md w-full mx-auto">
           <div className="lg:hidden flex items-center gap-2 mb-8">
             <Sparkles className="w-6 h-6 text-brand-600" />
-            <span className="text-xl font-display font-bold text-gradient">HairsUp</span>
+            <span className="text-xl font-display font-bold text-gradient">Glamour Hair Studios</span>
           </div>
 
           <Suspense fallback={

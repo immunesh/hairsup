@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Hair Replacement Service | HairsUp',
+  title: 'Hair Replacement Service | Glamour Hair Studios',
   description: 'Expert non-surgical hair replacement services for a completely natural and full head of hair.',
 };
 

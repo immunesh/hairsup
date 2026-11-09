@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Hair Patch Service | HairsUp',
+  title: 'Hair Patch Service | Glamour Hair Studios',
   description: 'Trusted hair patch services for partial baldness. Non-surgical, comfortable, durable, and affordable with a completely natural appearance.',
 };
 
@@ -92,7 +92,7 @@ export default function HairPatchPage() {
           <div>
             <h2 className="text-3xl font-display font-bold text-white mb-4">Restore Your Confidence</h2>
             <p className="text-white/90 leading-relaxed mb-4">
-              Are you struggling with hair loss and searching for a non-surgical solution? Look no further than HairsUp, the trusted name for hair patches. Our customized hair patches are designed to restore your confidence with a natural, seamless look.
+              Are you struggling with hair loss and searching for a non-surgical solution? Look no further than Glamour Hair Studios, the trusted name for hair patches. Our customized hair patches are designed to restore your confidence with a natural, seamless look.
             </p>
             <p className="text-white/90 leading-relaxed mb-4">
               Whether you are experiencing partial baldness or need a full hair restoration, our services are tailored to meet your needs. Our hair patch service ensures comfort, durability, and affordability.

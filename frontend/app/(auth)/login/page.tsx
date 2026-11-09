@@ -81,11 +81,11 @@ export default function LoginPage() {
           <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
-          <span className="text-2xl font-display font-bold text-white">HairsUp</span>
+          <span className="text-2xl font-display font-bold text-white">Glamour Hair Studios</span>
         </Link>
         <div className="relative z-10">
           <h2 className="text-4xl font-display font-bold text-white mb-4">
-            Welcome Back to HairsUp
+            Welcome Back to Glamour Hair Studios
           </h2>
           <p className="text-white/70 text-lg mb-8">
             Sign in to access your wishlist, orders, and exclusive member offers.
@@ -101,7 +101,7 @@ export default function LoginPage() {
             ))}
           </div>
         </div>
-        <p className="text-white/40 text-xs relative z-10">© 2025 HairsUp Technologies Pvt. Ltd.</p>
+        <p className="text-white/40 text-xs relative z-10">© 2025 Glamour Hair Studios Pvt. Ltd.</p>
       </div>
 
       {/* Right panel */}
@@ -109,12 +109,12 @@ export default function LoginPage() {
         <div className="max-w-md w-full mx-auto">
           <div className="lg:hidden flex items-center gap-2 mb-8">
             <Sparkles className="w-6 h-6 text-brand-600" />
-            <span className="text-xl font-display font-bold text-gradient">HairsUp</span>
+            <span className="text-xl font-display font-bold text-gradient">Glamour Hair Studios</span>
           </div>
 
           <h1 className="text-3xl font-display font-bold text-gray-900 mb-2">Sign In</h1>
           <p className="text-gray-500 mb-8">
-            New to HairsUp?{' '}
+            New to Glamour Hair Studios?{' '}
             <Link href="/register" className="text-brand-600 font-semibold hover:underline">Create an account</Link>
           </p>
 

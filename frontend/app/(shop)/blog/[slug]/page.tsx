@@ -32,7 +32,7 @@ const BLOG_CONTENT: Record<string, { title: string; author: string; date: string
       <p>Measure the circumference of your head: starting at your forehead hairline, go around your head, and back to the start. The average head circumference is 53–58cm. Most wigs have adjustable straps to help achieve a snug fit.</p>
 
       <h3>Step 5: Use Virtual Try-On</h3>
-      <p>HairsUp's free virtual try-on technology lets you see exactly how any wig looks on your face before you buy. Visit our Try-On page and use your device's camera — no app download needed!</p>
+      <p>Glamour Hair Studios's free virtual try-on technology lets you see exactly how any wig looks on your face before you buy. Visit our Try-On page and use your device's camera — no app download needed!</p>
 
       <h2>Common Mistakes to Avoid</h2>
       <ul>
@@ -95,7 +95,7 @@ const BLOG_CONTENT: Record<string, { title: string; author: string; date: string
 
       <h3>Modern Hair Systems Are Nothing Like Your Grandfather's Toupee</h3>
       <p>The word "toupee" conjures images of obvious, unconvincing hairpieces — the butt of countless jokes. But today's hair systems bear no resemblance to those relics. Swiss lace technology, pioneered in the high-end theatre industry and refined for everyday wear, creates a base so thin it becomes invisible on your scalp.</p>
-      <p>At HairsUp, our flagship Swiss Lace Hair System uses a base that is 0.03mm thick — thinner than a human hair. The hair is individually hand-tied using the same method as professional hair extensions, creating movement that is completely indistinguishable from natural hair growth.</p>
+      <p>At Glamour Hair Studios, our flagship Swiss Lace Hair System uses a base that is 0.03mm thick — thinner than a human hair. The hair is individually hand-tied using the same method as professional hair extensions, creating movement that is completely indistinguishable from natural hair growth.</p>
 
       <h3>Who Wears Hair Systems?</h3>
       <p>The reality might surprise you. Actors, executives, athletes, teachers, and doctors — men from every walk of life are using hair systems to present their best selves. Our customers include a Supreme Court judge, three IPL cricketers, and several prominent Bollywood actors.</p>
@@ -105,7 +105,7 @@ const BLOG_CONTENT: Record<string, { title: string; author: string; date: string
       <p>A study published in the British Journal of Dermatology found that hair loss significantly impacts men's self-esteem, social confidence, and professional performance. Many men report avoiding networking events, dates, and photographs due to hair loss anxiety.</p>
       <p>Our customer surveys show that 94% of men report a measurable improvement in confidence within 30 days of starting a hair system. 78% report better professional performance. 86% say their social life improved.</p>
 
-      <h3>The HairsUp Approach</h3>
+      <h3>The Glamour Hair Studios Approach</h3>
       <p>We don't just sell a hairpiece. We offer a comprehensive consultation where our trichologists analyse your hair loss pattern, natural hair colour, texture, and scalp characteristics to recommend the perfect system and colour match. We then teach you the proper attachment technique and ongoing care routine.</p>
       <p>The result is a hair system that moves with you, survives workouts, swimming, and intimacy — and that nobody will detect unless you choose to tell them.</p>
     `,
@@ -115,7 +115,7 @@ const BLOG_CONTENT: Record<string, { title: string; author: string; date: string
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const post = BLOG_CONTENT[params.slug];
   return {
-    title: post ? `${post.title} | HairsUp Blog` : 'Blog Post | HairsUp',
+    title: post ? `${post.title} | Glamour Hair Studios Blog` : 'Blog Post | Glamour Hair Studios',
     description: post ? `${post.author} — ${post.readTime}` : '',
   };
 }
@@ -179,7 +179,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                 <div>
                   <p className="font-bold text-gray-900">{post.author}</p>
                   <p className="text-sm text-gray-600 mt-1">
-                    Expert contributor at HairsUp. All articles are reviewed by our certified trichologist team.
+                    Expert contributor at Glamour Hair Studios. All articles are reviewed by our certified trichologist team.
                   </p>
                 </div>
               </div>
@@ -207,7 +207,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
             <div className="card p-5 bg-gradient-to-br from-brand-50 to-brand-50 border-brand-100">
               <h3 className="font-bold text-gray-900 mb-2">Try On Any Wig — Free</h3>
-              <p className="text-sm text-gray-600 mb-4">See how any HairsUp wig looks on you using our AI-powered virtual try-on tool.</p>
+              <p className="text-sm text-gray-600 mb-4">See how any Glamour Hair Studios wig looks on you using our AI-powered virtual try-on tool.</p>
               <Link href="/try-on" className="btn-primary text-sm py-2.5 w-full text-center block">Launch Try-On</Link>
             </div>
 

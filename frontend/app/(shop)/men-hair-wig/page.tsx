@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Men Hair Wig Dealers | HairsUp',
+  title: 'Men Hair Wig Dealers | Glamour Hair Studios',
   description: 'Buy premium quality human hair wigs for men. Get a convincing and effective remedy for hair loss without expensive surgery.',
 };
 

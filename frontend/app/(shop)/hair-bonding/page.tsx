@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Hair Bonding Service | HairsUp',
+  title: 'Hair Bonding Service | Glamour Hair Studios',
   description: 'Learn about hair bonding, available options, the process, benefits, maintenance, and how to book a consultation with our hair experts.',
 };
 

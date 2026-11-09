@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Hair Fixing Service | HairsUp',
+  title: 'Hair Fixing Service | Glamour Hair Studios',
   description: 'Restore your health and confidence with top-class hair fixing. A painless, non-surgical method using skin-friendly adhesive.',
 };
 
@@ -116,7 +116,7 @@ export default function HairFixingPage() {
       <section className="section-lg bg-cream">
         <div className="container-custom">
           <div className="text-center mb-10">
-            <h2 className="section-title heading-decorate">Why Choose HairsUp?</h2>
+            <h2 className="section-title heading-decorate">Why Choose Glamour Hair Studios?</h2>
             <p className="section-subtitle">We give excellent solutions for your hair loss problems.</p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
@@ -138,7 +138,7 @@ export default function HairFixingPage() {
           <HeartHandshake className="w-12 h-12 text-brand-600 mx-auto mb-4" />
           <h2 className="text-2xl font-display font-bold text-gray-900 mb-4">Our Commitment & Aftercare</h2>
           <p className="text-gray-600 leading-relaxed">
-            Our duty will not end with treatment. We satisfy each customer with personal attention and care. We provide aftercare tips, tell customers safety measures, and give hair maintenance suggestions. Our team is always ready to help our valuable clients in their hair-related issues, striving to fulfill customer needs so that every client steps out from HairsUp with complete satisfaction.
+            Our duty will not end with treatment. We satisfy each customer with personal attention and care. We provide aftercare tips, tell customers safety measures, and give hair maintenance suggestions. Our team is always ready to help our valuable clients in their hair-related issues, striving to fulfill customer needs so that every client steps out from Glamour Hair Studios with complete satisfaction.
           </p>
         </div>
       </section>

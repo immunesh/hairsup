@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Women Hair Wig Wholesaler | HairsUp',
+  title: 'Women Hair Wig Wholesaler | Glamour Hair Studios',
   description: 'Premium quality women hair wigs to solve hair loss gracefully. Natural looking parting, 100% human hair, handmade for maximum natural look.',
 };
 
@@ -77,7 +77,7 @@ export default function WomenHairWigPage() {
               Women lose their hair due to various reasons and it starts with hair thinning out and then the hair parting becoming bigger, finally advancing to "Female Pattern Baldness". Many reasons are attributed to this—age, hormonal changes, medical conditions, stress, skin conditions, genetics, and chronic alopecia.
             </p>
             <p className="text-white/90 leading-relaxed mb-4 font-semibold">
-              At HairsUp, we understand "Women's Hair Loss" is a very delicate and sensitive matter that affects overall looks and personality. We support our customers to solve this problem and help them get their looks and confidence back!
+              At Glamour Hair Studios, we understand "Women's Hair Loss" is a very delicate and sensitive matter that affects overall looks and personality. We support our customers to solve this problem and help them get their looks and confidence back!
             </p>
             <p className="text-white/90 leading-relaxed">
               We also provide women wigs and ladies patches that cover your bald area at the lowest rate on the market. Our patches are prepared from Remy human hair, providing a completely natural scalp.

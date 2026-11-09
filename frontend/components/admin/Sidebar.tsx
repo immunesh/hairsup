@@ -118,7 +118,7 @@ self-start
               text-transparent
             "
                 >
-                  HairsUp
+                  Glamour Hair Studios
                 </h1>
 
                 <p className="text-xs text-slate-400">Admin Dashboard</p>

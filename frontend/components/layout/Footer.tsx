@@ -23,7 +23,12 @@ const FOOTER_LINKS = {
     { label: 'Virtual Try-On', href: '/try-on' },
   ],
   'Company': [
+<<<<<<< Updated upstream
     { label: 'About HairsUp', href: '/about' },
+=======
+    { label: 'About Glamour Hair Studios', href: '/about' },
+    { label: 'Our Stores', href: '/stores' },
+>>>>>>> Stashed changes
     { label: 'Blog & Tips', href: '/blog' },
     { label: 'Careers', href: '/about#careers' },
     { label: 'Privacy Policy', href: '/privacy' },
@@ -73,7 +78,7 @@ export default function Footer() {
               <div className="w-9 h-9 bg-gradient-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span className="text-2xl font-display font-bold text-white">HairsUp</span>
+              <span className="text-2xl font-display font-bold text-white">Glamour Hair Studios</span>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-xs">
               India&apos;s most trusted hair wig brand. We craft premium wigs and hair systems
@@ -88,7 +93,7 @@ export default function Footer() {
               </a>
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-brand-500 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-400">HairsUp HQ, Bandra Kurla Complex, Mumbai 400051</span>
+                <span className="text-gray-400">Glamour Hair Studios HQ, Bandra Kurla Complex, Mumbai 400051</span>
               </div>
             </div>
 
@@ -150,7 +155,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-gray-800">
         <div className="container-custom py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} HairsUp Technologies Pvt. Ltd. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Glamour Hair Studios Pvt. Ltd. All rights reserved.</p>
           <div className="flex items-center gap-2">
             {['Visa', 'Mastercard', 'UPI', 'Razorpay', 'EMI'].map((pay) => (
               <span key={pay} className="bg-gray-800 px-2 py-1 rounded text-gray-400">{pay}</span>

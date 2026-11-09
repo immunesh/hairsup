@@ -153,7 +153,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-sm">Head Office</p>
-                    <p className="text-sm text-gray-600">HairsUp Technologies Pvt. Ltd.</p>
+                    <p className="text-sm text-gray-600">Glamour Hair Studios Pvt. Ltd.</p>
                     <p className="text-sm text-gray-600">Bandra Kurla Complex</p>
                     <p className="text-sm text-gray-600">Mumbai, Maharashtra 400051</p>
                   </div>

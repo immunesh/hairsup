@@ -565,7 +565,7 @@ export default function VirtualTryOn({
                           Virtual Try-On
                         </h3>
                         <p className="text-white/70 text-sm max-w-xs">
-                          See how any HairsUp wig looks on you — in real time
+                          See how any Glamour Hair Studios wig looks on you — in real time
                           using your camera.
                         </p>
                       </div>

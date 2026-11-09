@@ -450,7 +450,7 @@ isNewArrival,
           stock: Number(stock),
           sku,
           brand:
-            brand || "HairsUp",
+            brand || "Glamour Hair Studios",
 
           images: {
             create: normalizeProductImages(images),

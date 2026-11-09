@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { ArrowRight, Clock, User } from 'lucide-react';
 import { getAllBlogs } from "@/lib/blog-api";
 export const metadata: Metadata = {
-  title: 'Hair Care Blog & Style Guides | HairsUp',
-  description: 'Expert hair care tips, styling guides, and inspiration from the HairsUp team. Everything you need to know about wigs and hair systems.',
+  title: 'Hair Care Blog & Style Guides | Glamour Hair Studios',
+  description: 'Expert hair care tips, styling guides, and inspiration from the Glamour Hair Studios team. Everything you need to know about wigs and hair systems.',
 };
 
  
@@ -32,7 +32,7 @@ export default async function BlogPage() {
       image: 'https://images.unsplash.com/photo-1595476108010-b4d1f10d5e43?w=800&q=80',
       excerpt: 'Learn the secrets to keeping your human hair wig looking natural, shiny, and tangle-free for months. Discover our expert maintenance routine.',
       createdAt: new Date().toISOString(),
-      author: 'HairsUp Expert Team'
+      author: 'Glamour Hair Studios Expert Team'
     },
     {
       id: 'fake-2',
@@ -42,7 +42,7 @@ export default async function BlogPage() {
       image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059e98b?w=800&q=80',
       excerpt: 'Dive deep into the world of lace fronts. We compare the durability, invisibility, and comfort of different lace types to help you choose the best match.',
       createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-      author: 'HairsUp Expert Team'
+      author: 'Glamour Hair Studios Expert Team'
     }
   ];
 

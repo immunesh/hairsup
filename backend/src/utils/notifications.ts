@@ -62,7 +62,7 @@ const STATUS_COPY: Record<string, { title: string; message: (ctx: OrderStatusCon
   },
   DELIVERED: {
     title: 'Order Delivered',
-    message: (ctx) => `Your order ${ctx.orderNumber} has been delivered. Thank you for shopping with HairsUp!`,
+    message: (ctx) => `Your order ${ctx.orderNumber} has been delivered. Thank you for shopping with Glamour Hair Studios!`,
   },
   CANCELLED: {
     title: 'Order Cancelled',
@@ -96,7 +96,7 @@ const sendStatusEmail = async (
       .join('');
 
     await emailTransporter.sendMail({
-      from: `"HairsUp" <${process.env.GMAIL_USER}>`,
+      from: `"Glamour Hair Studios" <${process.env.GMAIL_USER}>`,
       to,
       subject: `${title} — ${order.orderNumber}`,
       html: `
@@ -126,7 +126,7 @@ const sendStatusWhatsApp = async (
     await twilioClient.messages.create({
       from: process.env.TWILIO_WHATSAPP_NUMBER,
       to: formatWhatsAppNumber(phone),
-      body: `*${title}*\n\nOrder: ${order.orderNumber}\n${message}\n\nTotal: ₹${order.total.toFixed(2)}\n\nThank you for shopping with HairsUp!`,
+      body: `*${title}*\n\nOrder: ${order.orderNumber}\n${message}\n\nTotal: ₹${order.total.toFixed(2)}\n\nThank you for shopping with Glamour Hair Studios!`,
     });
   } catch (err) {
     console.error(`Failed to send "${title}" WhatsApp message:`, err);

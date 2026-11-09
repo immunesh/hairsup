@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { ShieldCheck, Eye, EyeOff, FileText, HelpCircle, Lock, Server, Trash2, ArrowUpRight, Phone, Mail } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | HairsUp',
-  description: 'Read the Privacy Policy for HairsUp. Learn how we collect, use, store, and protect your personal information, including Google Sign-In and Virtual Try-On data.',
+  title: 'Privacy Policy | Glamour Hair Studios',
+  description: 'Read the Privacy Policy for Glamour Hair Studios. Learn how we collect, use, store, and protect your personal information, including Google Sign-In and Virtual Try-On data.',
 };
 
 const SECTIONS = [
@@ -94,7 +94,7 @@ export default function PrivacyPage() {
                   <strong>Personal Data:</strong> This includes information such as your name, email address, physical shipping address, telephone number, billing address, and account preferences when you create an account, purchase products, or subscribe to our newsletter.
                 </p>
                 <p>
-                  <strong>Google Sign-In:</strong> If you choose to log in or register using your Google account, we retrieve basic profile information (such as your name, email address, profile picture, and language preferences) from Google as permitted by your Google privacy settings. This information is used strictly to establish and access your HairsUp account.
+                  <strong>Google Sign-In:</strong> If you choose to log in or register using your Google account, we retrieve basic profile information (such as your name, email address, profile picture, and language preferences) from Google as permitted by your Google privacy settings. This information is used strictly to establish and access your Glamour Hair Studios account.
                 </p>
                 <p>
                   <strong>Transactional Info:</strong> When you purchase products, we collect details about the transaction, including ordered items, delivery status, and order values. Payment credentials (card numbers, UPI pins) are processed directly by our PCI-DSS compliant partner Razorpay and are never stored on our servers.
@@ -115,7 +115,7 @@ export default function PrivacyPage() {
                   Our Virtual Try-On tool allows you to visualize how various wig styles and hair systems look on your face. To use this feature, you grant the Platform permission to access your device&apos;s camera feed, or you upload a photograph.
                 </p>
                 <p className="text-sm">
-                  This technology is designed to operate <strong>entirely in your web browser</strong> using client-side WebGL/AI processing. No video streams, live camera data, or images from your camera are ever uploaded to HairsUp servers, stored, processed by our systems, or shared with third parties. Once you close the try-on tool or navigate away, camera access is immediately terminated.
+                  This technology is designed to operate <strong>entirely in your web browser</strong> using client-side WebGL/AI processing. No video streams, live camera data, or images from your camera are ever uploaded to Glamour Hair Studios servers, stored, processed by our systems, or shared with third parties. Once you close the try-on tool or navigate away, camera access is immediately terminated.
                 </p>
               </div>
             </section>
@@ -197,7 +197,7 @@ export default function PrivacyPage() {
                 <ul className="list-disc pl-5 space-y-1.5">
                   <li><strong>Encryption:</strong> All transaction and transmission of sensitive data is protected using Secure Socket Layer (SSL) technology.</li>
                   <li><strong>Payment Security:</strong> Payment information is processed under industry standard PCI-DSS specifications via secure APIs of certified gateways.</li>
-                  <li><strong>Access Controls:</strong> We restrict access to personal information to HairsUp employees, contractors, and agents who need to know that information to process it for us.</li>
+                  <li><strong>Access Controls:</strong> We restrict access to personal information to Glamour Hair Studios employees, contractors, and agents who need to know that information to process it for us.</li>
                 </ul>
                 <p>
                   Please note that no method of transmission over the Internet, or method of electronic storage, is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.
@@ -261,7 +261,7 @@ export default function PrivacyPage() {
                 </p>
                 <div className="mt-4 p-5 rounded-2xl bg-gray-50 border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="space-y-1">
-                    <p className="font-semibold text-gray-900">HairsUp Technologies Pvt. Ltd.</p>
+                    <p className="font-semibold text-gray-900">Glamour Hair Studios Pvt. Ltd.</p>
                     <p className="text-sm">Attn: Privacy Office & Data Protection Officer</p>
                     <p className="text-sm">Bandra Kurla Complex, Bandra East, Mumbai - 400051</p>
                   </div>

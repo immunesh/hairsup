@@ -14,7 +14,7 @@ async function main() {
   console.log('Database connected');
 
   app.listen(PORT, () => {
-    console.log(`HairsUp API running on http://localhost:${PORT}`);
+    console.log(`Glamour Hair Studios API running on http://localhost:${PORT}`);
   });
 }
 

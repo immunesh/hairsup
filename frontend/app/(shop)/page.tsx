@@ -88,7 +88,7 @@ const TESTIMONIALS = [
     name: 'Priya Sharma',
     location: 'Mumbai',
     rating: 5,
-    text: 'I was skeptical at first, but HairsUp completely changed my life! The lace front wig looks so natural — nobody can tell! The virtual try-on helped me pick the perfect style.',
+    text: 'I was skeptical at first, but Glamour Hair Studios completely changed my life! The lace front wig looks so natural — nobody can tell! The virtual try-on helped me pick the perfect style.',
     product: 'Silky Straight Lace Front Wig',
     image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80',
   },
@@ -823,7 +823,7 @@ useEffect(() => {
         <div className="text-center mb-12">
           <p className="section-eyebrow">Testimonials</p>
           <h2 className="section-title heading-decorate">Real Stories.<br /><span className="rule" />Real Confidence.</h2>
-          <p className="section-subtitle">See what our customers say about HairsUp</p>
+          <p className="section-subtitle">See what our customers say about Glamour Hair Studios</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Hair Weaving Service | HairsUp',
+  title: 'Hair Weaving Service | Glamour Hair Studios',
   description: 'Expert hair weaving services for a permanent, non-surgical solution to baldness. 100% safe, natural-looking, and affordable.',
 };
 
