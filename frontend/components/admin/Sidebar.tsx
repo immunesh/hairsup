@@ -24,7 +24,6 @@ export default function Sidebar() {
     { name: "Reviews", href: "/admin/reviews" },
     { name: "Coupons", href: "/admin/coupons" },
     { name: "Blogs", href: "/admin/blogs" },
-    { name: "Stores", href: "/admin/stores" },
   ];
 
   return (

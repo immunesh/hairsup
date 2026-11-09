@@ -23,12 +23,7 @@ const FOOTER_LINKS = {
     { label: 'Virtual Try-On', href: '/try-on' },
   ],
   'Company': [
-<<<<<<< Updated upstream
-    { label: 'About HairsUp', href: '/about' },
-=======
     { label: 'About Glamour Hair Studios', href: '/about' },
-    { label: 'Our Stores', href: '/stores' },
->>>>>>> Stashed changes
     { label: 'Blog & Tips', href: '/blog' },
     { label: 'Careers', href: '/about#careers' },
     { label: 'Privacy Policy', href: '/privacy' },
