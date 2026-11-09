@@ -64,7 +64,7 @@ export default function RegisterPage() {
       setAuth(user, accessToken, refreshToken);
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
-      showToast(`Welcome to HairsUp, ${user.firstName}! 🎉`);
+      showToast(`Welcome to Glamour Hair Studios, ${user.firstName}! 🎉`);
       router.push('/');
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
@@ -101,11 +101,11 @@ export default function RegisterPage() {
           <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
-          <span className="text-2xl font-display font-bold text-white">HairsUp</span>
+          <span className="text-2xl font-display font-bold text-white">Glamour Hair Studios</span>
         </Link>
         <div className="relative z-10">
-          <h2 className="text-4xl font-display font-bold text-white mb-4">Join the HairsUp Family</h2>
-          <p className="text-white/70 text-lg mb-8">Create your account and unlock the full HairsUp experience.</p>
+          <h2 className="text-4xl font-display font-bold text-white mb-4">Join the Glamour Hair Studios Family</h2>
+          <p className="text-white/70 text-lg mb-8">Create your account and unlock the full Glamour Hair Studios experience.</p>
           <div className="space-y-4">
             {['₹500 welcome discount on your first order', 'Early access to new arrivals & sales', 'Personalised style recommendations', 'Expert wig care tips & tutorials', 'Free virtual try-on for all members'].map((perk) => (
               <div key={perk} className="flex items-center gap-3 text-white/80">
@@ -117,7 +117,7 @@ export default function RegisterPage() {
             ))}
           </div>
         </div>
-        <p className="text-white/40 text-xs relative z-10">© 2025 HairsUp Technologies Pvt. Ltd.</p>
+        <p className="text-white/40 text-xs relative z-10">© 2025 Glamour Hair Studios Pvt. Ltd.</p>
       </div>
 
       {/* Right panel */}
@@ -125,7 +125,7 @@ export default function RegisterPage() {
         <div className="max-w-md w-full mx-auto">
           <div className="lg:hidden flex items-center gap-2 mb-8">
             <Sparkles className="w-6 h-6 text-brand-600" />
-            <span className="text-xl font-display font-bold text-gradient">HairsUp</span>
+            <span className="text-xl font-display font-bold text-gradient">Glamour Hair Studios</span>
           </div>
 
           <h1 className="text-3xl font-display font-bold text-gray-900 mb-2">Create Account</h1>
@@ -242,7 +242,7 @@ export default function RegisterPage() {
             <label className="flex items-start gap-3 cursor-pointer">
               <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 text-brand-600 rounded" />
               <span className="text-sm text-gray-600">
-                I agree to HairsUp&apos;s{' '}
+                I agree to Glamour Hair Studios&apos;s{' '}
                 <Link href="/terms" className="text-brand-600 hover:underline">Terms of Service</Link> and{' '}
                 <Link href="/privacy" className="text-brand-600 hover:underline">Privacy Policy</Link>
               </span>

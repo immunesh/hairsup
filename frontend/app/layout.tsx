@@ -7,28 +7,28 @@ import Toast from '@/components/ui/Toast';
 
 export const metadata: Metadata = {
   title: {
-    default: 'HairsUp — Premium Hair Wigs for Men & Women',
-    template: '%s | HairsUp',
+    default: 'Glamour Hair Studios — Premium Hair Wigs for Men & Women',
+    template: '%s | Glamour Hair Studios',
   },
   description:
     "India's #1 hair wig brand. Shop premium human hair wigs, synthetic wigs, and hair systems for men and women. Virtual try-on available. Free shipping.",
   keywords: [
     'hair wigs', 'human hair wigs', 'synthetic wigs', "men's hair system",
-    "women's wigs", 'lace front wigs', 'HairsUp', 'buy wigs online India',
+    "women's wigs", 'lace front wigs', 'Glamour Hair Studios', 'buy wigs online India',
   ],
-  authors: [{ name: 'HairsUp' }],
+  authors: [{ name: 'Glamour Hair Studios' }],
   metadataBase: new URL('http://localhost:3000'),
-  creator: 'HairsUp Technologies',
+  creator: 'Glamour Hair Studios',
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    siteName: 'HairsUp',
-    title: 'HairsUp — Premium Hair Wigs for Men & Women',
+    siteName: 'Glamour Hair Studios',
+    title: 'Glamour Hair Studios — Premium Hair Wigs for Men & Women',
     description: "India's #1 hair wig brand — premium human hair wigs & systems with virtual try-on.",
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'HairsUp — Premium Hair Wigs',
+    title: 'Glamour Hair Studios — Premium Hair Wigs',
     description: "India's #1 hair wig brand.",
   },
   robots: { index: true, follow: true },

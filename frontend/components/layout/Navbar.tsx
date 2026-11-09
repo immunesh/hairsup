@@ -131,7 +131,7 @@ export default function Navbar() {
                 <Sparkles className="w-5 h-5 text-brand-700" />
               </div>
               <span className="text-2xl lg:text-[28px] font-display font-bold text-ink truncate">
-                HairsUp
+                Glamour Hair Studios
               </span>
             </Link>
 

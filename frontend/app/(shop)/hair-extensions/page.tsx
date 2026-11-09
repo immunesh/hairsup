@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Hair Extensions | HairsUp',
+  title: 'Hair Extensions | Glamour Hair Studios',
   description: 'Premium quality hair extensions to instantly add length, volume, and color. Transform your look flawlessly.',
 };
 
@@ -71,7 +71,7 @@ export default function HairExtensionsPage() {
             <div>
               <h2 className="text-3xl font-display font-bold text-white mb-4">Transform Your Look</h2>
               <p className="text-white/90 leading-relaxed mb-4">
-                Hair extensions are a phenomenal way to instantly add length, volume, and even chemical-free color dimension to your natural hair. At HairsUp, we specialize in seamless integration that looks and feels entirely natural.
+                Hair extensions are a phenomenal way to instantly add length, volume, and even chemical-free color dimension to your natural hair. At Glamour Hair Studios, we specialize in seamless integration that looks and feels entirely natural.
               </p>
               <p className="text-white/90 leading-relaxed font-semibold">
                 Our extensions are crafted from 100% premium human hair, ensuring they can be washed, heat-styled, and treated exactly like your own hair.

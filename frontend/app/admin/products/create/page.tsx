@@ -61,7 +61,7 @@ export default function CreateProductPage() {
     description: "",
     tags: "",
     sku: "",
-    brand: "HairsUp",
+    brand: "Glamour Hair Studios",
 
     material: "",
     capSize: "",

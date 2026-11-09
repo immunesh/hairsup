@@ -4,24 +4,24 @@ import Link from 'next/link';
 import { Award, Users, Heart, Sparkles, ArrowRight, Target, Eye, Leaf } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'About HairsUp — Our Story & Mission',
-  description: "Learn about HairsUp — India's most trusted premium hair wig brand. Our story, mission, and the team dedicated to restoring confidence.",
+  title: 'About Glamour Hair Studios — Our Story & Mission',
+  description: "Learn about Glamour Hair Studios — India's most trusted premium hair wig brand. Our story, mission, and the team dedicated to restoring confidence.",
 };
 
 const TIMELINE = [
-  { year: '2015', event: 'Founded in Mumbai', desc: "Dr. Anita Sharma and Vikram Patel launch HairsUp from a small studio in Bandra, driven by personal experience with hair loss in the family." },
+  { year: '2015', event: 'Founded in Mumbai', desc: "Dr. Anita Sharma and Vikram Patel launch Glamour Hair Studios from a small studio in Bandra, driven by personal experience with hair loss in the family." },
   { year: '2017', event: 'First 1,000 customers', desc: "Word of mouth spreads the brand across Maharashtra. We open our first experience centre in Andheri West." },
-  { year: '2019', event: 'Pan-India Expansion', desc: "HairsUp enters Delhi, Bangalore, Chennai, and Hyderabad. Partnership with 200+ certified hair specialists nationwide." },
+  { year: '2019', event: 'Pan-India Expansion', desc: "Glamour Hair Studios enters Delhi, Bangalore, Chennai, and Hyderabad. Partnership with 200+ certified hair specialists nationwide." },
   { year: '2021', event: 'Virtual Try-On Launch', desc: "We launch India's first AI-powered virtual wig try-on technology. 5 lakh try-on sessions in the first year." },
   { year: '2023', event: '10 Lakh Customers', desc: "Milestone: 10 lakh satisfied customers. 50+ experience centres. Recognised by Forbes India as a leading healthtech-meets-beauty brand." },
-  { year: '2025', event: 'HairsUp 2.0', desc: "Launching next-gen Swiss lace technology, in-home consultation services, and our global expansion to UAE and Singapore." },
+  { year: '2025', event: 'Glamour Hair Studios 2.0', desc: "Launching next-gen Swiss lace technology, in-home consultation services, and our global expansion to UAE and Singapore." },
 ];
 
 const TEAM = [
   {
     name: 'Dr. Anita Sharma',
     role: 'Co-Founder & Chief Trichologist',
-    bio: 'AIIMS-trained trichologist with 18 years of clinical experience in hair loss treatment. Her personal journey with alopecia inspired HairsUp.',
+    bio: 'AIIMS-trained trichologist with 18 years of clinical experience in hair loss treatment. Her personal journey with alopecia inspired Glamour Hair Studios.',
     image: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=300&q=80',
   },
   {
@@ -61,7 +61,7 @@ export default function AboutPage() {
         <div className="absolute inset-0">
           <Image
             src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1400&q=80"
-            alt="HairsUp Story"
+            alt="Glamour Hair Studios Story"
             fill className="object-cover object-top"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-brand-950/90 via-brand-900/70 to-transparent" />
@@ -75,7 +75,7 @@ export default function AboutPage() {
             <span className="text-brand-300">Hair is Identity.</span>
           </h1>
           <p className="text-white/75 text-xl max-w-2xl leading-relaxed">
-            HairsUp was born from a personal story of loss and renewal. A trichologist who watched her mother
+            Glamour Hair Studios was born from a personal story of loss and renewal. A trichologist who watched her mother
             struggle with alopecia. An entrepreneur who saw an industry failing millions of Indians.
             Together, they built something extraordinary.
           </p>
@@ -176,7 +176,7 @@ export default function AboutPage() {
       <section className="py-16 container-custom">
         <div className="text-center mb-12">
           <h2 className="section-title">Meet the Team</h2>
-          <p className="section-subtitle">The people behind HairsUp&apos;s mission</p>
+          <p className="section-subtitle">The people behind Glamour Hair Studios&apos;s mission</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {TEAM.map(({ name, role, bio, image }) => (
@@ -200,7 +200,7 @@ export default function AboutPage() {
       <section className="py-16 bg-gradient-to-r from-brand-950 to-brand-800 text-white">
         <div className="container-custom text-center">
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Ready to Start Your Transformation?</h2>
-          <p className="text-white/70 text-lg mb-8 max-w-md mx-auto">Join 10 lakh+ Indians who have rediscovered confidence with HairsUp.</p>
+          <p className="text-white/70 text-lg mb-8 max-w-md mx-auto">Join 10 lakh+ Indians who have rediscovered confidence with Glamour Hair Studios.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/women" className="bg-white text-brand-700 font-bold px-8 py-3.5 rounded-full hover:bg-brand-50 transition-colors flex items-center gap-2">
               Shop Collection <ArrowRight className="w-4 h-4" />

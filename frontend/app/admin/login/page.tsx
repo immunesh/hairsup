@@ -96,7 +96,7 @@ export default function AdminLoginPage() {
           text-transparent
           "
           >
-            HairsUp Admin
+            Glamour Hair Studios Admin
           </h1>
 
           <p className="text-slate-400 mt-3">Sign in to access dashboard</p>
@@ -236,7 +236,7 @@ export default function AdminLoginPage() {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-xs text-slate-500">HairsUp Administration Panel</p>
+          <p className="text-xs text-slate-500">Glamour Hair Studios Administration Panel</p>
         </div>
       </div>
     </div>

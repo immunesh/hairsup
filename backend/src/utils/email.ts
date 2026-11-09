@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-const FROM_NAME = process.env.EMAIL_FROM_NAME || 'HairsUp';
+const FROM_NAME = process.env.EMAIL_FROM_NAME || 'Glamour Hair Studios';
 
 // Give up rather than hold a connection open indefinitely. Render's free plan
 // blocks outbound SMTP ports, so an SMTP attempt there hangs until the socket

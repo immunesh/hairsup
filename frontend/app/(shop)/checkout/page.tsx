@@ -188,7 +188,7 @@ export default function CheckoutPage() {
           key: orderData.razorpayOrder.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
           amount: orderData.razorpayOrder.amount,
           currency: orderData.razorpayOrder.currency,
-          name: 'HairsUp',
+          name: 'Glamour Hair Studios',
           description: `Order ${orderData.orderNumber}`,
           order_id: orderData.razorpayOrder.id,
           prefill: {

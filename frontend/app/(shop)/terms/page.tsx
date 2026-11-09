@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { Scale, ShieldAlert, FileText, HelpCircle, Eye, ArrowUpRight, Phone, Mail } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service | HairsUp',
-  description: 'Read the Terms of Service for HairsUp. Understand our rules, guidelines, policies, and agreement when using our platform and buying premium hair wigs.',
+  title: 'Terms of Service | Glamour Hair Studios',
+  description: 'Read the Terms of Service for Glamour Hair Studios. Understand our rules, guidelines, policies, and agreement when using our platform and buying premium hair wigs.',
 };
 
 const SECTIONS = [
@@ -87,7 +87,7 @@ export default function TermsPage() {
               </h2>
               <div className="text-gray-600 space-y-3 leading-relaxed">
                 <p>
-                  Welcome to HairsUp (referred to as &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;). These Terms of Service constitute a legally binding agreement made between you, whether personally or on behalf of an entity (&quot;you&quot; or &quot;user&quot;), and HairsUp Technologies Pvt. Ltd., concerning your access to and use of our website (<Link href="/" className="text-brand-600 hover:underline font-medium">hairsup.com</Link>) as well as any other media form, media channel, mobile website, or mobile application related or connected thereto (collectively, the &quot;Platform&quot;).
+                  Welcome to Glamour Hair Studios (referred to as &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;). These Terms of Service constitute a legally binding agreement made between you, whether personally or on behalf of an entity (&quot;you&quot; or &quot;user&quot;), and Glamour Hair Studios Pvt. Ltd., concerning your access to and use of our website (<Link href="/" className="text-brand-600 hover:underline font-medium">hairsup.com</Link>) as well as any other media form, media channel, mobile website, or mobile application related or connected thereto (collectively, the &quot;Platform&quot;).
                 </p>
                 <p>
                   By accessing or using the Platform, you acknowledge that you have read, understood, and agree to be bound by all of these Terms of Service. If you do not agree with all of these terms, you are expressly prohibited from using the Platform and must discontinue use immediately.
@@ -120,7 +120,7 @@ export default function TermsPage() {
               </h2>
               <div className="text-gray-600 space-y-3 leading-relaxed">
                 <p>
-                  HairsUp offers a wide range of premium hair wigs (for men and women) and hair systems. We make every effort to display the colours, features, specifications, and details of our products as accurately as possible on the Platform. However, we do not guarantee that the colours, styles, and details will be exactly accurate as your device&apos;s display configuration may alter visual representation.
+                  Glamour Hair Studios offers a wide range of premium hair wigs (for men and women) and hair systems. We make every effort to display the colours, features, specifications, and details of our products as accurately as possible on the Platform. However, we do not guarantee that the colours, styles, and details will be exactly accurate as your device&apos;s display configuration may alter visual representation.
                 </p>
                 <p>
                   <strong>Custom Products:</strong> Custom-made wigs, custom-fitted hair systems, or orders modified to customer-specific requirements are non-refundable and cannot be returned or exchanged. Please ensure all measurements and specifications are accurate prior to finalising custom orders.
@@ -174,10 +174,10 @@ export default function TermsPage() {
               </h2>
               <div className="text-gray-600 space-y-3 leading-relaxed">
                 <p>
-                  HairsUp provides an AI-powered Virtual Try-On feature that allows you to see how our wigs and hair systems look on your face. This tool requires access to your device&apos;s camera or allows you to upload a photo.
+                  Glamour Hair Studios provides an AI-powered Virtual Try-On feature that allows you to see how our wigs and hair systems look on your face. This tool requires access to your device&apos;s camera or allows you to upload a photo.
                 </p>
                 <p>
-                  <strong>Privacy Guarantee:</strong> Your camera feed is processed entirely locally in your web browser. No video streams, live camera data, or images from your camera are ever uploaded to HairsUp servers, stored, or shared with third parties.
+                  <strong>Privacy Guarantee:</strong> Your camera feed is processed entirely locally in your web browser. No video streams, live camera data, or images from your camera are ever uploaded to Glamour Hair Studios servers, stored, or shared with third parties.
                 </p>
                 <p>
                   The Try-On feature is provided on an &quot;as-is&quot; basis for visualization purposes. Variations in lighting, camera angles, and screen resolutions can affect accuracy, and actual products may look slightly different in person.
@@ -207,7 +207,7 @@ export default function TermsPage() {
               </h2>
               <div className="text-gray-600 space-y-3 leading-relaxed">
                 <p>
-                  To the maximum extent permitted by applicable law, HairsUp and its affiliates, directors, officers, employees, and agents shall not be liable for any direct, indirect, incidental, special, consequential, or exemplary damages, including but not limited to damages for loss of profits, goodwill, use, data, or other intangible losses, resulting from:
+                  To the maximum extent permitted by applicable law, Glamour Hair Studios and its affiliates, directors, officers, employees, and agents shall not be liable for any direct, indirect, incidental, special, consequential, or exemplary damages, including but not limited to damages for loss of profits, goodwill, use, data, or other intangible losses, resulting from:
                 </p>
                 <ul className="list-disc pl-5 space-y-1.5">
                   <li>Your access to or use of, or inability to access or use, the Platform;</li>

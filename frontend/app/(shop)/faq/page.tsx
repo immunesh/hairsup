@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { MessageCircle, Phone, Mail } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'FAQ — Frequently Asked Questions | HairsUp',
-  description: 'Find answers to common questions about HairsUp wigs, orders, shipping, returns, and virtual try-on.',
+  title: 'FAQ — Frequently Asked Questions | Glamour Hair Studios',
+  description: 'Find answers to common questions about Glamour Hair Studios wigs, orders, shipping, returns, and virtual try-on.',
 };
 
 const FAQ_SECTIONS = [
@@ -12,11 +12,11 @@ const FAQ_SECTIONS = [
     title: 'Products & Quality',
     icon: '💎',
     faqs: [
-      { q: 'What types of wigs does HairsUp sell?', a: "We carry 280+ styles across two main categories: Women's Wigs (lace front, full lace, human hair, synthetic, curly, straight, bob, ombre, and more) and Men's Hair Systems (Swiss lace hairpieces, toupees, crown covers, full cap systems, and sports-active systems)." },
+      { q: 'What types of wigs does Glamour Hair Studios sell?', a: "We carry 280+ styles across two main categories: Women's Wigs (lace front, full lace, human hair, synthetic, curly, straight, bob, ombre, and more) and Men's Hair Systems (Swiss lace hairpieces, toupees, crown covers, full cap systems, and sports-active systems)." },
       { q: 'Are your wigs made from real human hair?', a: "Many of our wigs are made from 100% human hair or premium human hair blends. Each product page clearly states the material. Our human hair wigs can be washed, dyed, and heat-styled just like your natural hair." },
       { q: 'What is the difference between a lace front and a full lace wig?', a: "A lace front wig has lace only along the front hairline, creating a natural-looking hairline. A full lace wig has lace across the entire cap, allowing you to part the hair anywhere and style it up completely. Full lace wigs are more versatile but also more expensive." },
       { q: 'How long will my wig last?', a: "Human hair wigs last 12–24 months with proper care. Synthetic wigs typically last 4–6 months. Proper washing, storage on a wig stand, and avoiding excessive heat will significantly extend the lifespan." },
-      { q: 'Are HairsUp products safe for sensitive scalps?', a: "Yes. All our products are dermatologically tested and free from harsh chemicals. We offer a range of wigs designed specifically for sensitive scalps, including those undergoing chemotherapy or dealing with alopecia." },
+      { q: 'Are Glamour Hair Studios products safe for sensitive scalps?', a: "Yes. All our products are dermatologically tested and free from harsh chemicals. We offer a range of wigs designed specifically for sensitive scalps, including those undergoing chemotherapy or dealing with alopecia." },
     ],
   },
   {
@@ -25,7 +25,7 @@ const FAQ_SECTIONS = [
     faqs: [
       { q: 'How do I measure my head for the right cap size?', a: "Use a soft measuring tape. Measure the circumference of your head starting at your natural hairline at the forehead, going around the back of your head, and returning to the start. The average adult head measures 53–58cm. Our wigs include adjustable straps for a secure fit." },
       { q: 'What if the wig doesn\'t fit perfectly?', a: "All our wigs have adjustable velcro straps that allow you to tighten or loosen the cap. If you're still unhappy with the fit within 7 days of delivery (unworn), contact us for an exchange. We also offer custom-sized wigs — contact our team for a consultation." },
-      { q: 'Do you offer custom wigs?', a: "Yes! We offer custom-made wigs tailored to your exact measurements, hair colour, density, and texture. This service is available in-store at all 50+ HairsUp experience centres. Contact us to book a custom wig consultation." },
+      { q: 'Do you offer custom wigs?', a: "Yes! We offer custom-made wigs tailored to your exact measurements, hair colour, density, and texture. This service is available in-store at all 50+ Glamour Hair Studios experience centres. Contact us to book a custom wig consultation." },
     ],
   },
   {
@@ -34,7 +34,7 @@ const FAQ_SECTIONS = [
     faqs: [
       { q: 'How long does delivery take?', a: "Standard delivery takes 3–5 business days across India. Express delivery (1–2 business days) is available for an additional fee. Metro cities (Mumbai, Delhi, Bangalore, Chennai, Hyderabad) typically receive orders within 2–3 days." },
       { q: 'Is shipping free?', a: 'Yes! Standard shipping is free on every order within India. Express delivery is available for an additional fee.' },
-      { q: 'Can I track my order?', a: "Yes! You will receive an SMS and email with your tracking link as soon as your order is dispatched. You can also track your order in the 'My Orders' section of your HairsUp account." },
+      { q: 'Can I track my order?', a: "Yes! You will receive an SMS and email with your tracking link as soon as your order is dispatched. You can also track your order in the 'My Orders' section of your Glamour Hair Studios account." },
       { q: 'Do you ship internationally?', a: "We currently ship to UAE, Singapore, and the United Kingdom. International orders typically take 7–12 business days. Customs duties and taxes are the buyer's responsibility." },
     ],
   },
@@ -77,7 +77,7 @@ export default function FAQPage() {
             Frequently Asked Questions
           </h1>
           <p className="text-ink-muted text-lg">
-            Everything you need to know about HairsUp, our products, and how we work.
+            Everything you need to know about Glamour Hair Studios, our products, and how we work.
           </p>
         </div>
       </div>

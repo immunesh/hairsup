@@ -272,7 +272,7 @@ if (sort === "rating-desc") {
         </div>
       </div>
 
-      {/* Why HairsUp for Men */}
+      {/* Why Glamour Hair Studios for Men */}
       <div className="bg-gray-950 text-white py-8">
         <div className="container-custom grid grid-cols-2 md:grid-cols-4 gap-6">
           {WHY_HAIRSUP_MEN.map(({ icon, title, desc }) => (
