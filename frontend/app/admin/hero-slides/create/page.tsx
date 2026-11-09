@@ -104,7 +104,7 @@ export default function CreateHeroSlidePage() {
         rounded-3xl
 
         bg-white/5
-        backdrop-blur-xl
+       
 
         border
         border-white/10
@@ -124,7 +124,7 @@ export default function CreateHeroSlidePage() {
             value={form.headline}
             onChange={(e) => setForm({ ...form, headline: e.target.value })}
             placeholder="Transform Your Look"
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -138,7 +138,7 @@ export default function CreateHeroSlidePage() {
             value={form.subheadline}
             onChange={(e) => setForm({ ...form, subheadline: e.target.value })}
             placeholder="with Premium Human Hair Wigs"
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -152,8 +152,8 @@ export default function CreateHeroSlidePage() {
             rows={4}
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
-            placeholder="Slide description..."
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+            placeholder="Slide description…"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -166,7 +166,7 @@ export default function CreateHeroSlidePage() {
           <input
             type="file"
             accept="image/*"
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-300"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-slate-300"
             onChange={(e) => {
               const file = e.target.files?.[0];
 
@@ -196,7 +196,7 @@ export default function CreateHeroSlidePage() {
             value={form.badge}
             onChange={(e) => setForm({ ...form, badge: e.target.value })}
             placeholder="New Season Collection"
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -210,7 +210,7 @@ export default function CreateHeroSlidePage() {
             value={form.tag}
             onChange={(e) => setForm({ ...form, tag: e.target.value })}
             placeholder="WOMEN"
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -225,7 +225,7 @@ export default function CreateHeroSlidePage() {
               value={form.cta}
               onChange={(e) => setForm({ ...form, cta: e.target.value })}
               placeholder="Shop Women's Collection"
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -238,7 +238,7 @@ export default function CreateHeroSlidePage() {
               value={form.ctaLink}
               onChange={(e) => setForm({ ...form, ctaLink: e.target.value })}
               placeholder="/women"
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -253,7 +253,7 @@ export default function CreateHeroSlidePage() {
                 setForm({ ...form, ctaSecondary: e.target.value })
               }
               placeholder="Try On Virtually"
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -271,7 +271,7 @@ export default function CreateHeroSlidePage() {
                 })
               }
               placeholder="/try-on"
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>
         </div>
@@ -286,7 +286,7 @@ export default function CreateHeroSlidePage() {
             value={form.accent}
             onChange={(e) => setForm({ ...form, accent: e.target.value })}
             placeholder="from-brand-950 to-brand-700"
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -303,7 +303,7 @@ export default function CreateHeroSlidePage() {
               onChange={(e) =>
                 setForm({ ...form, order: Number(e.target.value) })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -336,25 +336,25 @@ export default function CreateHeroSlidePage() {
 
             rounded-2xl
 
-            bg-gradient-to-r
-            from-cyan-500
-            to-brand-600
+            
+            
+            
 
             text-white
             font-medium
 
-            transition-all
+            transition
             duration-300
 
             hover:scale-105
 
-            shadow-[0_0_25px_rgba(56,189,248,0.35)]
+            
 
             disabled:opacity-50
             disabled:hover:scale-100
-            "
+             bg-brand-600 hover:bg-brand-700 text-white"
           >
-            {submitting ? "Saving..." : "Save Hero Slide"}
+            {submitting ? "Saving…" : "Save Hero Slide"}
           </button>
         </div>
       </form>

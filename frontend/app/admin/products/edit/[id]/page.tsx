@@ -329,7 +329,7 @@ export default function EditProductPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full text-white text-lg">
-        Loading Product...
+        Loading product…
       </div>
     );
   }
@@ -353,7 +353,7 @@ export default function EditProductPage() {
         text-slate-300
         hover:bg-white/10
         hover:text-white
-        transition-all
+        transition
         "
         >
           ← Back
@@ -365,7 +365,7 @@ export default function EditProductPage() {
         className="
       rounded-3xl
       bg-white/5
-      backdrop-blur-xl
+     
       border border-white/10
       p-8
       "
@@ -384,7 +384,7 @@ export default function EditProductPage() {
                   name: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -401,7 +401,7 @@ export default function EditProductPage() {
                   slug: toSlug(e.target.value),
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -418,7 +418,7 @@ export default function EditProductPage() {
                   categoryId: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-[#131827] border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-admin-raised border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
             >
               <option value="">Select Category</option>
 
@@ -443,7 +443,7 @@ export default function EditProductPage() {
                   gender: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-[#131827] border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-admin-raised border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
             >
               <option value="MEN">MEN</option>
               <option value="WOMEN">WOMEN</option>
@@ -464,7 +464,7 @@ export default function EditProductPage() {
                   sku: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -481,7 +481,7 @@ export default function EditProductPage() {
                   brand: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -499,7 +499,7 @@ export default function EditProductPage() {
                   basePrice: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -517,7 +517,7 @@ export default function EditProductPage() {
                   salePrice: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -535,7 +535,7 @@ export default function EditProductPage() {
                   stock: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
             />
           </div>
         </div>
@@ -554,7 +554,7 @@ export default function EditProductPage() {
                   material: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
             />
           </div>
 
@@ -570,7 +570,7 @@ export default function EditProductPage() {
                   length: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
             />
           </div>
 
@@ -586,7 +586,7 @@ export default function EditProductPage() {
                   density: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
             />
           </div>
 
@@ -602,7 +602,7 @@ export default function EditProductPage() {
                   texture: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
             />
           </div>
 
@@ -618,7 +618,7 @@ export default function EditProductPage() {
                   color: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
             />
           </div>
 
@@ -636,7 +636,7 @@ export default function EditProductPage() {
                   capSize: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
             />
           </div>
         </div>
@@ -654,7 +654,7 @@ export default function EditProductPage() {
                 shortDesc: e.target.value,
               })
             }
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -672,7 +672,7 @@ export default function EditProductPage() {
                 description: e.target.value,
               })
             }
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -690,7 +690,7 @@ export default function EditProductPage() {
               })
             }
             placeholder="hair, wig, premium"
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
           />
         </div>
         {/* Product Features */}
@@ -727,7 +727,7 @@ export default function EditProductPage() {
                   copy[index].title = e.target.value;
                   setFeatures(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <input
@@ -739,7 +739,7 @@ export default function EditProductPage() {
                   copy[index].subtitle = e.target.value;
                   setFeatures(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <button
@@ -788,7 +788,7 @@ export default function EditProductPage() {
                   copy[index].question = e.target.value;
                   setFaqs(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <textarea
@@ -799,7 +799,7 @@ export default function EditProductPage() {
                   copy[index].answer = e.target.value;
                   setFaqs(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <button
@@ -847,7 +847,7 @@ export default function EditProductPage() {
                   copy[index].icon = e.target.value;
                   setCareGuides(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <input
@@ -859,7 +859,7 @@ export default function EditProductPage() {
                   copy[index].title = e.target.value;
                   setCareGuides(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <input
@@ -871,7 +871,7 @@ export default function EditProductPage() {
                   copy[index].steps = e.target.value;
                   setCareGuides(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <button
@@ -919,7 +919,7 @@ export default function EditProductPage() {
                   copy[index].text = e.target.value;
                   setIncludedItems(copy);
                 }}
-                className="flex-1 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="flex-1 px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <button
@@ -974,7 +974,7 @@ export default function EditProductPage() {
                         ),
                       )
                     }
-                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-slate-300"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/40 text-sm text-slate-300"
                   >
                     {ANGLE_OPTIONS.map((angle) => (
                       <option
@@ -1034,7 +1034,7 @@ export default function EditProductPage() {
           <input
             type="file"
             accept="image/*"
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-300"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-slate-300"
             onChange={(e) => {
               const file = e.target.files?.[0];
 
@@ -1064,7 +1064,7 @@ export default function EditProductPage() {
             type="file"
             multiple
             accept="image/*"
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-300"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-slate-300"
             onChange={(e) => {
               const files = Array.from(e.target.files || []);
 
@@ -1107,7 +1107,7 @@ export default function EditProductPage() {
                         ),
                       )
                     }
-                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-slate-300"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/40 text-sm text-slate-300"
                   >
                     {ANGLE_OPTIONS.map((angle) => (
                       <option
@@ -1152,16 +1152,16 @@ export default function EditProductPage() {
         px-8
         py-3
         rounded-2xl
-        bg-gradient-to-r
-        from-cyan-500
-        to-brand-600
+        
+        
+        
         text-white
         font-medium
-        transition-all
+        transition
         duration-300
         hover:scale-105
-        shadow-[0_0_25px_rgba(56,189,248,0.35)]
-        "
+        
+         bg-brand-600 hover:bg-brand-700 text-white"
         >
           Update Product
         </button>

@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { ChevronRight, Plus, MapPin, CreditCard, Truck, Shield, Check, Loader2, Tag, ShoppingBag, X } from 'lucide-react';
-import { useCartStore, useAuthStore, useUIStore } from '@/lib/store';
+import { ChevronRight, Plus, MapPin, CreditCard, Truck, Shield, Check, Loader2, Tag, ShoppingBag, X, Smartphone, Landmark, Banknote, CalendarClock, Phone } from 'lucide-react';
+import { useCartStore, useAuthStore, useUIStore, useAuthHydrated } from '@/lib/store';
 import {
   ordersApi,
   userApi,
@@ -15,11 +15,11 @@ import { formatPrice } from '@/lib/utils';
 import { Address } from '@/types';
 
 const PAYMENT_METHODS = [
-  { id: 'upi', label: 'UPI', icon: '📱', desc: 'Pay via GPay, PhonePe, Paytm' },
-  { id: 'card', label: 'Credit/Debit Card', icon: '💳', desc: 'Visa, Mastercard, RuPay' },
-  { id: 'netbanking', label: 'Net Banking', icon: '🏦', desc: 'All major banks' },
-  { id: 'cod', label: 'Cash on Delivery', icon: '💵', desc: 'Pay when delivered' },
-  { id: 'emi', label: 'EMI', icon: '📅', desc: 'No-cost EMI on credit cards' },
+  { id: 'upi', label: 'UPI', icon: Smartphone, desc: 'Pay via GPay, PhonePe, Paytm' },
+  { id: 'card', label: 'Credit/Debit Card', icon: CreditCard, desc: 'Visa, Mastercard, RuPay' },
+  { id: 'netbanking', label: 'Net Banking', icon: Landmark, desc: 'All major banks' },
+  { id: 'cod', label: 'Cash on Delivery', icon: Banknote, desc: 'Pay when delivered' },
+  { id: 'emi', label: 'EMI', icon: CalendarClock, desc: 'No-cost EMI on credit cards' },
 ];
 
 const loadRazorpayScript = () => {
@@ -49,6 +49,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, clearCart, couponCode, discount, setCoupon, clearCoupon } = useCartStore();
   const { isAuthenticated, user } = useAuthStore();
+  const hydrated = useAuthHydrated();
   const { showToast } = useUIStore();
 
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -88,6 +89,7 @@ export default function CheckoutPage() {
   );
 
   useEffect(() => {
+    if (!hydrated) return;
     if (!isAuthenticated) { router.push('/login'); return; }
     userApi.getAddresses().then(({ data }) => {
       setAddresses(data.data);
@@ -95,7 +97,7 @@ export default function CheckoutPage() {
       const def = list.find((a: Address) => a.isDefault) || list[0];
       if (def) setSelectedAddress(def.id);
     }).catch(() => { });
-  }, [isAuthenticated, router]);
+  }, [hydrated, isAuthenticated, router]);
 
   const resetAddressForm = () => setAddressForm({
     firstName: '', lastName: '', phone: '', type: 'HOME',
@@ -297,7 +299,7 @@ export default function CheckoutPage() {
                       value={couponInput}
                       onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
                       placeholder="e.g. FIRST20"
-                      className="input-field flex-1 text-sm py-2 uppercase"
+                      className="input-field flex-1 text-sm py-2"
                       disabled={applyingCoupon}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
@@ -310,14 +312,14 @@ export default function CheckoutPage() {
                       disabled={applyingCoupon || !couponInput.trim()}
                       className="btn-secondary text-sm py-2 px-4 whitespace-nowrap"
                     >
-                      {applyingCoupon ? "Applying..." : "Apply"}
+                      {applyingCoupon ? "Applying…" : "Apply"}
                     </button>
                   </div>
                 ) : (
                   <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl p-3 animate-fade-in">
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                      <span className="font-bold text-green-800 uppercase">{couponCode}</span>
+                      <span className="font-bold text-green-800">{couponCode}</span>
                       <span className="text-xs text-green-600 font-medium">Applied Successfully</span>
                     </div>
                     <span className="font-bold text-green-700">-{formatPrice(discount)}</span>
@@ -335,7 +337,7 @@ export default function CheckoutPage() {
               </h2>
               <div className="space-y-3">
                 {addresses.map((addr) => (
-                  <label key={addr.id} className={`flex items-start gap-4 p-4 rounded-2xl border-2 cursor-pointer transition-all ${selectedAddress === addr.id ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-brand-300'
+                  <label key={addr.id} className={`flex items-start gap-4 p-4 rounded-2xl border-2 cursor-pointer transition-colors ${selectedAddress === addr.id ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-brand-300'
                     }`}>
                     <input
                       type="radio"
@@ -352,14 +354,14 @@ export default function CheckoutPage() {
                         {addr.isDefault && <span className="badge bg-green-100 text-green-700 text-xs">Default</span>}
                       </div>
                       <p className="text-sm text-gray-600">{addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}</p>
-                      <p className="text-sm text-gray-600">{addr.city}, {addr.state} — {addr.pincode}</p>
-                      <p className="text-sm text-gray-500 mt-1">📞 {addr.phone}</p>
+                      <p className="text-sm text-gray-600">{addr.city}, {addr.state} {addr.pincode}</p>
+                      <p className="text-sm text-gray-500 mt-1 flex items-center gap-1.5"><Phone className="w-3.5 h-3.5" aria-hidden /> {addr.phone}</p>
                     </div>
                   </label>
                 ))}
                 <button
                   onClick={() => { resetAddressForm(); setShowAddressModal(true); }}
-                  className="flex items-center gap-2 p-4 border-2 border-dashed border-gray-200 rounded-2xl text-sm text-brand-600 hover:border-brand-400 hover:bg-brand-50 transition-all font-medium w-fit"
+                  className="flex items-center gap-2 p-4 border-2 border-dashed border-gray-200 rounded-2xl text-sm text-brand-600 hover:border-brand-400 hover:bg-brand-50 transition-colors font-medium w-fit"
                 >
                   <Plus className="w-4 h-4" /> Add New Address
                 </button>
@@ -381,7 +383,7 @@ export default function CheckoutPage() {
                       return (
                         <label
                           key={method.id}
-                          className={`flex items-center gap-4 p-4 rounded-2xl border-2 transition-all ${paymentMethod === method.id
+                          className={`flex items-center gap-4 p-4 rounded-2xl border-2 transition-colors ${paymentMethod === method.id
                             ? "border-brand-500 bg-brand-50"
                             : "border-gray-200"
                             } ${isDisabled
@@ -399,7 +401,7 @@ export default function CheckoutPage() {
                             className="text-brand-600"
                           />
 
-                          <span className="text-xl">{method.icon}</span>
+                          <method.icon className="w-5 h-5 text-accent shrink-0" strokeWidth={1.75} aria-hidden />
 
                           <div className="flex-1">
                             <p className="font-semibold text-sm">
@@ -444,14 +446,14 @@ export default function CheckoutPage() {
             <button
               onClick={handlePlaceOrder}
               disabled={placing || !selectedAddress || !paymentMethod}
-              className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 mt-2 font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 mt-2 font-bold whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {placing ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" /> Placing Order...
+                  <Loader2 className="w-4 h-4 animate-spin motion-reduce:animate-none" aria-hidden /> Placing order…
                 </>
               ) : (
-                <>Place Order — {formatPrice(grandTotal)}</>
+                <span className="whitespace-nowrap">Place order, {formatPrice(grandTotal)}</span>
               )}
             </button>
 
@@ -466,11 +468,11 @@ export default function CheckoutPage() {
               <Shield className="w-4 h-4 flex-shrink-0" /> Your payment is 100% secure and encrypted
             </div>
 
-            <div className="text-[11px] text-gray-400 space-y-1.5 pt-2 border-t border-gray-50">
-              <p>✓ Free delivery on every order</p>
-              <p>✓ Estimated delivery in 3–5 business days</p>
-              <p>✓ 7-day hassle-free returns</p>
-            </div>
+            <ul className="text-sm text-ink-muted space-y-1.5 pt-3 border-t border-rule">
+              <li>Free delivery on every order</li>
+              <li>Estimated delivery in 3 to 5 business days</li>
+              <li>7-day hassle-free returns</li>
+            </ul>
           </div>
         </div>
 
@@ -484,7 +486,7 @@ export default function CheckoutPage() {
             <div className="bg-white rounded-2xl p-6 w-full max-w-lg pointer-events-auto shadow-xl max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-5">
                 <h3 className="text-lg font-display font-bold text-gray-900">Add New Address</h3>
-                <button onClick={() => setShowAddressModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <button onClick={() => setShowAddressModal(false)} className="text-gray-500 hover:text-gray-600 transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -530,12 +532,12 @@ export default function CheckoutPage() {
                         key={t}
                         type="button"
                         onClick={() => setAddressForm({ ...addressForm, type: t })}
-                        className={`px-4 py-2 rounded-xl text-sm font-medium border-2 transition-all ${addressForm.type === t
+                        className={`px-4 py-2 rounded-xl text-sm font-medium border-2 transition-colors ${addressForm.type === t
                           ? 'border-brand-500 bg-brand-50 text-brand-600'
                           : 'border-gray-200 text-gray-600 hover:border-brand-300'
                           }`}
                       >
-                        {t === 'HOME' ? '🏠 Home' : t === 'OFFICE' ? '🏢 Work' : '📍 Other'}
+                        {t === 'HOME' ? 'Home' : t === 'OFFICE' ? 'Work' : 'Other'}
                       </button>
                     ))}
                   </div>
@@ -606,7 +608,7 @@ export default function CheckoutPage() {
                   className="btn-primary flex-1 flex items-center justify-center gap-2"
                 >
                   {savingAddress ? (
-                    <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
+                    <><Loader2 className="w-4 h-4 animate-spin motion-reduce:animate-none" aria-hidden /> Saving…</>
                   ) : (
                     <><Check className="w-4 h-4" /> Save Address</>
                   )}

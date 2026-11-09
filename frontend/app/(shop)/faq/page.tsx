@@ -1,16 +1,16 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { MessageCircle, Phone, Mail } from 'lucide-react';
+import { PageHero, FaqItems } from '@/components/shop/Service';
 
 export const metadata: Metadata = {
-  title: 'FAQ — Frequently Asked Questions | Glamour Hair Studios',
+  title: 'FAQ | Frequently Asked Questions | Glamour Hair Studios',
   description: 'Find answers to common questions about Glamour Hair Studios wigs, orders, shipping, returns, and virtual try-on.',
 };
 
 const FAQ_SECTIONS = [
   {
     title: 'Products & Quality',
-    icon: '💎',
     faqs: [
       { q: 'What types of wigs does Glamour Hair Studios sell?', a: "We carry 280+ styles across two main categories: Women's Wigs (lace front, full lace, human hair, synthetic, curly, straight, bob, ombre, and more) and Men's Hair Systems (Swiss lace hairpieces, toupees, crown covers, full cap systems, and sports-active systems)." },
       { q: 'Are your wigs made from real human hair?', a: "Many of our wigs are made from 100% human hair or premium human hair blends. Each product page clearly states the material. Our human hair wigs can be washed, dyed, and heat-styled just like your natural hair." },
@@ -21,16 +21,14 @@ const FAQ_SECTIONS = [
   },
   {
     title: 'Sizing & Fit',
-    icon: '📏',
     faqs: [
       { q: 'How do I measure my head for the right cap size?', a: "Use a soft measuring tape. Measure the circumference of your head starting at your natural hairline at the forehead, going around the back of your head, and returning to the start. The average adult head measures 53–58cm. Our wigs include adjustable straps for a secure fit." },
-      { q: 'What if the wig doesn\'t fit perfectly?', a: "All our wigs have adjustable velcro straps that allow you to tighten or loosen the cap. If you're still unhappy with the fit within 7 days of delivery (unworn), contact us for an exchange. We also offer custom-sized wigs — contact our team for a consultation." },
+      { q: 'What if the wig doesn\'t fit perfectly?', a: "All our wigs have adjustable velcro straps that allow you to tighten or loosen the cap. If you're still unhappy with the fit within 7 days of delivery (unworn), contact us for an exchange. We also offer custom-sized wigs; contact our team for a consultation." },
       { q: 'Do you offer custom wigs?', a: "Yes! We offer custom-made wigs tailored to your exact measurements, hair colour, density, and texture. This service is available in-store at all 50+ Glamour Hair Studios experience centres. Contact us to book a custom wig consultation." },
     ],
   },
   {
     title: 'Orders & Shipping',
-    icon: '🚚',
     faqs: [
       { q: 'How long does delivery take?', a: "Standard delivery takes 3–5 business days across India. Express delivery (1–2 business days) is available for an additional fee. Metro cities (Mumbai, Delhi, Bangalore, Chennai, Hyderabad) typically receive orders within 2–3 days." },
       { q: 'Is shipping free?', a: 'Yes! Standard shipping is free on every order within India. Express delivery is available for an additional fee.' },
@@ -40,7 +38,6 @@ const FAQ_SECTIONS = [
   },
   {
     title: 'Returns & Exchanges',
-    icon: '↩️',
     faqs: [
       { q: 'What is your return policy?', a: "We accept returns within 7 days of delivery for unused wigs in their original condition with all tags attached and in original packaging. Worn wigs cannot be returned for hygiene reasons. Custom-sized wigs are non-returnable." },
       { q: 'How do I initiate a return?', a: "Log in to your account, go to 'My Orders', select the order, and click 'Return/Exchange'. Our team will arrange a free pickup within 24–48 hours. Refunds are processed within 5–7 business days to your original payment method." },
@@ -49,16 +46,14 @@ const FAQ_SECTIONS = [
   },
   {
     title: 'Virtual Try-On',
-    icon: '✨',
     faqs: [
-      { q: 'How does the virtual try-on work?', a: "Our AI-powered virtual try-on uses your device's camera to detect your face and overlay selected wig styles in real time. It works in any modern web browser — no app download needed. You can also upload a selfie instead of using your live camera." },
+      { q: 'How does the virtual try-on work?', a: "Our AI-powered virtual try-on uses your device's camera to detect your face and overlay selected wig styles in real time. It works in any modern web browser, with no app download needed. You can also upload a selfie instead of using your live camera." },
       { q: 'Is my camera feed stored or shared?', a: "Never. Your camera feed is processed entirely on your device and is never uploaded to our servers. We are committed to your privacy." },
       { q: 'How accurate is the virtual try-on?', a: "Our AI provides a realistic approximation of how a wig will look. It accurately represents the wig's style, length, and colour. For the most accurate representation, ensure good lighting and look directly at the camera." },
     ],
   },
   {
     title: 'Payments',
-    icon: '💳',
     faqs: [
       { q: 'What payment methods are accepted?', a: "We accept UPI (GPay, PhonePe, Paytm), Credit/Debit Cards (Visa, Mastercard, RuPay, Amex), Net Banking (all major banks), and Cash on Delivery. EMI options are available on credit cards for orders above ₹3,000." },
       { q: 'Is my payment information secure?', a: "Absolutely. All payments are processed through Razorpay, a PCI-DSS compliant payment gateway. We never store your card details on our servers. All transactions are 256-bit SSL encrypted." },
@@ -67,86 +62,70 @@ const FAQ_SECTIONS = [
   },
 ];
 
+const sectionId = (title: string) => title.toLowerCase().replace(/\s+&?\s*/g, '-');
+
 export default function FAQPage() {
   return (
     <div>
-      {/* Hero */}
-      <div className="page-hero py-14 text-center">
-        <div className="container-custom max-w-2xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-display font-bold text-ink mb-4">
-            Frequently Asked Questions
-          </h1>
-          <p className="text-ink-muted text-lg">
-            Everything you need to know about Glamour Hair Studios, our products, and how we work.
-          </p>
-        </div>
-      </div>
+      <PageHero
+        crumbs={[{ label: 'Home', href: '/' }, { label: 'FAQ', href: '/faq' }]}
+        title="Frequently asked questions"
+        lead="Answers about Glamour Hair Studios, our products, and how we work."
+      />
 
-      <div className="container-custom py-14">
-        <div className="grid lg:grid-cols-3 gap-10">
-          {/* FAQ Sections */}
-          <div className="lg:col-span-2 space-y-10">
-            {FAQ_SECTIONS.map(({ title, icon, faqs }) => (
-              <div key={title} id={title.toLowerCase().replace(/\s+&?\s*/g, '-')}>
-                <h2 className="text-2xl font-display font-bold text-gray-900 mb-5 flex items-center gap-3">
-                  <span className="text-2xl">{icon}</span> {title}
-                </h2>
-                <div className="space-y-3">
-                  {faqs.map(({ q, a }) => (
-                    <details key={q} className="group card">
-                      <summary className="flex items-center justify-between p-5 cursor-pointer list-none">
-                        <h3 className="font-semibold text-gray-900 pr-4 text-sm md:text-base">{q}</h3>
-                        <div className="w-6 h-6 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center flex-shrink-0 group-open:bg-brand-600 group-open:border-brand-600 transition-colors">
-                          <span className="text-brand-600 group-open:text-white font-bold text-sm leading-none group-open:content-['−'] transition-all">+</span>
-                        </div>
-                      </summary>
-                      <div className="px-5 pb-5">
-                        <p className="text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4">{a}</p>
-                      </div>
-                    </details>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-5 lg:pt-0">
-            <div className="bg-white sticky top-24 space-y-5">
-              {/* Quick nav */}
-              <div className="card p-5">
-                <h3 className="font-bold text-gray-900 mb-4">Jump to Section</h3>
-                <div className="space-y-2">
-                  {FAQ_SECTIONS.map(({ title, icon }) => (
+      <div className="container-custom section-md grid gap-12 lg:grid-cols-12">
+        {/* Index and help: stays in view while the answers scroll */}
+        <aside className="lg:col-span-3 min-w-0">
+          <div className="lg:sticky lg:top-28 grid gap-10">
+            <nav aria-labelledby="faq-index">
+              <h2 id="faq-index" className="font-semibold text-ink text-[1.0625rem]">Jump to a section</h2>
+              <ul className="mt-3 border-t border-rule">
+                {FAQ_SECTIONS.map(({ title }) => (
+                  <li key={title} className="border-b border-rule">
                     <a
-                      key={title}
-                      href={`#${title.toLowerCase().replace(/\s+&?\s*/g, '-')}`}
-                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-brand-600 transition-colors py-1"
+                      href={`#${sectionId(title)}`}
+                      className="flex items-center min-h-[44px] text-[0.9375rem] text-ink-soft hover:text-accent transition-colors rounded-sm"
                     >
-                      <span>{icon}</span> {title}
+                      {title}
                     </a>
-                  ))}
-                </div>
-              </div>
+                  </li>
+                ))}
+              </ul>
+            </nav>
 
-              {/* Still need help */}
-              <div className="card p-5 bg-brand-50 border-brand-100">
-                <h3 className="font-bold text-gray-900 mb-2">Still need help?</h3>
-                <p className="text-sm text-gray-600 mb-4">Our hair specialists are available 7 days a week.</p>
-                <div className="space-y-2">
-                  <a href="tel:+919027396563" className="flex items-center gap-2 text-sm text-brand-700 font-medium">
-                    <Phone className="w-4 h-4" /> +91 90273 96563
+            <div>
+              <h2 className="font-semibold text-ink text-[1.0625rem]">Still need help?</h2>
+              <p className="text-[0.9375rem] text-ink-soft mt-2">Our hair specialists are available 7 days a week.</p>
+              <ul className="mt-4 grid gap-1">
+                <li>
+                  <a href="tel:+919027396563" className="inline-flex items-center gap-2.5 min-h-[40px] text-[0.9375rem] text-ink font-medium hover:text-accent transition-colors rounded-sm">
+                    <Phone className="w-4 h-4 text-accent" aria-hidden /> +91 90273 96563
                   </a>
-                  <a href="mailto:help@hairsup.com" className="flex items-center gap-2 text-sm text-brand-700 font-medium">
-                    <Mail className="w-4 h-4" /> help@hairsup.com
+                </li>
+                <li>
+                  <a href="mailto:help@hairsup.com" className="inline-flex items-center gap-2.5 min-h-[40px] text-[0.9375rem] text-ink font-medium hover:text-accent transition-colors rounded-sm">
+                    <Mail className="w-4 h-4 text-accent" aria-hidden /> help@hairsup.com
                   </a>
-                  <Link href="/contact" className="flex items-center gap-2 text-sm text-brand-700 font-medium">
-                    <MessageCircle className="w-4 h-4" /> Live Chat
+                </li>
+                <li>
+                  <Link href="/contact" className="inline-flex items-center gap-2.5 min-h-[40px] text-[0.9375rem] text-ink font-medium hover:text-accent transition-colors rounded-sm">
+                    <MessageCircle className="w-4 h-4 text-accent" aria-hidden /> Live Chat
                   </Link>
-                </div>
-              </div>
+                </li>
+              </ul>
             </div>
           </div>
+        </aside>
+
+        <div className="lg:col-span-8 lg:col-start-5 grid gap-16 min-w-0">
+          {FAQ_SECTIONS.map(({ title, faqs }) => (
+            <section key={title} id={sectionId(title)} aria-labelledby={`${sectionId(title)}-h`} className="scroll-mt-28">
+              <h2 id={`${sectionId(title)}-h`} className="font-display text-[length:var(--text-2xl)] leading-tight text-ink mb-5">
+                {title}
+              </h2>
+              <FaqItems items={faqs} />
+            </section>
+          ))}
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { User, Package, Heart, MapPin, Lock, Bell, LogOut, Camera, Check, Loader2, Plus, Trash2 } from 'lucide-react';
-import { useAuthStore, useUIStore } from '@/lib/store';
+import { useAuthStore, useUIStore, useAuthHydrated } from '@/lib/store';
 import { userApi } from '@/lib/api';
 import { Address } from '@/types';
 import { getInitials } from '@/lib/utils';
@@ -23,6 +23,7 @@ const SIDEBAR_ITEMS = [
 export default function ProfilePage() {
   const router = useRouter();
   const { user, isAuthenticated, updateUser, clearAuth } = useAuthStore();
+  const hydrated = useAuthHydrated();
   const { showToast } = useUIStore();
   const [activeTab, setActiveTab] = useState('profile');
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -62,6 +63,7 @@ const [addressForm, setAddressForm] =
   });
 
   useEffect(() => {
+    if (!hydrated) return;
     if (!isAuthenticated) { router.push('/login'); return; }
 if (user)
   setForm({
@@ -101,7 +103,7 @@ reviewsApi
   })
   .catch(() => {});
   
-  }, [isAuthenticated, user, router]);
+  }, [hydrated, isAuthenticated, user, router]);
 
 const handleSaveProfile = async () => {
   const phone = form.phone.trim();
@@ -350,20 +352,20 @@ const handleSaveNotifications =
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${activeTab === id ? 'bg-brand-50 text-brand-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${activeTab === id ? 'bg-brand-50 text-brand-600' : 'text-gray-700 hover:bg-gray-50'}`}
               >
                 <Icon className={`w-4 h-4 ${activeTab === id ? 'text-brand-600' : 'text-gray-500'}`} />
                 {label}
               </button>
             ))}
             <div className="border-t border-gray-100 mt-2 pt-2">
-              <Link href="/orders" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all">
+              <Link href="/orders" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                 <Package className="w-4 h-4 text-gray-500" /> My Orders
               </Link>
-              <Link href="/wishlist" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all">
+              <Link href="/wishlist" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                 <Heart className="w-4 h-4 text-gray-500" /> Wishlist
               </Link>
-              <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-all">
+              <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
                 <LogOut className="w-4 h-4" /> Sign Out
               </button>
             </div>
@@ -387,7 +389,7 @@ const handleSaveNotifications =
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
                   <input value={user.email} disabled className="input-field opacity-60 cursor-not-allowed" />
-                  <p className="text-xs text-gray-400 mt-1">Email cannot be changed</p>
+                  <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label>
@@ -454,7 +456,7 @@ const handleSaveNotifications =
                             {addr.isDefault && <span className="badge bg-green-100 text-green-700 text-xs">Default</span>}
                           </div>
                           <p className="text-sm text-gray-600">{addr.line1}, {addr.city}</p>
-                          <p className="text-sm text-gray-600">{addr.state} — {addr.pincode}</p>
+                          <p className="text-sm text-gray-600">{addr.state} {addr.pincode}</p>
                           <p className="text-xs text-gray-500 mt-1">{addr.phone}</p>
                         </div>
                         <div className="flex gap-2">
@@ -478,7 +480,7 @@ const handleSaveNotifications =
 >
   Edit
 </button>
-                          <button onClick={() => handleDeleteAddress(addr.id)} className="text-gray-400 hover:text-red-500 transition-colors">
+                          <button onClick={() => handleDeleteAddress(addr.id)} className="text-gray-500 hover:text-red-500 transition-colors">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -572,7 +574,7 @@ const handleSaveNotifications =
       <Link
         key={review.id}
         href={`/products/${review.product?.slug}`}
-        className="block border rounded-xl p-4 hover:shadow-md transition-all duration-200"
+        className="block border rounded-xl p-4 hover:border-accent transition-colors"
       >
         <div className="flex gap-4">
 
@@ -660,34 +662,29 @@ const handleSaveNotifications =
                       <p className="font-medium text-sm text-gray-900">{label}</p>
                       <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
                     </div>
-                 <div
-  onClick={() =>
-    setNotifications((prev) => ({
-      ...prev,
-      [key]:
-        !prev[
-          key as keyof typeof prev
-        ],
-    }))
-  }
-  className={`w-11 h-6 rounded-full transition-colors cursor-pointer ${
-    notifications[
-      key as keyof typeof notifications
-    ]
-      ? "bg-brand-600"
-      : "bg-gray-300"
-  } relative flex-shrink-0`}
->
-  <div
-    className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all ${
-      notifications[
-        key as keyof typeof notifications
-      ]
-        ? "left-6"
-        : "left-1"
-    }`}
-  />
-</div>
+                    {(() => {
+                      const on = notifications[key as keyof typeof notifications];
+                      return (
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={!!on}
+                          aria-label={label}
+                          onClick={() =>
+                            setNotifications((prev) => ({
+                              ...prev,
+                              [key]: !prev[key as keyof typeof prev],
+                            }))
+                          }
+                          className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${on ? "bg-accent" : "bg-field"}`}
+                        >
+                          <span
+                            aria-hidden
+                            className={`w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform motion-reduce:transition-none ${on ? "translate-x-5" : "translate-x-0"}`}
+                          />
+                        </button>
+                      );
+                    })()}
                   </div>
                 ))}
               </div>

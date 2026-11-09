@@ -44,11 +44,11 @@ export default function AdminLayout({
         items-center
         justify-center
 
-        bg-[#0b1020]
+        bg-admin-base
         text-white
         "
       >
-        Loading...
+        Loading…
       </div>
     );
   }
@@ -63,11 +63,11 @@ export default function AdminLayout({
     min-h-screen
     flex
 
-    bg-gradient-to-br
-    from-[#0b1020]
-    via-[#131827]
-    to-[#1b1634]
-    "
+    
+    
+    
+    
+     bg-admin-base"
     >
       <Sidebar />
 

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import NextImage from 'next/image';
-import { RotateCcw, ZoomIn, ZoomOut, Play, Pause, Expand } from 'lucide-react';
+import { RotateCcw, ZoomIn, ZoomOut, Play, Pause, Expand, X } from 'lucide-react';
 import { ProductImage } from '@/types';
 import { cn } from '@/lib/utils';
 
@@ -229,7 +229,7 @@ export default function Product360View({ images, productName }: Product360ViewPr
             key={img.id}
             onClick={() => goToIndex(i)}
             className={cn(
-              'relative flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition-all',
+              'relative flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition-colors',
               i === currentIndex ? 'border-brand-500 scale-105' : 'border-gray-200 hover:border-brand-300'
             )}
           >
@@ -241,10 +241,12 @@ export default function Product360View({ images, productName }: Product360ViewPr
       {/* Fullscreen close */}
       {isFullscreen && (
         <button
+          type="button"
           onClick={() => setIsFullscreen(false)}
-          className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 text-white p-2 rounded-full backdrop-blur-sm transition-colors z-10"
+          aria-label="Exit fullscreen"
+          className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
         >
-          ✕
+          <X className="w-5 h-5" aria-hidden />
         </button>
       )}
     </div>

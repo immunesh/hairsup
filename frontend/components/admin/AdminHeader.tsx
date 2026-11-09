@@ -30,8 +30,8 @@ export default function AdminHeader() {
       border-b
       border-white/10
 
-      bg-[#141827]/80
-      backdrop-blur-2xl
+      bg-admin-panel/80
+     
       "
     >
       {/* Left */}
@@ -42,16 +42,16 @@ export default function AdminHeader() {
           sm:text-xl
           font-bold
 
-          bg-gradient-to-r
-          from-cyan-300
-          via-brand-300
-          to-brand-200
+          
+          
+          
+          
 
-          bg-clip-text
-          text-transparent
+          
+          
 
           truncate
-          "
+           text-white"
         >
           Glamour Hair Studios Admin
         </h1>
@@ -79,7 +79,7 @@ export default function AdminHeader() {
           border
           border-white/10
 
-          backdrop-blur-xl
+         
           "
         >
           <div
@@ -91,10 +91,10 @@ export default function AdminHeader() {
 
             rounded-full
 
-            bg-gradient-to-br
-            from-cyan-400
-            via-blue-500
-            to-brand-600
+            
+            
+            
+            
 
             flex
             items-center
@@ -103,8 +103,9 @@ export default function AdminHeader() {
             font-semibold
             text-white
 
-            shadow-[0_0_20px_rgba(56,189,248,0.4)]
-            "
+            
+             bg-brand-600"
+            aria-hidden
           >
             A
           </div>
@@ -134,13 +135,13 @@ export default function AdminHeader() {
           text-red-300
           font-medium
 
-          transition-all
+          transition
           duration-300
 
           hover:bg-red-500/20
           hover:border-red-400/40
           hover:text-white
-          hover:shadow-[0_0_25px_rgba(239,68,68,0.35)]
+          
           "
         >
           <span className="hidden sm:inline">Logout</span>

@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, Sparkles, Mail, Lock, User, Phone, Loader2, Check } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Phone, Loader2, Check } from 'lucide-react';
+import Logo from '@/components/brand/Logo';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { useAuthStore, useUIStore } from '@/lib/store';
 import { authApi } from '@/lib/api';
@@ -64,7 +65,7 @@ export default function RegisterPage() {
       setAuth(user, accessToken, refreshToken);
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
-      showToast(`Welcome to Glamour Hair Studios, ${user.firstName}! 🎉`);
+      showToast(`Welcome to Glamour Hair Studios, ${user.firstName}!`);
       router.push('/');
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
@@ -91,21 +92,11 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-brand-950 via-brand-800 to-brand-700 p-12 flex-col justify-between relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="absolute rounded-full bg-white" style={{ width: `${60 + i * 50}px`, height: `${60 + i * 50}px`, top: `${i * 20}%`, right: `${i % 2 === 0 ? -20 : 30}%` }} />
-          ))}
-        </div>
-        <Link href="/" className="flex items-center gap-2 relative z-10">
-          <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
-          <span className="text-2xl font-display font-bold text-white">Glamour Hair Studios</span>
-        </Link>
+      <div className="hidden lg:flex lg:w-1/2 bg-deep p-12 flex-col justify-between">
+        <Link href="/" className="inline-flex self-start rounded-sm"><Logo tone="light" height={48} /></Link>
         <div className="relative z-10">
-          <h2 className="text-4xl font-display font-bold text-white mb-4">Join the Glamour Hair Studios Family</h2>
-          <p className="text-white/70 text-lg mb-8">Create your account and unlock the full Glamour Hair Studios experience.</p>
+          <h2 className="text-4xl font-display font-bold text-white mb-4">Join the Glamour Hair Studios family</h2>
+          <p className="text-white/70 text-lg mb-8">Create your account to save wigs, track orders and book consultations.</p>
           <div className="space-y-4">
             {['₹500 welcome discount on your first order', 'Early access to new arrivals & sales', 'Personalised style recommendations', 'Expert wig care tips & tutorials', 'Free virtual try-on for all members'].map((perk) => (
               <div key={perk} className="flex items-center gap-3 text-white/80">
@@ -117,18 +108,15 @@ export default function RegisterPage() {
             ))}
           </div>
         </div>
-        <p className="text-white/40 text-xs relative z-10">© 2025 Glamour Hair Studios Pvt. Ltd.</p>
+        <p className="text-white/70 text-xs">© 2025 Glamour Hair Studios Pvt. Ltd.</p>
       </div>
 
       {/* Right panel */}
       <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-16 bg-white overflow-y-auto">
         <div className="max-w-md w-full mx-auto">
-          <div className="lg:hidden flex items-center gap-2 mb-8">
-            <Sparkles className="w-6 h-6 text-brand-600" />
-            <span className="text-xl font-display font-bold text-gradient">Glamour Hair Studios</span>
-          </div>
+          <Link href="/" className="lg:hidden inline-flex mb-8 rounded-sm"><Logo height={40} /></Link>
 
-          <h1 className="text-3xl font-display font-bold text-gray-900 mb-2">Create Account</h1>
+          <h1 className="text-3xl font-display font-bold text-gray-900 mb-2">Create account</h1>
           <p className="text-gray-500 mb-8">
             Already have an account?{' '}
             <Link href="/login" className="text-brand-600 font-semibold hover:underline">Sign in</Link>
@@ -139,7 +127,7 @@ export default function RegisterPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">First Name</label>
                 <div className="relative">
-                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                   <input
                     value={form.firstName}
                     onChange={(e) => setForm({ ...form, firstName: e.target.value })}
@@ -162,9 +150,9 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input
                   type="email"
                   value={form.email}
@@ -177,9 +165,9 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone Number <span className="text-gray-400">(optional)</span></label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone Number <span className="text-gray-500">(optional)</span></label>
               <div className="relative">
-                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input
                   type="tel"
                   value={form.phone}
@@ -194,7 +182,7 @@ export default function RegisterPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input
                   type={showPass ? 'text' : 'password'}
                   value={form.password}
@@ -202,7 +190,7 @@ export default function RegisterPage() {
                   placeholder="Minimum 8 characters"
                   className={`input-field pl-10 pr-10 ${errors.password ? 'border-red-400' : ''}`}
                 />
-                <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500">
                   {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
@@ -210,7 +198,7 @@ export default function RegisterPage() {
                 <div className="mt-2">
                   <div className="flex gap-1 mb-1">
                     {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className={`h-1 flex-1 rounded-full transition-all ${i <= passwordStrength ? strengthColors[passwordStrength] : 'bg-gray-200'}`} />
+                      <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i <= passwordStrength ? strengthColors[passwordStrength] : 'bg-gray-200'}`} />
                     ))}
                   </div>
                   <p className={`text-xs ${passwordStrength >= 3 ? 'text-green-600' : passwordStrength === 2 ? 'text-yellow-600' : 'text-red-600'}`}>
@@ -224,7 +212,7 @@ export default function RegisterPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input
                   type="password"
                   value={form.confirm}
@@ -243,8 +231,8 @@ export default function RegisterPage() {
               <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 text-brand-600 rounded" />
               <span className="text-sm text-gray-600">
                 I agree to Glamour Hair Studios&apos;s{' '}
-                <Link href="/terms" className="text-brand-600 hover:underline">Terms of Service</Link> and{' '}
-                <Link href="/privacy" className="text-brand-600 hover:underline">Privacy Policy</Link>
+                <Link href="/terms" className="text-brand-600 hover:underline whitespace-nowrap">Terms of Service</Link> and{' '}
+                <Link href="/privacy" className="text-brand-600 hover:underline whitespace-nowrap">Privacy Policy</Link>
               </span>
             </label>
             {errors.terms && <p className="text-red-500 text-xs">{errors.terms}</p>}
@@ -256,14 +244,14 @@ export default function RegisterPage() {
 
           <div className="mt-6 relative">
             <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
-            <div className="relative flex justify-center text-xs text-gray-400 bg-white px-3">OR CONTINUE WITH</div>
+            <div className="relative flex justify-center text-xs text-gray-500 bg-white px-3">or continue with</div>
           </div>
 
           <div className="mt-4 flex justify-center">
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => showToast('Google sign-in failed', 'error')}
-              width="384"
+              width="320"
             />
           </div>
         </div>

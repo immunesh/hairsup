@@ -1,9 +1,24 @@
 import type { Metadata, Viewport } from 'next';
+import { Alegreya, Figtree } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import CartSidebar from '@/components/ui/CartSidebar';
-import Toast from '@/components/ui/Toast';
+
+// Alegreya carries the headings: a calligraphic serif with a hand in it, which
+// reads closer to a salon's signage than to a fashion masthead. Figtree is the
+// working face for everything else.
+const alegreya = Alegreya({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  style: ['normal'],
+  variable: '--font-alegreya',
+  display: 'swap',
+});
+
+const figtree = Figtree({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-figtree',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -19,6 +34,13 @@ export const metadata: Metadata = {
   authors: [{ name: 'Glamour Hair Studios' }],
   metadataBase: new URL('http://localhost:3000'),
   creator: 'Glamour Hair Studios',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/apple-icon.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_IN',
@@ -37,19 +59,14 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#c855f5',
+  // brand-950, the deep teal of the footer
+  themeColor: '#0f2a28',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
-<body>
-  {children}
-</body>
+    <html lang="en" className={`${alegreya.variable} ${figtree.variable}`} suppressHydrationWarning>
+      <body>{children}</body>
     </html>
   );
 }

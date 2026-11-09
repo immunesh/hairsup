@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authApi } from "@/lib/api";
+import { LogoMark } from "@/components/brand/Logo";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -46,80 +47,23 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div
-      className="
-    min-h-screen
-
-    flex
-    items-center
-    justify-center
-
-    bg-gradient-to-br
-    from-slate-950
-    via-slate-900
-    to-black
-
-    p-6
-    "
-    >
-      <div
-        className="
-      w-full
-      max-w-md
-
-      rounded-3xl
-
-      bg-white/5
-      backdrop-blur-xl
-
-      border
-      border-white/10
-
-      p-8
-
-      shadow-2xl
-      "
-      >
+    <div className="min-h-screen flex items-center justify-center p-6 bg-admin-base text-white">
+      <div className="w-full max-w-md rounded-2xl bg-admin-panel border border-white/10 p-8">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <h1
-            className="
-          text-4xl
-          font-bold
-
-          bg-gradient-to-r
-          from-cyan-400
-          via-brand-400
-          to-brand-300
-
-          bg-clip-text
-          text-transparent
-          "
-          >
-            Glamour Hair Studios Admin
+        <div className="mb-8">
+          <span className="inline-flex w-14 h-14 rounded-xl bg-white items-center justify-center mb-5">
+            <LogoMark size={36} />
+          </span>
+          <h1 className="text-3xl font-display font-bold text-white">
+            Glamour Hair Studios admin
           </h1>
 
-          <p className="text-slate-400 mt-3">Sign in to access dashboard</p>
+          <p className="text-slate-400 mt-2">Sign in to the dashboard.</p>
         </div>
 
         {/* Error */}
         {error && (
-          <div
-            className="
-          mb-5
-
-          p-4
-
-          rounded-2xl
-
-          bg-red-500/10
-
-          border
-          border-red-500/20
-
-          text-red-300
-          "
-          >
+          <div role="alert" className="mb-5 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300">
             {error}
           </div>
         )}
@@ -127,12 +71,14 @@ export default function AdminLoginPage() {
         <form onSubmit={handleLogin} className="space-y-5">
           {/* Email */}
           <div>
-            <label className="block text-sm text-slate-300 mb-2">
-              Email Address
+            <label htmlFor="admin-email" className="block text-sm text-slate-300 mb-2">
+              Email address
             </label>
 
             <input
+              id="admin-email"
               type="email"
+              autoComplete="username"
               placeholder="admin@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -147,7 +93,7 @@ export default function AdminLoginPage() {
             bg-white/5
 
             border
-            border-white/10
+            border-white/40
 
             text-white
 
@@ -158,19 +104,21 @@ export default function AdminLoginPage() {
             focus:ring-2
             focus:ring-cyan-500/20
 
-            transition-all
+            transition
             "
             />
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-sm text-slate-300 mb-2">
+            <label htmlFor="admin-password" className="block text-sm text-slate-300 mb-2">
               Password
             </label>
 
             <input
+              id="admin-password"
               type="password"
+              autoComplete="current-password"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -185,7 +133,7 @@ export default function AdminLoginPage() {
             bg-white/5
 
             border
-            border-white/10
+            border-white/40
 
             text-white
 
@@ -196,7 +144,7 @@ export default function AdminLoginPage() {
             focus:ring-2
             focus:ring-cyan-500/20
 
-            transition-all
+            transition
             "
             />
           </div>
@@ -212,31 +160,29 @@ export default function AdminLoginPage() {
 
           rounded-2xl
 
-          bg-gradient-to-r
-          from-cyan-500
-          to-brand-600
+          
+          
+          
 
           text-white
           font-semibold
 
-          transition-all
-          duration-300
-
-          hover:scale-[1.02]
+          transition-colors
+          focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mint
 
           disabled:opacity-50
           disabled:cursor-not-allowed
 
-          shadow-[0_0_25px_rgba(56,189,248,0.35)]
-          "
+          
+           bg-brand-600 hover:bg-brand-700 text-white"
           >
-            {loading ? "Logging in..." : "Login to Dashboard"}
+            {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
 
         {/* Footer */}
-        <div className="mt-8 text-center">
-          <p className="text-xs text-slate-500">Glamour Hair Studios Administration Panel</p>
+        <div className="mt-8">
+          <p className="text-xs text-slate-400">Glamour Hair Studios administration</p>
         </div>
       </div>
     </div>

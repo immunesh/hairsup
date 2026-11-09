@@ -78,7 +78,7 @@ export default function AdminUsersPage() {
   };
 
   if (loading) {
-    return <div className="p-6">Loading users...</div>;
+    return <div className="p-6">Loading users…</div>;
   }
 
   return (
@@ -122,7 +122,7 @@ export default function AdminUsersPage() {
       <div className="mb-6">
         <input
           type="text"
-          placeholder="Search users..."
+          placeholder="Search users…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="
@@ -136,7 +136,7 @@ export default function AdminUsersPage() {
         bg-white/5
 
         border
-        border-white/10
+        border-white/40
 
         text-white
 
@@ -154,7 +154,7 @@ export default function AdminUsersPage() {
       rounded-3xl
 
       bg-white/5
-      backdrop-blur-xl
+     
 
       border
       border-white/10
@@ -212,7 +212,7 @@ export default function AdminUsersPage() {
 
                   hover:bg-white/5
 
-                  transition-all
+                  transition
                   duration-300
                   "
                   >
@@ -243,10 +243,10 @@ export default function AdminUsersPage() {
 
                       rounded-xl
 
-                      bg-[#131827]
+                      bg-admin-raised
 
                       border
-                      border-white/10
+                      border-white/40
 
                       text-white
 
@@ -286,7 +286,7 @@ export default function AdminUsersPage() {
                       hover:bg-red-500/30
                       hover:text-white
 
-                      transition-all
+                      transition
                       duration-300
                       "
                       >

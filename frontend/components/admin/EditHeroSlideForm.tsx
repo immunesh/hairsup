@@ -87,7 +87,7 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
         <input
           value={form.headline}
           onChange={(e) => setForm({ ...form, headline: e.target.value })}
-          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
 
@@ -99,7 +99,7 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
         <input
           value={form.subheadline}
           onChange={(e) => setForm({ ...form, subheadline: e.target.value })}
-          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
 
@@ -112,7 +112,7 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
           rows={4}
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
-          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
 
@@ -124,7 +124,7 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
         <input
           type="file"
           accept="image/*"
-          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-300"
+          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-slate-300"
           onChange={(e) => {
             const file = e.target.files?.[0];
 
@@ -152,7 +152,7 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
         <input
           value={form.badge}
           onChange={(e) => setForm({ ...form, badge: e.target.value })}
-          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
 
@@ -164,7 +164,7 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
         <input
           value={form.tag}
           onChange={(e) => setForm({ ...form, tag: e.target.value })}
-          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
 
@@ -177,7 +177,7 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
           <input
             value={form.cta}
             onChange={(e) => setForm({ ...form, cta: e.target.value })}
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -189,7 +189,7 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
           <input
             value={form.ctaLink}
             onChange={(e) => setForm({ ...form, ctaLink: e.target.value })}
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -201,7 +201,7 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
           <input
             value={form.ctaSecondary}
             onChange={(e) => setForm({ ...form, ctaSecondary: e.target.value })}
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -215,7 +215,7 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
             onChange={(e) =>
               setForm({ ...form, ctaSecondaryLink: e.target.value })
             }
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
           />
         </div>
       </div>
@@ -228,7 +228,7 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
         <input
           value={form.accent}
           onChange={(e) => setForm({ ...form, accent: e.target.value })}
-          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+          className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
         />
       </div>
 
@@ -244,7 +244,7 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
             onChange={(e) =>
               setForm({ ...form, order: Number(e.target.value) })
             }
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -275,25 +275,25 @@ export default function EditHeroSlideForm({ heroSlide }: { heroSlide: any }) {
 
         rounded-2xl
 
-        bg-gradient-to-r
-        from-cyan-500
-        to-brand-600
+        
+        
+        
 
         text-white
         font-medium
 
-        transition-all
+        transition
         duration-300
 
         hover:scale-105
 
-        shadow-[0_0_25px_rgba(56,189,248,0.35)]
+        
 
         disabled:opacity-50
         disabled:hover:scale-100
-        "
+         bg-brand-600 hover:bg-brand-700 text-white"
       >
-        {loading ? "Updating..." : "Update Hero Slide"}
+        {loading ? "Updating…" : "Update Hero Slide"}
       </button>
     </form>
   );

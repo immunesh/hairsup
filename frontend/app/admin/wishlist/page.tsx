@@ -24,7 +24,7 @@ export default function AdminWishlistPage() {
   };
 
   if (loading) {
-    return <div className="p-6">Loading wishlist...</div>;
+    return <div className="p-6">Loading wishlist…</div>;
   }
 
   return (
@@ -70,7 +70,7 @@ export default function AdminWishlistPage() {
       rounded-3xl
 
       bg-white/5
-      backdrop-blur-xl
+     
 
       border
       border-white/10
@@ -128,7 +128,7 @@ export default function AdminWishlistPage() {
 
                   hover:bg-white/5
 
-                  transition-all
+                  transition
                   duration-300
                   "
                   >

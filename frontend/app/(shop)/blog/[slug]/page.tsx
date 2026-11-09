@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, User, ArrowLeft, Share2, Heart, Tag } from 'lucide-react';
+import { Heart } from 'lucide-react';
+import { getAllBlogs } from '@/lib/blog-api';
+import { Crumbs } from '@/components/shop/Service';
+import ShareButton from '@/components/shop/ShareButton';
 
 const BLOG_CONTENT: Record<string, { title: string; author: string; date: string; readTime: string; tag: string; image: string; content: string }> = {
   'ultimate-guide-choosing-first-wig': {
@@ -13,7 +16,7 @@ const BLOG_CONTENT: Record<string, { title: string; author: string; date: string
     image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&q=80',
     content: `
       <h2>Finding Your Perfect Wig</h2>
-      <p>Choosing your first wig is an exciting but sometimes overwhelming experience. Whether you're experiencing hair loss due to medical reasons, wanting to switch up your style, or simply curious about wigs — this guide will walk you through everything you need to know.</p>
+      <p>Choosing your first wig is an exciting but sometimes overwhelming experience. Whether you're experiencing hair loss due to medical reasons, wanting to switch up your style, or simply curious about wigs, this guide will walk you through everything you need to know.</p>
 
       <h3>Step 1: Know Your Reason</h3>
       <p>Understanding why you want a wig helps you choose the right type. Are you dealing with alopecia or chemotherapy-related hair loss? You'll want a soft, gentle cap with a breathable base. Want to experiment with styles? A synthetic wig with pre-styled curls is perfect and low-maintenance.</p>
@@ -32,14 +35,14 @@ const BLOG_CONTENT: Record<string, { title: string; author: string; date: string
       <p>Measure the circumference of your head: starting at your forehead hairline, go around your head, and back to the start. The average head circumference is 53–58cm. Most wigs have adjustable straps to help achieve a snug fit.</p>
 
       <h3>Step 5: Use Virtual Try-On</h3>
-      <p>Glamour Hair Studios's free virtual try-on technology lets you see exactly how any wig looks on your face before you buy. Visit our Try-On page and use your device's camera — no app download needed!</p>
+      <p>Glamour Hair Studios's free virtual try-on technology lets you see exactly how any wig looks on your face before you buy. Visit our Try-On page and use your device's camera; no app download needed!</p>
 
       <h2>Common Mistakes to Avoid</h2>
       <ul>
-        <li>Don't skip the cap size measurement — a poorly fitting wig is uncomfortable and looks unnatural</li>
+        <li>Don't skip the cap size measurement: a poorly fitting wig is uncomfortable and looks unnatural</li>
         <li>Don't wash a human hair wig more than once every 8–10 wears</li>
         <li>Don't apply heat to synthetic wigs unless they're labelled as heat-resistant</li>
-        <li>Don't store your wig without a wig stand — this helps maintain the shape</li>
+        <li>Don't store your wig without a wig stand; it helps maintain the shape</li>
       </ul>
 
       <h2>Ready to Take the Next Step?</h2>
@@ -63,16 +66,16 @@ const BLOG_CONTENT: Record<string, { title: string; author: string; date: string
       <h3>The Right Way to Wash</h3>
       <ol>
         <li>Gently detangle with a wide-tooth comb before washing, starting from the tips and working up to the roots</li>
-        <li>Fill a basin with cool to lukewarm water — never hot</li>
+        <li>Fill a basin with cool to lukewarm water, never hot</li>
         <li>Add a sulphate-free, moisturising shampoo</li>
-        <li>Submerge the wig and gently swish — do not scrub or wring</li>
+        <li>Submerge the wig and gently swish; do not scrub or wring</li>
         <li>Rinse thoroughly under running cool water</li>
         <li>Apply a deep conditioning mask from mid-lengths to ends, leave for 10–15 minutes</li>
         <li>Rinse out completely</li>
       </ol>
 
       <h3>Drying Your Wig</h3>
-      <p>Pat gently with a microfibre towel — never rub. Place on a wig stand and allow to air dry completely. If you must blow dry, use the lowest heat setting with a diffuser attachment and a heat protectant spray. Never blow dry on high heat.</p>
+      <p>Pat gently with a microfibre towel; never rub. Place on a wig stand and allow to air dry completely. If you must blow dry, use the lowest heat setting with a diffuser attachment and a heat protectant spray. Never blow dry on high heat.</p>
 
       <h3>Styling Tips</h3>
       <p>Always use heat protectant before any heat styling. For human hair wigs, keep your flat iron or curling wand below 180°C. Avoid the roots and lace when applying heat. Deep condition after any heat styling session to restore moisture.</p>
@@ -94,12 +97,12 @@ const BLOG_CONTENT: Record<string, { title: string; author: string; date: string
       <p>It's time to change that narrative.</p>
 
       <h3>Modern Hair Systems Are Nothing Like Your Grandfather's Toupee</h3>
-      <p>The word "toupee" conjures images of obvious, unconvincing hairpieces — the butt of countless jokes. But today's hair systems bear no resemblance to those relics. Swiss lace technology, pioneered in the high-end theatre industry and refined for everyday wear, creates a base so thin it becomes invisible on your scalp.</p>
-      <p>At Glamour Hair Studios, our flagship Swiss Lace Hair System uses a base that is 0.03mm thick — thinner than a human hair. The hair is individually hand-tied using the same method as professional hair extensions, creating movement that is completely indistinguishable from natural hair growth.</p>
+      <p>The word "toupee" conjures images of obvious, unconvincing hairpieces, the butt of countless jokes. But today's hair systems bear no resemblance to those relics. Swiss lace technology, pioneered in the high-end theatre industry and refined for everyday wear, creates a base so thin it becomes invisible on your scalp.</p>
+      <p>At Glamour Hair Studios, our flagship Swiss Lace Hair System uses a base that is 0.03mm thick, thinner than a human hair. The hair is individually hand-tied using the same method as professional hair extensions, creating movement that is completely indistinguishable from natural hair growth.</p>
 
       <h3>Who Wears Hair Systems?</h3>
-      <p>The reality might surprise you. Actors, executives, athletes, teachers, and doctors — men from every walk of life are using hair systems to present their best selves. Our customers include a Supreme Court judge, three IPL cricketers, and several prominent Bollywood actors.</p>
-      <p>The difference? They chose to keep it private — because a great hair system means nobody knows.</p>
+      <p>The reality might surprise you. Actors, executives, athletes, teachers, and doctors: men from every walk of life are using hair systems to present their best selves. Our customers include a Supreme Court judge, three IPL cricketers, and several prominent Bollywood actors.</p>
+      <p>The difference? They chose to keep it private, because a great hair system means nobody knows.</p>
 
       <h3>The Confidence Multiplier</h3>
       <p>A study published in the British Journal of Dermatology found that hair loss significantly impacts men's self-esteem, social confidence, and professional performance. Many men report avoiding networking events, dates, and photographs due to hair loss anxiety.</p>
@@ -107,21 +110,58 @@ const BLOG_CONTENT: Record<string, { title: string; author: string; date: string
 
       <h3>The Glamour Hair Studios Approach</h3>
       <p>We don't just sell a hairpiece. We offer a comprehensive consultation where our trichologists analyse your hair loss pattern, natural hair colour, texture, and scalp characteristics to recommend the perfect system and colour match. We then teach you the proper attachment technique and ongoing care routine.</p>
-      <p>The result is a hair system that moves with you, survives workouts, swimming, and intimacy — and that nobody will detect unless you choose to tell them.</p>
+      <p>The result is a hair system that moves with you, survives workouts, swimming, and intimacy, and that nobody will detect unless you choose to tell them.</p>
     `,
   },
 };
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const post = BLOG_CONTENT[params.slug];
+type Article = {
+  title: string;
+  author: string;
+  date: string;
+  readTime: string;
+  tag: string;
+  image?: string;
+  html?: string;
+  paragraphs?: string[];
+};
+
+/** A static guide by slug, or a post published from the admin blog. */
+async function findPost(slug: string): Promise<Article | null> {
+  const local = BLOG_CONTENT[slug];
+  if (local) return { ...local, html: local.content };
+  const remote = (await getAllBlogs()).find((b: { slug?: string }) => b.slug === slug);
+  if (!remote) return null;
+  const text: string = remote.content || '';
+  let tag = 'Blog';
+  try {
+    const tags = typeof remote.tags === 'string' ? JSON.parse(remote.tags) : remote.tags;
+    if (Array.isArray(tags) && tags[0]) tag = String(tags[0]);
+  } catch { /* tags stay "Blog" */ }
   return {
-    title: post ? `${post.title} | Glamour Hair Studios Blog` : 'Blog Post | Glamour Hair Studios',
-    description: post ? `${post.author} — ${post.readTime}` : '',
+    title: remote.title,
+    author: remote.author || 'Glamour Hair Studios',
+    date: remote.createdAt
+      ? new Date(remote.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+      : '',
+    readTime: `${Math.max(1, Math.round(text.split(/\s+/).length / 200))} min read`,
+    tag,
+    image: remote.image,
+    paragraphs: text.split(/\n{2,}/).map((p: string) => p.trim()).filter(Boolean),
   };
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = BLOG_CONTENT[params.slug] || BLOG_CONTENT['ultimate-guide-choosing-first-wig'];
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const post = await findPost(params.slug);
+  return {
+    title: post ? `${post.title} | Glamour Hair Studios Blog` : 'Blog Post | Glamour Hair Studios',
+    description: post ? `${post.author}, ${post.readTime}` : '',
+  };
+}
+
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  const fallback = BLOG_CONTENT['ultimate-guide-choosing-first-wig'];
+  const post = (await findPost(params.slug)) || { ...fallback, html: fallback.content };
 
   const relatedPosts = Object.entries(BLOG_CONTENT)
     .filter(([slug]) => slug !== params.slug)
@@ -129,95 +169,97 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
   return (
     <div>
-      {/* Hero */}
-      <div className="relative h-80 md:h-96 overflow-hidden">
-        <Image src={post.image} alt={post.title} fill className="object-cover object-top" />
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-gray-900/50 to-transparent" />
-        <div className="relative container-custom h-full flex flex-col justify-end pb-8 text-white">
-          <Link href="/blog" className="flex items-center gap-2 text-white/60 hover:text-white text-sm mb-4 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back to Blog
-          </Link>
-          <span className="badge bg-brand-600 text-white text-xs mb-3">{post.tag}</span>
-          <h1 className="text-3xl md:text-4xl font-display font-bold max-w-3xl leading-tight">{post.title}</h1>
-          <div className="flex items-center gap-4 mt-4 text-white/70 text-sm flex-wrap">
-            <span className="flex items-center gap-1.5"><User className="w-3.5 h-3.5" />{post.author}</span>
-            <span>·</span>
-            <span>{post.date}</span>
-            <span>·</span>
-            <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{post.readTime}</span>
+      <header className="bg-paper">
+        <div className="container-custom pt-10 lg:pt-16 pb-10">
+          <Crumbs crumbs={[{ label: 'Home', href: '/' }, { label: 'Blog', href: '/blog' }, { label: post.title, href: `/blog/${params.slug}` }]} />
+          <div className="max-w-3xl">
+            <p className="text-[0.9375rem] font-medium text-accent">{post.tag}</p>
+            <h1 className="font-display text-[length:var(--text-display-s)] leading-[1.05] tracking-[var(--tracking-display)] text-ink mt-3 [overflow-wrap:break-word]">
+              {post.title}
+            </h1>
+            <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-[0.9375rem]">
+              <div className="flex gap-2"><dt className="text-ink-muted">By</dt><dd className="text-ink">{post.author}</dd></div>
+              {post.date && <div className="flex gap-2"><dt className="text-ink-muted">Published</dt><dd className="text-ink">{post.date}</dd></div>}
+              <div className="flex gap-2"><dt className="visually-hidden">Reading time</dt><dd className="text-ink-soft">{post.readTime}</dd></div>
+            </dl>
           </div>
         </div>
-      </div>
-
-      <div className="container-custom py-12">
-        <div className="grid lg:grid-cols-3 gap-10">
-          {/* Article */}
-          <article className="lg:col-span-2">
-            <div
-              className="prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-p:text-gray-600 prose-p:leading-relaxed prose-li:text-gray-600 prose-a:text-brand-600 prose-h2:text-2xl prose-h3:text-xl"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
-
-            {/* Share */}
-            <div className="mt-10 pt-8 border-t border-gray-100 flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-2">
-                <Tag className="w-4 h-4 text-gray-400" />
-                <span className={`badge text-xs ${post.tag === 'Care Tips' ? 'bg-mist text-ink-soft' : 'bg-brand-100 text-brand-700'}`}>{post.tag}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <button className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-red-500 transition-colors"><Heart className="w-4 h-4" /> Save</button>
-                <button className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition-colors"><Share2 className="w-4 h-4" /> Share</button>
-              </div>
-            </div>
-
-            {/* Author */}
-            <div className="mt-8 bg-brand-50 rounded-2xl p-6 border border-brand-100">
-              <div className="flex items-start gap-4">
-                <div className="w-14 h-14 bg-brand-200 rounded-full flex items-center justify-center text-brand-800 font-bold text-lg flex-shrink-0">
-                  {post.author[0]}
-                </div>
-                <div>
-                  <p className="font-bold text-gray-900">{post.author}</p>
-                  <p className="text-sm text-gray-600 mt-1">
-                    Expert contributor at Glamour Hair Studios. All articles are reviewed by our certified trichologist team.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          {/* Sidebar */}
-          <aside className="space-y-6">
-            <div className="card p-5">
-              <h3 className="font-bold text-gray-900 mb-4">More Articles</h3>
-              <div className="space-y-4">
-                {relatedPosts.map(([slug, p]) => (
-                  <Link key={slug} href={`/blog/${slug}`} className="flex gap-3 group">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
-                      <Image src={p.image} alt={p.title} fill className="object-cover" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-brand-600 transition-colors">{p.title}</p>
-                      <p className="text-xs text-gray-400 mt-1">{p.readTime}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div className="card p-5 bg-gradient-to-br from-brand-50 to-brand-50 border-brand-100">
-              <h3 className="font-bold text-gray-900 mb-2">Try On Any Wig — Free</h3>
-              <p className="text-sm text-gray-600 mb-4">See how any Glamour Hair Studios wig looks on you using our AI-powered virtual try-on tool.</p>
-              <Link href="/try-on" className="btn-primary text-sm py-2.5 w-full text-center block">Launch Try-On</Link>
-            </div>
-
-            <div className="card p-5">
-              <h3 className="font-bold text-gray-900 mb-2">Get Expert Advice</h3>
-              <p className="text-sm text-gray-600 mb-4">Not sure which wig is right for you? Book a free consultation with our certified hair specialists.</p>
-              <Link href="/contact" className="btn-secondary text-sm py-2.5 w-full text-center block">Book Consultation</Link>
-            </div>
-          </aside>
+        <div className="container-custom">
+          <div data-slot={`blog-${params.slug}-cover`} className="relative aspect-[16/9] lg:aspect-[21/9] rounded-card overflow-hidden bg-paper-3">
+            {post.image && (
+              <Image src={post.image} alt="" fill priority sizes="(min-width: 1440px) 1312px, 100vw" className="object-cover" />
+            )}
+          </div>
         </div>
+      </header>
+
+      <div className="container-custom section-md grid gap-14 lg:grid-cols-12">
+        <article className="lg:col-span-8 min-w-0">
+          {post.html ? (
+            <div className="article" dangerouslySetInnerHTML={{ __html: post.html }} />
+          ) : (
+            <div className="article">
+              {post.paragraphs?.map((p, i) => <p key={i}>{p}</p>)}
+            </div>
+          )}
+
+          <div className="mt-12 pt-6 border-t border-rule flex items-center justify-between flex-wrap gap-4">
+            <p className="text-[0.9375rem] text-ink-soft">
+              Filed under <span className="text-ink font-medium">{post.tag}</span>
+            </p>
+            <div className="flex items-center gap-4">
+              <button type="button" className="inline-flex items-center gap-2 min-h-[44px] px-1 text-[0.9375rem] text-ink-soft hover:text-accent transition-colors rounded-sm">
+                <Heart className="w-4 h-4" aria-hidden /> Save
+              </button>
+              <ShareButton title={post.title} />
+            </div>
+          </div>
+
+          <div className="mt-8 grid grid-cols-[3.5rem_minmax(0,1fr)] gap-4 items-start">
+            <span aria-hidden className="w-14 h-14 rounded-full bg-paper-3 grid place-items-center font-display text-[1.5rem] text-ink">
+              {post.author[0]}
+            </span>
+            <div>
+              <p className="font-semibold text-ink">{post.author}</p>
+              <p className="text-[0.9375rem] text-ink-soft mt-1 leading-[1.6] max-w-[56ch]">
+                Expert contributor at Glamour Hair Studios. All articles are reviewed by our certified trichologist team.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <aside className="lg:col-span-4 lg:col-start-9 xl:col-span-3 xl:col-start-10 min-w-0 grid gap-10 content-start">
+          <nav aria-labelledby="more-articles-h">
+            <h2 id="more-articles-h" className="font-semibold text-ink text-[1.0625rem]">More articles</h2>
+            <ul className="mt-3 border-t border-rule">
+              {relatedPosts.map(([slug, p]) => (
+                <li key={slug} className="border-b border-rule">
+                  <Link href={`/blog/${slug}`} className="group grid grid-cols-[4rem_minmax(0,1fr)] gap-3 py-4 rounded-sm">
+                    <span className="relative w-16 h-16 rounded-card overflow-hidden bg-paper-3">
+                      <Image src={p.image} alt="" fill sizes="64px" className="object-cover" />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[0.9375rem] font-medium text-ink leading-snug line-clamp-2 group-hover:text-accent transition-colors">{p.title}</span>
+                      <span className="block text-[0.875rem] text-ink-muted mt-1">{p.readTime}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="bg-paper-2 rounded-card p-6">
+            <h2 className="font-display text-[length:var(--text-xl)] text-ink leading-tight">Try on any wig, free</h2>
+            <p className="text-[0.9375rem] text-ink-soft leading-[1.6] mt-2">See how any Glamour Hair Studios wig looks on you using our AI-powered virtual try-on tool.</p>
+            <Link href="/try-on" className="btn-primary mt-5 w-full justify-center whitespace-nowrap">Launch Try-On</Link>
+          </div>
+
+          <div>
+            <h2 className="font-display text-[length:var(--text-xl)] text-ink leading-tight">Get expert advice</h2>
+            <p className="text-[0.9375rem] text-ink-soft leading-[1.6] mt-2">Not sure which wig is right for you? Book a free consultation with our certified hair specialists.</p>
+            <Link href="/contact" className="btn-secondary mt-5 w-full justify-center whitespace-nowrap">Book Consultation</Link>
+          </div>
+        </aside>
       </div>
     </div>
   );

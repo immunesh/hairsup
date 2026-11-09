@@ -3,7 +3,8 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { CheckCircle2, XCircle, Loader2, Sparkles, ArrowRight } from 'lucide-react';
+import { CheckCircle2, XCircle, Loader2, ArrowRight } from 'lucide-react';
+import { LogoMark } from '@/components/brand/Logo';
 import { authApi } from '@/lib/api';
 import { useUIStore } from '@/lib/store';
 
@@ -41,9 +42,7 @@ function VerifyEmailContent() {
   return (
     <div className="max-w-md w-full mx-auto text-center">
       <div className="flex justify-center mb-6">
-        <div className="w-12 h-12 bg-brand-50 rounded-2xl flex items-center justify-center">
-          <Sparkles className="w-6 h-6 text-brand-600 animate-pulse" />
-        </div>
+        <LogoMark size={48} />
       </div>
 
       {status === 'loading' && (
@@ -51,7 +50,7 @@ function VerifyEmailContent() {
           <div className="flex justify-center">
             <Loader2 className="w-12 h-12 text-brand-600 animate-spin" />
           </div>
-          <h1 className="text-2xl font-display font-bold text-gray-900">Verifying Email</h1>
+          <h1 className="text-2xl font-display font-bold text-gray-900">Verifying email</h1>
           <p className="text-gray-500">{message}</p>
         </div>
       )}
@@ -85,7 +84,7 @@ function VerifyEmailContent() {
               Back to Registration
             </Link>
             <Link href="/login" className="block text-sm text-brand-600 font-semibold hover:underline">
-              Back to Login
+              Back to sign in
             </Link>
           </div>
         </div>
@@ -96,15 +95,12 @@ function VerifyEmailContent() {
 
 export default function VerifyEmailPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-12 bg-gradient-to-br from-brand-950 via-brand-800 to-brand-700">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 border border-gray-100 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5 pointer-events-none">
-          <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-brand-600" />
-        </div>
+    <div className="min-h-screen flex items-center justify-center px-6 py-12 bg-paper-2">
+      <div className="max-w-md w-full bg-white rounded-card p-8 border border-rule relative overflow-hidden">
         <Suspense fallback={
           <div className="max-w-md w-full mx-auto text-center space-y-4">
             <div className="flex justify-center"><Loader2 className="w-12 h-12 text-brand-600 animate-spin" /></div>
-            <h1 className="text-2xl font-display font-bold text-gray-900">Loading...</h1>
+            <h1 className="text-2xl font-display font-bold text-gray-900">Loading…</h1>
           </div>
         }>
           <VerifyEmailContent />

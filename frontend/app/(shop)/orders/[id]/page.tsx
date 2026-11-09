@@ -51,7 +51,7 @@ export default function OrderDetailPage() {
   if (loading) {
     return (
       <div className="container-custom py-10">
-        Loading...
+        Loading…
       </div>
     );
   }
@@ -97,16 +97,16 @@ export default function OrderDetailPage() {
 
               <div className="grid sm:grid-cols-3 gap-4 mb-5">
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Courier</p>
+                  <p className="text-sm text-gray-500">Courier</p>
                   <p className="text-base font-bold text-gray-900 mt-0.5">{order.courier || '—'}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Tracking Number</p>
+                  <p className="text-sm text-gray-500">Tracking number</p>
                   <p className="text-base font-bold text-gray-900 mt-0.5 break-all">{order.awbNumber || '—'}</p>
                 </div>
                 {order.estimatedDelivery && (
                   <div>
-                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Estimated Delivery</p>
+                    <p className="text-sm text-gray-500">Estimated delivery</p>
                     <p className="text-base font-bold text-gray-900 mt-0.5">{formatDate(order.estimatedDelivery)}</p>
                   </div>
                 )}
@@ -126,8 +126,8 @@ export default function OrderDetailPage() {
           ) : (
             <div className="card p-6 flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Tracking Number</p>
-                <p className="text-base font-semibold text-gray-400 mt-0.5">Not Available Yet</p>
+                <p className="text-sm text-gray-500">Tracking number</p>
+                <p className="text-base font-semibold text-gray-500 mt-0.5">Not Available Yet</p>
               </div>
               <Truck className="w-8 h-8 text-gray-300" />
             </div>
@@ -160,11 +160,11 @@ export default function OrderDetailPage() {
                         )}
                       </div>
                       <div className={cn('flex-1 flex items-center justify-between', !isLast && 'pb-5')}>
-                        <p className={cn('font-semibold text-sm', isComplete ? 'text-gray-900' : 'text-gray-400')}>
+                        <p className={cn('font-semibold text-sm', isComplete ? 'text-gray-900' : 'text-gray-500')}>
                           {ORDER_STATUS_LABELS[stageStatus]}
                         </p>
                         {event && (
-                          <p className="text-xs text-gray-400">{formatDateTime(event.createdAt)}</p>
+                          <p className="text-xs text-gray-500">{formatDateTime(event.createdAt)}</p>
                         )}
                       </div>
                     </div>
@@ -175,14 +175,14 @@ export default function OrderDetailPage() {
               {/* Activity log */}
               {order.tracking.length > 0 && (
                 <div className="border-t border-gray-100 pt-5">
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Activity Log</p>
+                  <h3 className="text-[0.9375rem] font-semibold text-ink mb-4">Activity log</h3>
                   <div className="space-y-4">
                     {order.tracking.map((event, i) => (
                       <div key={event.id} className="flex gap-4">
                         <div className="flex flex-col items-center">
                           <div className={cn(
                             'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
-                            i === 0 ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-400'
+                            i === 0 ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-500'
                           )}>
                             {i === 0 ? <Truck className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
                           </div>
@@ -192,8 +192,8 @@ export default function OrderDetailPage() {
                           <p className={cn('font-semibold text-sm', i === 0 ? 'text-brand-700' : 'text-gray-600')}>
                             {event.message}
                           </p>
-                          {event.location && <p className="text-xs text-gray-500 mt-0.5">📍 {event.location}</p>}
-                          <p className="text-xs text-gray-400 mt-1">{formatDateTime(event.createdAt)}</p>
+                          {event.location && <p className="text-xs text-gray-500 mt-0.5">{event.location}</p>}
+                          <p className="text-xs text-gray-500 mt-1">{formatDateTime(event.createdAt)}</p>
                         </div>
                       </div>
                     ))}
@@ -229,7 +229,7 @@ export default function OrderDetailPage() {
                   </div>
                   <div className="text-right">
                     <p className="font-bold">{formatPrice(item.price * item.quantity)}</p>
-                    <p className="text-xs text-gray-400">{formatPrice(item.price)} each</p>
+                    <p className="text-xs text-gray-500">{formatPrice(item.price)} each</p>
                   </div>
                 </div>
               ))}
@@ -249,8 +249,8 @@ export default function OrderDetailPage() {
               <p>{order.address.line1}</p>
               {order.address.line2 && <p>{order.address.line2}</p>}
               <p>{order.address.city}, {order.address.state}</p>
-              <p>{order.address.pincode} — {order.address.country}</p>
-              <p className="mt-1">📞 {order.address.phone}</p>
+              <p>{order.address.pincode}, {order.address.country}</p>
+              <p className="mt-1">Phone: {order.address.phone}</p>
             </div>
           </div>
 
@@ -309,7 +309,7 @@ export default function OrderDetailPage() {
             )}
 
             <Link href="/contact" className="block text-center text-sm text-brand-600 hover:underline">
-              Need help with this order? →
+              Get help with this order
             </Link>
           </div>
         </div>

@@ -43,20 +43,20 @@ export default async function CategoriesPage() {
 
         rounded-2xl
 
-        bg-gradient-to-r
-        from-cyan-500
-        to-brand-600
+        
+        
+        
 
         text-white
         font-medium
 
-        transition-all
+        transition
         duration-300
 
         hover:scale-105
 
-        shadow-[0_0_25px_rgba(56,189,248,0.35)]
-        "
+        
+         bg-brand-600 hover:bg-brand-700 text-white"
         >
           + Add Category
         </Link>
@@ -69,7 +69,7 @@ export default async function CategoriesPage() {
       border
       border-white/10
       bg-white/5
-      backdrop-blur-xl
+     
       overflow-hidden
       "
       >
@@ -127,7 +127,7 @@ export default async function CategoriesPage() {
 
                   hover:bg-white/5
 
-                  transition-all
+                  transition
                   duration-300
                   "
                   >
@@ -141,7 +141,7 @@ export default async function CategoriesPage() {
                         />
                       ) : (
                         <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 text-xs">
-                          —
+                          No image
                         </div>
                       )}
                     </td>
@@ -184,7 +184,7 @@ export default async function CategoriesPage() {
                           {category.gender}
                         </span>
                       ) : (
-                        <span className="text-slate-500">—</span>
+                        <span className="text-slate-500">Any</span>
                       )}
                     </td>
 
@@ -240,10 +240,10 @@ export default async function CategoriesPage() {
                       hover:bg-cyan-500/30
                       hover:text-white
 
-                      transition-all
+                      transition
                       duration-300
 
-                      hover:shadow-[0_0_15px_rgba(34,211,238,0.25)]
+                      
                       "
                         >
                           Edit

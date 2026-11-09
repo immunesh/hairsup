@@ -116,24 +116,27 @@ function FilterSection({ group, filters, onChange }: {
   };
 
   return (
-    <div className="border-b border-gray-100 pb-4 mb-4">
+    <div className="border-b border-rule pb-4 mb-4">
       <button
+        type="button"
         onClick={() => setOpen(!open)}
-        className="flex items-center justify-between w-full text-left mb-3"
+        aria-expanded={open}
+        className="flex items-center justify-between w-full min-h-[44px] text-left rounded-sm"
       >
-        <span className="font-semibold text-gray-900 text-sm">{group.label}</span>
-        <ChevronDown className={cn('w-4 h-4 text-gray-500 transition-transform', open && 'rotate-180')} />
+        <span className="font-semibold text-ink text-[0.9375rem]">{group.label}</span>
+        <ChevronDown className={cn('w-4 h-4 text-ink-muted transition-transform', open && 'rotate-180')} aria-hidden />
       </button>
       {open && (
-        <div className="space-y-2">
+        <div className="space-y-1">
           {group.options.map((opt) => {
             const checked = selectedArr.includes(opt.value);
             return (
-              <label key={opt.value} className="flex items-center gap-2.5 cursor-pointer group">
+              <label key={opt.value} className="flex items-center gap-2.5 min-h-[36px] cursor-pointer group">
                 <div className={cn(
-                  'w-4 h-4 rounded border-2 flex items-center justify-center transition-all',
+                  'w-4 h-4 rounded border-2 flex items-center justify-center transition-colors',
                   group.type === 'radio' ? 'rounded-full' : 'rounded',
-                  checked ? 'bg-brand-600 border-brand-600' : 'border-gray-300 group-hover:border-brand-400'
+                  checked ? 'bg-accent border-accent' : 'border-rule group-hover:border-ink-muted',
+                  'has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent'
                 )}>
                   {checked && <div className={cn('bg-white', group.type === 'radio' ? 'w-1.5 h-1.5 rounded-full' : 'w-2 h-1.5')} />}
                   <input
@@ -144,8 +147,8 @@ function FilterSection({ group, filters, onChange }: {
                   />
                 </div>
                 <span className={cn(
-                  'text-sm transition-colors',
-                  checked ? 'text-brand-600 font-medium' : 'text-gray-600 group-hover:text-gray-900'
+                  'text-[0.9375rem] transition-colors',
+                  checked ? 'text-ink font-medium' : 'text-ink-soft group-hover:text-ink'
                 )}>
                   {opt.label}
                 </span>
@@ -162,23 +165,24 @@ export default function FilterSidebar({ filters, onChange, onClear }: FilterSide
   const activeCount = Object.values(filters).filter(Boolean).length;
 
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 sticky top-24">
+    <div>
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <SlidersHorizontal className="w-4 h-4 text-brand-600" />
-          <h3 className="font-bold text-gray-900">Filters</h3>
+          <SlidersHorizontal className="w-4 h-4 text-accent" aria-hidden />
+          <h2 className="font-display text-[length:var(--text-lg)] text-ink">Refine</h2>
           {activeCount > 0 && (
-            <span className="w-5 h-5 bg-brand-600 text-white text-xs rounded-full flex items-center justify-center">
+            <span className="min-w-5 h-5 px-1 bg-accent text-accent-ink text-[12px] rounded-full flex items-center justify-center">
               {activeCount}
             </span>
           )}
         </div>
         {activeCount > 0 && (
           <button
+            type="button"
             onClick={onClear}
-            className="flex items-center gap-1 text-xs text-brand-600 hover:underline font-medium"
+            className="min-h-[36px] inline-flex items-center gap-1 text-[0.875rem] text-ink-soft hover:text-ink hover:underline underline-offset-4 rounded-sm"
           >
-            <X className="w-3 h-3" /> Clear All
+            <X className="w-3.5 h-3.5" aria-hidden /> Clear all
           </button>
         )}
       </div>

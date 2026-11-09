@@ -96,7 +96,7 @@ export default function ShipmentModal({
       setLoading(true);
       if (mode === "create") {
         await createShipment(orderId, payload);
-        showToast("Shipment created — order marked as Shipped.");
+        showToast("Shipment created. Order marked as Shipped.");
       } else {
         await updateShipment(orderId, payload);
         showToast("Shipment details updated.");
@@ -115,7 +115,7 @@ export default function ShipmentModal({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/70"
         onClick={() => !loading && onClose()}
       />
 
@@ -125,7 +125,7 @@ export default function ShipmentModal({
         w-full max-w-lg
         rounded-3xl
         border border-white/10
-        bg-[#131827]
+        bg-admin-raised
         shadow-2xl
         overflow-hidden
         "
@@ -165,7 +165,7 @@ export default function ShipmentModal({
             <select
               value={courierSelect}
               onChange={(e) => setCourierSelect(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-white/40 text-white text-sm focus:outline-none focus:border-cyan-500/50"
             >
               {COURIERS.map((c) => (
                 <option key={c} value={c}>
@@ -181,7 +181,7 @@ export default function ShipmentModal({
                 value={customCourier}
                 onChange={(e) => setCustomCourier(e.target.value)}
                 placeholder="Enter courier name"
-                className="mt-2 w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-white/10 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+                className="mt-2 w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-white/40 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
               />
             )}
           </div>
@@ -195,7 +195,7 @@ export default function ShipmentModal({
               value={awbNumber}
               onChange={(e) => setAwbNumber(e.target.value)}
               placeholder="e.g. 123456789012345"
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-white/10 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-white/40 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -208,7 +208,7 @@ export default function ShipmentModal({
               value={trackingUrl}
               onChange={(e) => setTrackingUrl(e.target.value)}
               placeholder="https://tracking.example.com/123"
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-white/10 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-white/40 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -220,7 +220,7 @@ export default function ShipmentModal({
               type="date"
               value={estimatedDelivery}
               onChange={(e) => setEstimatedDelivery(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-500/50 [color-scheme:dark]"
+              className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-white/40 text-white text-sm focus:outline-none focus:border-cyan-500/50 [color-scheme:dark]"
             />
           </div>
 
@@ -233,7 +233,7 @@ export default function ShipmentModal({
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
               placeholder="Any internal notes about this shipment"
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-white/10 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none"
+              className="w-full px-4 py-2.5 rounded-xl bg-slate-900/70 border border-white/40 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none"
             />
           </div>
 
@@ -249,7 +249,7 @@ export default function ShipmentModal({
           <button
             onClick={() => !loading && onClose()}
             disabled={loading}
-            className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 hover:text-white transition-all disabled:opacity-50"
+            className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 hover:text-white transition disabled:opacity-50"
           >
             Cancel
           </button>
@@ -257,10 +257,10 @@ export default function ShipmentModal({
           <button
             onClick={handleSave}
             disabled={loading}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition-all disabled:opacity-60"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition disabled:opacity-60"
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-            {loading ? "Saving..." : "Save Shipment"}
+            {loading ? "Saving…" : "Save Shipment"}
           </button>
         </div>
       </div>

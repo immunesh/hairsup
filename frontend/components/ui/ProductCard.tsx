@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, ShoppingBag, Star, Eye, Zap } from 'lucide-react';
+import { Heart, ShoppingBag, Star, Zap } from 'lucide-react';
 import { Product } from '@/types';
 import { formatPrice, getDiscountPercent } from '@/lib/utils';
 import { useCartStore, useWishlistStore, useAuthStore, useUIStore } from '@/lib/store';
@@ -15,6 +15,16 @@ interface ProductCardProps {
   product: Product;
   className?: string;
   compact?: boolean;
+}
+
+// Marketplace names run long ("AHS Bob Hair Wig for Women | Full Head …").
+// The card shows the name a shop assistant would say; the full one stays in `title`.
+const NAME_MAX = 46;
+function shortName(name = '') {
+  const head = name.split(/\s+[|–—]\s+|\s+-\s+/)[0].trim();
+  if (head.length <= NAME_MAX) return head;
+  const cut = head.slice(0, NAME_MAX);
+  return cut.slice(0, cut.lastIndexOf(' ') > 20 ? cut.lastIndexOf(' ') : NAME_MAX).replace(/[,\s]+$/, '') + '…';
 }
 
 export default function ProductCard({ product, className, compact = false }: ProductCardProps) {
@@ -90,159 +100,146 @@ const handleWishlist = async (e: React.MouseEvent) => {
     }
   };
   return (
-    <Link href={`/products/${product.slug}`} className="block h-full">
+    <Link href={`/products/${product.slug}`} className="block h-full rounded-card">
       <div
-        className={cn('card group cursor-pointer overflow-hidden flex flex-col h-full', className)}
+        className={cn('card group flex flex-col h-full overflow-hidden', className)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Image container */}
-        <div className={cn("relative bg-gray-50 overflow-hidden", compact ? "aspect-[4/4.5]" : "aspect-product")}>
+        {/* Image */}
+        <div className={cn('relative bg-paper-2 overflow-hidden', compact ? 'aspect-[4/4.5]' : 'aspect-product')}>
           {primaryImage && (
             <Image
-  src={
-    primaryImage?.url ||
-    "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800"
-  }
-  alt={product.name}
-  fill
-  className="object-cover transition-transform duration-500 group-hover:scale-105"
-  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-/>
+              src={primaryImage?.url || 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800'}
+              alt={product.name}
+              fill
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+            />
           )}
 
-          {/* Badges. items-start matters: a flex column stretches its children
-              by default, which sized the short discount badge to the width of
-              "Best Seller" and pushed it into the gender badge on narrow cards. */}
+          {/* Badges. items-start keeps each badge to its own width. */}
           <div className="absolute top-2 left-2 flex flex-col items-start gap-1 max-w-[58%]">
             {discountPct > 0 && (
-              <span className={cn("badge badge-sale", compact && "px-1.5 py-0.5 text-[9px]")}>-{discountPct}%</span>
+              <span className={cn('badge badge-sale', compact && 'px-1.5 py-0.5 text-[11px]')}>-{discountPct}%</span>
             )}
             {product.isNewArrival && (
-              <span className={cn("badge badge-new", compact && "px-1.5 py-0.5 text-[9px]")}>New</span>
+              <span className={cn('badge badge-new', compact && 'px-1.5 py-0.5 text-[11px]')}>New</span>
             )}
             {product.isBestSeller && (
-              <span className={cn("badge badge-best", compact && "px-1.5 py-0.5 text-[9px]")}>Best Seller</span>
+              <span className={cn('badge badge-best', compact && 'px-1.5 py-0.5 text-[11px]')}>Best seller</span>
             )}
           </div>
 
-          {/* Gender badge. Hidden on the narrowest cards, where "Best Seller"
-              on the left leaves no room — the category line directly beneath
-              the image already reads "Women's Wigs" / "Men's Wigs". */}
-          <div className="absolute top-2 right-2 max-w-[40%] hidden min-[420px]:block">
-            <span className={cn(
-              'badge',
-              compact && 'px-1.5 py-0.5 text-[9px]',
-              product.gender === 'WOMEN' ? 'bg-cream text-ink-soft' : 'bg-mist text-ink-soft'
-            )}>
-              {product.gender === 'WOMEN' ? 'Women' : 'Men'}
-            </span>
-          </div>
-
-          {/* Action buttons on hover */}
-          <div className={cn(
-            'absolute inset-x-2 bottom-2 flex gap-1.5 transition-all duration-300',
-            isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          )}>
+          {/* Actions: shown on hover, and whenever a control inside has focus */}
+          <div
+            className={cn(
+              'absolute inset-x-2 bottom-2 flex gap-1.5 transition-[opacity,transform] duration-200 ease-out',
+              'focus-within:opacity-100 focus-within:translate-y-0',
+              isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+            )}
+          >
             <button
+              type="button"
               onClick={handleAddToCart}
               disabled={addingToCart || product.stock === 0}
+              aria-busy={addingToCart}
               className={cn(
-                "flex-1 bg-white/95 hover:bg-brand-600 hover:text-white text-gray-800 font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-1 shadow-sm disabled:opacity-50",
-                compact ? "text-[11px] py-1.5 px-2" : "text-xs py-2 px-3"
+                'flex-1 min-w-0 min-h-[44px] whitespace-nowrap bg-surface/95 text-ink font-semibold rounded-full flex items-center justify-center gap-1.5 shadow-sm',
+                'transition-colors duration-200 hover:bg-accent hover:text-accent-ink disabled:opacity-50 disabled:cursor-not-allowed',
+                compact ? 'text-[12px] px-2' : 'text-[13px] px-3'
               )}
             >
-              {product.stock === 0 ? 'Out of Stock' : (
-                <><ShoppingBag className={compact ? "w-3 h-3" : "w-3.5 h-3.5"} /> {addingToCart ? 'Adding…' : 'Add to Bag'}</>
+              {product.stock === 0 ? 'Out of stock' : (
+                <><ShoppingBag className={cn('hidden sm:block', compact ? 'w-3.5 h-3.5' : 'w-4 h-4')} aria-hidden /> {addingToCart ? 'Adding…' : 'Add to bag'}</>
               )}
             </button>
             <button
+              type="button"
               onClick={handleWishlist}
+              aria-label={isWishlisted ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
+              aria-pressed={isWishlisted}
               className={cn(
-                'rounded-xl flex items-center justify-center shadow-sm transition-all duration-200',
-                compact ? 'w-7 h-7' : 'w-9 h-9',
-                isWishlisted
-                  ? 'bg-red-500 text-white'
-                  : 'bg-white/95 hover:bg-red-500 hover:text-white text-gray-600'
+                'rounded-full flex items-center justify-center shadow-sm transition-colors duration-200 shrink-0',
+                'w-11 h-11',
+                isWishlisted ? 'bg-coral-600 text-white' : 'bg-surface/95 text-ink-soft hover:text-coral-600'
               )}
             >
-              <Heart className={cn(compact ? 'w-3.5 h-3.5' : 'w-4 h-4', isWishlisted && 'fill-current')} />
+              <Heart className={cn('w-4 h-4', isWishlisted && 'fill-current')} aria-hidden />
             </button>
           </div>
-
-          {/* Quick View */}
-          {isHovered && (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-              <div className="bg-black/40 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                <Eye className="w-3.5 h-3.5" /> Quick View
-              </div>
-            </div>
-          )}
-
         </div>
 
-        {/* Product info */}
-        <div className={cn("flex flex-col flex-1", compact ? "p-2.5" : "p-3")}>
-          <p className={cn("text-gray-400 font-medium uppercase tracking-wide", compact ? "text-[10px] mb-0.5" : "text-xs mb-0.5")}>
+        {/* Details */}
+        <div className={cn('flex flex-col flex-1', compact ? 'p-3' : 'p-4')}>
+          <p className={cn('text-ink-muted', compact ? 'text-[12px]' : 'text-[13px]')}>
             {product.category?.name}
+            {product.gender && !/\b(wo)?men/i.test(product.category?.name || '') && (
+              <> for {String(product.gender).toUpperCase() === 'WOMEN' ? 'women' : 'men'}</>
+            )}
           </p>
-          <h3 className={cn("font-semibold text-gray-900 leading-tight group-hover:text-brand-600 transition-colors line-clamp-2", compact ? "text-xs mb-1" : "text-sm mb-1")}>
-            {product.name}
+          <h3
+            className={cn(
+              'font-sans font-semibold text-ink leading-snug tracking-normal line-clamp-2 mt-1 group-hover:text-accent transition-colors',
+              compact ? 'text-[14px]' : 'text-[15px]'
+            )}
+            title={product.name}
+          >
+            {shortName(product.name)}
           </h3>
 
-          {/* Specs */}
-          <div className={cn("flex items-center gap-1.5 text-gray-500", compact ? "text-[11px] mb-1.5" : "text-xs mb-2")}>
-            {product.texture && <span>{product.texture}</span>}
-            {product.length && <><span>·</span><span>{product.length}</span></>}
-          </div>
-
-          <div className="mt-auto">
-            {/* Rating */}
-            <div className={cn("flex items-center gap-1", compact ? "mb-1" : "mb-2")}>
-            <div className="flex items-center">
-              {[1, 2, 3, 4, 5].map((s) => (
-                <Star
-                  key={s}
-                  className={cn(compact ? 'w-2.5 h-2.5' : 'w-3 h-3', s <= Math.round(product.rating) ? 'star-filled' : 'star-empty')}
-                />
-              ))}
-            </div>
-            <span className={cn("text-gray-500", compact ? "text-[11px]" : "text-xs")}>({product.reviewCount})</span>
-          </div>
-
-          {/* Price */}
-          <div className="flex items-center flex-wrap gap-1">
-            <span className={cn("font-bold text-gray-900", compact ? "text-sm" : "text-base")}>
-              {formatPrice(product.salePrice || product.basePrice)}
-            </span>
-            {product.salePrice && (
-              <span className={cn("text-gray-400 line-through", compact ? "text-[11px]" : "text-xs")}>
-                {formatPrice(product.basePrice)}
-              </span>
-            )}
-            {discountPct > 0 && (
-              <span className={cn("font-semibold text-green-600", compact ? "text-[11px]" : "text-xs")}>
-                {discountPct}% off
-              </span>
-            )}
-          </div>
-
-          {/* Low stock warning. Sits under the price rather than over the
-              photograph - the overlay bar cut straight across the model. */}
-          {product.stock > 0 && product.stock <= 5 && (
-            <p className={cn("mt-1 font-ui font-semibold text-coral-600", compact ? "text-[11px]" : "text-xs")}>
-              Only {product.stock} left!
+          {(product.texture || product.length) && (
+            <p className={cn('text-ink-muted mt-1', compact ? 'text-[12px]' : 'text-[13px]')}>
+              {[product.texture, product.length].filter(Boolean).join(', ')}
             </p>
           )}
 
-          {/* Try-on hint */}
-          <div className={cn("flex items-center gap-1 font-medium text-brand-600", compact ? "mt-1.5 text-[11px]" : "mt-2 text-xs")}>
-            <Zap className={compact ? "w-2.5 h-2.5" : "w-3 h-3"} />
-            <span>Try it virtually</span>
+          <div className="mt-auto pt-3">
+            <div className="flex items-center gap-1.5">
+              <div className="flex items-center" role="img" aria-label={`Rated ${Math.round(product.rating)} out of 5`}>
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <Star
+                    key={s}
+                    aria-hidden
+                    className={cn(compact ? 'w-3 h-3' : 'w-3.5 h-3.5', s <= Math.round(product.rating) ? 'star-filled' : 'star-empty')}
+                  />
+                ))}
+              </div>
+              <span className={cn('text-ink-muted', compact ? 'text-[12px]' : 'text-[13px]')}>
+                {product.reviewCount} {product.reviewCount === 1 ? 'review' : 'reviews'}
+              </span>
+            </div>
+
+            <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5 mt-2">
+              <span className={cn('font-semibold text-ink', compact ? 'text-[15px]' : 'text-base')}>
+                {formatPrice(product.salePrice || product.basePrice)}
+              </span>
+              {product.salePrice && (
+                <span className={cn('text-ink-muted line-through', compact ? 'text-[12px]' : 'text-[13px]')}>
+                  {formatPrice(product.basePrice)}
+                </span>
+              )}
+              {discountPct > 0 && (
+                <span className={cn('font-semibold text-coral-600', compact ? 'text-[12px]' : 'text-[13px]')}>
+                  {discountPct}% off
+                </span>
+              )}
+            </div>
+
+            {/* Low stock sits under the price, never over the photograph. */}
+            {product.stock > 0 && product.stock <= 5 && (
+              <p className={cn('mt-1 font-semibold text-coral-600', compact ? 'text-[12px]' : 'text-[13px]')}>
+                Only {product.stock} left
+              </p>
+            )}
+
+            <p className={cn('flex items-center gap-1.5 font-medium text-accent mt-2', compact ? 'text-[12px]' : 'text-[13px]')}>
+              <Zap className="w-3.5 h-3.5" aria-hidden />
+              Try it on virtually
+            </p>
           </div>
         </div>
       </div>
-    </div>
-  </Link>
-);
+    </Link>
+  );
 }

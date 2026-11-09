@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, ArrowLeft, Loader2, Sparkles } from 'lucide-react';
+import { Mail, ArrowLeft, Loader2 } from 'lucide-react';
+import Logo from '@/components/brand/Logo';
 import { authApi } from '@/lib/api';
 import { useUIStore } from '@/lib/store';
 
@@ -45,21 +46,8 @@ export default function ForgotPasswordPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-brand-950 via-brand-800 to-brand-700 p-12 flex-col justify-between relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="absolute rounded-full bg-white" style={{
-              width: `${80 + i * 40}px`, height: `${80 + i * 40}px`,
-              top: `${i * 15}%`, left: `${i % 2 === 0 ? -20 : 60}%`, opacity: 0.5,
-            }} />
-          ))}
-        </div>
-        <Link href="/" className="flex items-center gap-2 relative z-10">
-          <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
-          <span className="text-2xl font-display font-bold text-white">Glamour Hair Studios</span>
-        </Link>
+      <div className="hidden lg:flex lg:w-1/2 bg-deep p-12 flex-col justify-between">
+        <Link href="/" className="inline-flex self-start rounded-sm"><Logo tone="light" height={48} /></Link>
         <div className="relative z-10">
           <h2 className="text-4xl font-display font-bold text-white mb-4">
             Reset Your Password
@@ -68,18 +56,15 @@ export default function ForgotPasswordPage() {
             Forgot your password? No worries, we&apos;ve got you covered. Enter your registered email to receive a recovery link.
           </p>
         </div>
-        <p className="text-white/40 text-xs relative z-10">© 2025 Glamour Hair Studios Pvt. Ltd.</p>
+        <p className="text-white/70 text-xs">© 2025 Glamour Hair Studios Pvt. Ltd.</p>
       </div>
 
       {/* Right panel */}
       <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-16 bg-white">
         <div className="max-w-md w-full mx-auto">
-          <div className="lg:hidden flex items-center gap-2 mb-8">
-            <Sparkles className="w-6 h-6 text-brand-600" />
-            <span className="text-xl font-display font-bold text-gradient">Glamour Hair Studios</span>
-          </div>
+          <Link href="/" className="lg:hidden inline-flex mb-8 rounded-sm"><Logo height={40} /></Link>
 
-          <h1 className="text-3xl font-display font-bold text-gray-900 mb-2">Forgot Password</h1>
+          <h1 className="text-3xl font-display font-bold text-gray-900 mb-2">Forgot password</h1>
           
           {submitted ? (
             <div className="space-y-6">
@@ -107,9 +92,9 @@ export default function ForgotPasswordPage() {
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
                   <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-500" />
                     <input
                       type="email"
                       value={email}
@@ -131,7 +116,7 @@ export default function ForgotPasswordPage() {
 
               <div className="pt-2">
                 <Link href="/login" className="flex items-center gap-2 text-sm text-brand-600 font-semibold hover:underline">
-                  <ArrowLeft className="w-4 h-4" /> Back to Sign In
+                  <ArrowLeft className="w-4 h-4" /> Back to sign in
                 </Link>
               </div>
             </div>

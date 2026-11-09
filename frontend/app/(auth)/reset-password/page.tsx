@@ -3,7 +3,8 @@
 import { Suspense, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Lock, Eye, EyeOff, Check, Loader2, Sparkles, ArrowLeft } from 'lucide-react';
+import { Lock, Eye, EyeOff, Check, Loader2, ArrowLeft } from 'lucide-react';
+import Logo from '@/components/brand/Logo';
 import { authApi } from '@/lib/api';
 import { useUIStore } from '@/lib/store';
 
@@ -77,14 +78,14 @@ function ResetPasswordContent() {
 
   return (
     <div>
-      <h1 className="text-3xl font-display font-bold text-gray-900 mb-2">New Password</h1>
+      <h1 className="text-3xl font-display font-bold text-gray-900 mb-2">New password</h1>
       <p className="text-gray-500 mb-8">Please enter your new password below.</p>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">New Password</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">New password</label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type={showPass ? 'text' : 'password'}
               value={form.password}
@@ -92,7 +93,7 @@ function ResetPasswordContent() {
               placeholder="Minimum 8 characters"
               className={`input-field pl-10 pr-10 ${errors.password ? 'border-red-400 focus:ring-red-400' : ''}`}
             />
-            <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+            <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500">
               {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
@@ -100,7 +101,7 @@ function ResetPasswordContent() {
             <div className="mt-2">
               <div className="flex gap-1 mb-1">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className={`h-1 flex-1 rounded-full transition-all ${i <= passwordStrength ? strengthColors[passwordStrength] : 'bg-gray-200'}`} />
+                  <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i <= passwordStrength ? strengthColors[passwordStrength] : 'bg-gray-200'}`} />
                 ))}
               </div>
               <p className={`text-xs ${passwordStrength >= 3 ? 'text-green-600' : passwordStrength === 2 ? 'text-yellow-600' : 'text-red-600'}`}>
@@ -114,7 +115,7 @@ function ResetPasswordContent() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm New Password</label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="password"
               value={form.confirm}
@@ -143,21 +144,8 @@ export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-brand-950 via-brand-800 to-brand-700 p-12 flex-col justify-between relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="absolute rounded-full bg-white" style={{
-              width: `${80 + i * 40}px`, height: `${80 + i * 40}px`,
-              top: `${i * 15}%`, left: `${i % 2 === 0 ? -20 : 60}%`, opacity: 0.5,
-            }} />
-          ))}
-        </div>
-        <Link href="/" className="flex items-center gap-2 relative z-10">
-          <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
-          <span className="text-2xl font-display font-bold text-white">Glamour Hair Studios</span>
-        </Link>
+      <div className="hidden lg:flex lg:w-1/2 bg-deep p-12 flex-col justify-between">
+        <Link href="/" className="inline-flex self-start rounded-sm"><Logo tone="light" height={48} /></Link>
         <div className="relative z-10">
           <h2 className="text-4xl font-display font-bold text-white mb-4">
             Secured Access
@@ -166,21 +154,18 @@ export default function ResetPasswordPage() {
             Choose a strong password to secure your Glamour Hair Studios account and protect your orders and personal data.
           </p>
         </div>
-        <p className="text-white/40 text-xs relative z-10">© 2025 Glamour Hair Studios Pvt. Ltd.</p>
+        <p className="text-white/70 text-xs">© 2025 Glamour Hair Studios Pvt. Ltd.</p>
       </div>
 
       {/* Right panel */}
       <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-16 bg-white">
         <div className="max-w-md w-full mx-auto">
-          <div className="lg:hidden flex items-center gap-2 mb-8">
-            <Sparkles className="w-6 h-6 text-brand-600" />
-            <span className="text-xl font-display font-bold text-gradient">Glamour Hair Studios</span>
-          </div>
+          <Link href="/" className="lg:hidden inline-flex mb-8 rounded-sm"><Logo height={40} /></Link>
 
           <Suspense fallback={
             <div className="max-w-md w-full mx-auto text-center space-y-4">
               <div className="flex justify-center"><Loader2 className="w-12 h-12 text-brand-600 animate-spin" /></div>
-              <h1 className="text-2xl font-display font-bold text-gray-900">Loading...</h1>
+              <h1 className="text-2xl font-display font-bold text-gray-900">Loading…</h1>
             </div>
           }>
             <ResetPasswordContent />

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { User, CartItem, WishlistItem, Product, Notification } from '../types';
@@ -37,6 +38,18 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
+// True once the persisted session has been read back from localStorage.
+// A guard that redirects on !isAuthenticated must wait for this, or a
+// signed-in reload sees the empty first render and bounces to /login.
+export function useAuthHydrated() {
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(useAuthStore.persist.hasHydrated());
+    return useAuthStore.persist.onFinishHydration(() => setHydrated(true));
+  }, []);
+  return hydrated;
+}
 
 interface CartState {
   items: CartItem[];

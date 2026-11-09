@@ -2,18 +2,18 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { Bell } from 'lucide-react';
+import { Bell, ShoppingBag, CheckCircle2, Settings2, Truck, Package, PackageCheck, XCircle, type LucideIcon } from 'lucide-react';
 import { useAuthStore, useNotificationStore } from '@/lib/store';
 import { notificationsApi } from '@/lib/api';
 
-const STATUS_ICONS: Record<string, string> = {
-  PENDING: '🛍️',
-  CONFIRMED: '✅',
-  PROCESSING: '⚙️',
-  SHIPPED: '🚚',
-  OUT_FOR_DELIVERY: '📦',
-  DELIVERED: '🎉',
-  CANCELLED: '❌',
+const STATUS_ICONS: Record<string, LucideIcon> = {
+  PENDING: ShoppingBag,
+  CONFIRMED: CheckCircle2,
+  PROCESSING: Settings2,
+  SHIPPED: Truck,
+  OUT_FOR_DELIVERY: Package,
+  DELIVERED: PackageCheck,
+  CANCELLED: XCircle,
 };
 
 const timeAgo = (dateStr: string): string => {
@@ -82,7 +82,7 @@ export default function NotificationBell() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 animate-fade-in z-50">
+        <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-card shadow-md border border-gray-100 py-2 animate-fade-in z-50">
           <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100 mb-1">
             <p className="font-semibold text-sm">Notifications</p>
             {unreadCount > 0 && (
@@ -96,7 +96,7 @@ export default function NotificationBell() {
           </div>
           <div className="max-h-96 overflow-y-auto">
             {items.length === 0 ? (
-              <p className="px-4 py-6 text-sm text-gray-400 text-center">No notifications yet</p>
+              <p className="px-4 py-6 text-sm text-gray-500 text-center">No notifications yet</p>
             ) : (
               items.map((n) => (
                 <Link
@@ -110,13 +110,16 @@ export default function NotificationBell() {
                     !n.isRead ? 'bg-brand-50/60' : ''
                   }`}
                 >
-                  <span className="text-lg leading-none">{STATUS_ICONS[n.status || ''] || '🔔'}</span>
+                  {(() => {
+                    const Icon = STATUS_ICONS[n.status || ''] || Bell;
+                    return <Icon className="w-[1.125rem] h-[1.125rem] text-accent shrink-0 mt-0.5" strokeWidth={1.75} aria-hidden />;
+                  })()}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900">{n.title}</p>
                     <p className="text-xs text-gray-500 line-clamp-2">{n.message}</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">{timeAgo(n.createdAt)}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{timeAgo(n.createdAt)}</p>
                   </div>
-                  {!n.isRead && <span className="w-2 h-2 bg-brand-600 rounded-full flex-shrink-0 mt-1.5" />}
+                  {!n.isRead && <span className="w-2 h-2 bg-brand-600 rounded-full flex-shrink-0 mt-1.5"><span className="visually-hidden">Unread</span></span>}
                 </Link>
               ))
             )}

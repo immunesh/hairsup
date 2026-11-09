@@ -72,10 +72,10 @@ export default function DeleteCategoryButton({
       hover:bg-rose-500/30
       hover:text-white
 
-      transition-all
+      transition
       duration-300
 
-      hover:shadow-[0_0_15px_rgba(244,63,94,0.25)]
+      
 
       disabled:opacity-50
       "
@@ -85,7 +85,7 @@ export default function DeleteCategoryButton({
       ) : (
         <Trash2 className="w-3.5 h-3.5" />
       )}
-      {loading ? "Deleting..." : "Delete"}
+      {loading ? "Deleting…" : "Delete"}
     </button>
   );
 }

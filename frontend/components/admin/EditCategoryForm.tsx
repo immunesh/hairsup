@@ -147,7 +147,7 @@ export default function EditCategoryForm({ category }: { category: any }) {
         disabled={loading}
         className="bg-brand-600 text-white px-6 py-3 rounded-xl"
       >
-        {loading ? "Updating..." : "Update Category"}
+        {loading ? "Updating…" : "Update Category"}
       </button>
     </form>
   );

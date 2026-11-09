@@ -66,13 +66,13 @@ function OrderConfirmedContent() {
           ].map(({ icon: Icon, label, desc, done, active }) => (
             <div key={label} className="flex items-start gap-4 mb-5 last:mb-0">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 flex-shrink-0 ${
-                done ? 'bg-green-500 text-white' : active ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-400'
+                done ? 'bg-green-500 text-white' : active ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-500'
               }`}>
                 <Icon className="w-4 h-4" />
               </div>
               <div>
                 <p className={`font-semibold text-sm ${active ? 'text-brand-600' : done ? 'text-green-600' : 'text-gray-500'}`}>{label}</p>
-                <p className="text-xs text-gray-400">{desc}</p>
+                <p className="text-xs text-gray-500">{desc}</p>
               </div>
               {active && (
                 <span className="ml-auto text-xs bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full font-medium animate-pulse-soft">
@@ -95,11 +95,11 @@ function OrderConfirmedContent() {
 
       {/* Actions */}
       <div className="grid grid-cols-2 gap-3 mb-6">
-        <Link href={`/orders/${orderId}`} className="btn-primary flex items-center justify-center gap-2 py-3">
+        <Link href={`/orders/${orderId}`} className="btn-primary flex items-center justify-center gap-2 py-3 whitespace-nowrap">
           <Package className="w-4 h-4" /> Track Order
         </Link>
-        <Link href="/products" className="btn-secondary flex items-center justify-center gap-2 py-3">
-          Continue Shopping <ArrowRight className="w-4 h-4" />
+        <Link href="/products" className="btn-secondary flex items-center justify-center gap-2 py-3 whitespace-nowrap">
+          Continue shopping <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
 
@@ -109,7 +109,7 @@ function OrderConfirmedContent() {
         <h3 className="font-semibold text-gray-900 mb-1">Enjoying your new wig?</h3>
         <p className="text-sm text-gray-500 mb-3">Share your experience and help others find their perfect style.</p>
         <Link href="/profile" className="text-brand-600 text-sm font-semibold hover:underline">
-          Write a Review →
+          Write a review
         </Link>
       </div>
     </div>

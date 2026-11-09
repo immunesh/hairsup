@@ -3,19 +3,16 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  ArrowRight, Star, Sparkles, Shield, Truck, RotateCcw, HeadphonesIcon,
-  ChevronLeft, ChevronRight, Zap, Award, Users, Heart
-} from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight, Pause, Play, Plus } from 'lucide-react';
 import ProductCard from '@/components/ui/ProductCard';
-import { DEMO_PRODUCTS, formatPrice, cn } from '@/lib/utils';
- 
+import { DEMO_PRODUCTS, cn } from '@/lib/utils';
+
 import { Category, Product } from '@/types';
 import { productsApi, blogApi } from '@/lib/api';
 import { getCategories } from '@/lib/category-api';
 import { getHeroSlides } from '@/lib/hero-api';
-const FALLBACK_CATEGORY_IMAGE = "/women.avif";
 
+const FALLBACK_CATEGORY_IMAGE = '/women.avif';
 
 const GENDER_BADGE: Record<string, string> = {
   WOMEN: "Women's",
@@ -23,25 +20,25 @@ const GENDER_BADGE: Record<string, string> = {
   UNISEX: 'Unisex',
 };
 
+// Shown until the CMS slides load, and whenever it has none. The photographs
+// are stand-ins: the salon's own pictures replace them in the hero admin.
 const DEFAULT_HERO_SLIDES = [
   {
     id: 1,
     headline: 'Transform Your Look',
     subheadline: 'with Premium Human Hair Wigs',
     description: "India's finest collection of 100% human hair wigs and hair systems. Look naturally stunning every day.",
-    cta: 'Shop Women\'s Collection',
+    cta: "Shop Women's Collection",
     ctaLink: '/women',
     ctaSecondary: 'Try On Virtually',
     ctaSecondaryLink: '/try-on',
     badge: 'New Season Collection',
     image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&q=80',
-    accent: 'from-brand-950 to-brand-700',
-    tag: 'WOMEN',
   },
   {
     id: 2,
-    headline: "Confidence Starts",
-    subheadline: "from the Top — Men's Hair Systems",
+    headline: 'Confidence Starts',
+    subheadline: "from the Top: Men's Hair Systems",
     description: 'Advanced Swiss lace hair systems engineered for an undetectable, natural look. Reclaim your confidence.',
     cta: "Shop Men's Collection",
     ctaLink: '/men',
@@ -49,38 +46,28 @@ const DEFAULT_HERO_SLIDES = [
     ctaSecondaryLink: '/contact',
     badge: 'Clinically Endorsed',
     image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=1200&q=80',
-    accent: 'from-gray-900 to-brand-900',
-    tag: 'MEN',
   },
   {
     id: 3,
     headline: 'See It Before',
-    subheadline: 'You Buy It — Virtual Try-On',
+    subheadline: 'You Buy It, with Virtual Try-On',
     description: 'Experience the future of wig shopping. Use our AI-powered virtual try-on to find your perfect match.',
-    cta: 'Try On Now — Free',
+    cta: 'Try On Now, Free',
     ctaLink: '/try-on',
     ctaSecondary: 'How It Works',
     ctaSecondaryLink: '/blog/virtual-try-on',
     badge: 'AI-Powered Technology',
     image: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1200&q=80',
-    accent: 'from-brand-950 to-brand-700',
-    tag: 'NEW',
   },
 ];
 
-
-const TRUST_FEATURES = [
-  { icon: Truck, title: 'Free Shipping', desc: 'On every order', color: 'text-brand-600 bg-brand-50' },
-  { icon: RotateCcw, title: '7-Day Returns', desc: 'Hassle-free exchanges', color: 'text-green-600 bg-green-50' },
-  { icon: Shield, title: 'Genuine Products', desc: '100% authentic wigs', color: 'text-blue-600 bg-blue-50' },
-  { icon: HeadphonesIcon, title: 'Expert Support', desc: 'Certified hair specialists', color: 'text-amber-600 bg-amber-50' },
-];
-
+// Claims carried over from the previous site. Each needs a source before
+// launch; see the handoff notes.
 const STATS = [
-  { value: '10L+', label: 'Happy Customers', icon: Users },
-  { value: '4.8★', label: 'Average Rating', icon: Star },
-  { value: '50+', label: 'Stores Pan India', icon: Award },
-  { value: '280+', label: 'Wig Styles', icon: Sparkles },
+  { value: '10L+', label: 'Happy customers' },
+  { value: '4.8★', label: 'Average rating' },
+  { value: '50+', label: 'Stores pan India' },
+  { value: '280+', label: 'Wig styles' },
 ];
 
 const TESTIMONIALS = [
@@ -88,9 +75,8 @@ const TESTIMONIALS = [
     name: 'Priya Sharma',
     location: 'Mumbai',
     rating: 5,
-    text: 'I was skeptical at first, but Glamour Hair Studios completely changed my life! The lace front wig looks so natural — nobody can tell! The virtual try-on helped me pick the perfect style.',
+    text: 'I was skeptical at first, but Glamour Hair Studios completely changed my life! The lace front wig looks so natural, nobody can tell! The virtual try-on helped me pick the perfect style.',
     product: 'Silky Straight Lace Front Wig',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80',
   },
   {
     name: 'Rajesh Kumar',
@@ -98,7 +84,6 @@ const TESTIMONIALS = [
     rating: 5,
     text: "After years of hair loss, I finally found a solution that works. The Swiss lace hairpiece is completely undetectable. My colleagues don't even know! Best investment I've ever made.",
     product: "Men's Natural System Hairpiece",
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80',
   },
   {
     name: 'Ananya Patel',
@@ -106,14 +91,13 @@ const TESTIMONIALS = [
     rating: 5,
     text: 'The body wave wig is absolutely stunning! High quality, natural looking, and the 360° view on the website helped me see every detail before buying. Delivery was super fast too!',
     product: 'Goddess Waves Body Wave Wig',
-    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=100&q=80',
   },
 ];
 
 const HOME_FAQS = [
   {
     question: 'What types of wigs do you offer?',
-    answer: 'We offer human hair wigs, synthetic wigs, men\'s hair systems, women\'s wigs, and hair patches in a range of styles and colours.',
+    answer: "We offer human hair wigs, synthetic wigs, men's hair systems, women's wigs, and hair patches in a range of styles and colours.",
   },
   {
     question: 'Is shipping free on every order?',
@@ -133,18 +117,42 @@ const HOME_FAQS = [
   },
 ];
 
-const FAQ_IMAGES = [
-  { src: '/wigs/wig8/women front hair wig.png', alt: "Women's wig" },
-  { src: '/wigs/wig7/men front hair wig.png', alt: "Men's hair wig" },
-  { src: '/wigs/wig6/wig6_view_1.png', alt: 'Hair wig detail' },
-];
+const SLIDE_MS = 6000;
 
- 
+// A round control for rails and the hero. 44px target, instant focus ring.
+const roundBtn =
+  'w-11 h-11 rounded-full border border-rule bg-surface text-ink flex items-center justify-center ' +
+  'transition-colors duration-200 hover:border-ink hover:bg-paper-2 ' +
+  'disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-rule disabled:hover:bg-surface';
+
+function SectionHead({
+  id,
+  title,
+  sub,
+  children,
+}: {
+  id: string;
+  title: string;
+  sub?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between mb-10 lg:mb-12">
+      <div>
+        <h2 id={id} className="section-title measure-section">{title}</h2>
+        {sub && <p className="text-ink-soft text-[1.0625rem] mt-3 max-w-[48ch]">{sub}</p>}
+      </div>
+      {children && <div className="flex items-center gap-3 shrink-0">{children}</div>}
+    </div>
+  );
+}
 
 export default function HomePage() {
   const [heroSlides, setHeroSlides] = useState<any[]>(DEFAULT_HERO_SLIDES);
   const [heroSlide, setHeroSlide] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
+  const [paused, setPaused] = useState(false); // the visitor's choice
+  const [held, setHeld] = useState(false); // hover or focus inside the hero
   const [blogs, setBlogs] = useState<any[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [newArrivals, setNewArrivals] = useState<Product[]>([]);
@@ -152,6 +160,7 @@ export default function HomePage() {
   const [canScrollLeftArrivals, setCanScrollLeftArrivals] = useState(false);
   const [canScrollRightArrivals, setCanScrollRightArrivals] = useState(true);
   const [arrivalsProgress, setArrivalsProgress] = useState(0);
+  const [activeStory, setActiveStory] = useState(0);
 
   const categoryScrollRef = useRef<HTMLDivElement>(null);
   const newArrivalsScrollRef = useRef<HTMLDivElement>(null);
@@ -213,13 +222,20 @@ export default function HomePage() {
     loadHeroSlides();
   }, []);
 
+  // Visitors who ask for less motion get a still hero; they can still step
+  // through the slides with the controls.
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) setPaused(true);
+  }, []);
+
+  useEffect(() => {
+    if (paused || held || heroSlides.length < 2) return;
     const interval = setInterval(() => {
       setIsSliding(true);
-      setTimeout(() => { setHeroSlide((s) => (s + 1) % heroSlides.length); setIsSliding(false); }, 300);
-    }, 5000);
+      setTimeout(() => { setHeroSlide((s) => (s + 1) % heroSlides.length); setIsSliding(false); }, 220);
+    }, SLIDE_MS);
     return () => clearInterval(interval);
-  }, [heroSlides.length]);
+  }, [heroSlides.length, paused, held]);
 
   const goSlide = (dir: number) => {
     setIsSliding(true);
@@ -245,702 +261,573 @@ export default function HomePage() {
     loadCategories();
   }, []);
 
-useEffect(() => {
-  const loadProducts = async () => {
-    
-    try {
-      const res = await productsApi.getAll();
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const res = await productsApi.getAll();
 
-      const apiProducts = res?.data?.data || [];
-      const list: Product[] = apiProducts.length > 0
-        ? apiProducts
-        : (DEMO_PRODUCTS as unknown as Product[]);
+        const apiProducts = res?.data?.data || [];
+        const list: Product[] = apiProducts.length > 0
+          ? apiProducts
+          : (DEMO_PRODUCTS as unknown as Product[]);
 
+        const featured = list.filter((p: Product) => p.isFeatured);
+        setFeaturedProducts((featured.length > 0 ? featured : list).slice(0, 8));
 
-      const featured = list.filter((p: Product) => p.isFeatured);
-      setFeaturedProducts(
-        (featured.length > 0 ? featured : list).slice(0, 8)
-      );
+        const arrivals = list.filter((p: Product) => p.isNewArrival);
+        setNewArrivals((arrivals.length >= 4 ? arrivals : list).slice(0, 16));
+      } catch (error) {
+        console.error('Homepage products error:', error);
 
-      const arrivals = list.filter((p: Product) => p.isNewArrival);
-      setNewArrivals(
-        (arrivals.length >= 4 ? arrivals : list).slice(0, 16)
-      );
+        const fallbackProducts = DEMO_PRODUCTS as unknown as Product[];
+        setFeaturedProducts(fallbackProducts.slice(0, 8));
+        const fallbackArrivals = fallbackProducts.filter((p) => p.isNewArrival);
+        setNewArrivals(
+          (fallbackArrivals.length >= 4 ? fallbackArrivals : fallbackProducts).slice(0, 16)
+        );
+      }
+    };
 
-    } catch (error) {
-      console.error(
-        "Homepage products error:",
-        error
-      );
-
-      const fallbackProducts = DEMO_PRODUCTS as unknown as Product[];
-      setFeaturedProducts(fallbackProducts.slice(0, 8));
-      const fallbackArrivals = fallbackProducts.filter((p) => p.isNewArrival);
-      setNewArrivals(
-        (fallbackArrivals.length >= 4 ? fallbackArrivals : fallbackProducts).slice(0, 16)
-      );
-    }
-  };
-
-  loadProducts();
-}, []);
+    loadProducts();
+  }, []);
 
   useEffect(() => {
-    const el = newArrivalsScrollRef.current;
-    if (!el) return;
-    checkArrivalsScroll();
-    el.addEventListener('scroll', checkArrivalsScroll, { passive: true });
-    window.addEventListener('resize', checkArrivalsScroll);
-    return () => {
-      el.removeEventListener('scroll', checkArrivalsScroll);
-      window.removeEventListener('resize', checkArrivalsScroll);
-    };
-  }, [newArrivals]);
+    const loadBlogs = async () => {
+      // Sample posts, kept from the previous homepage until the journal has
+      // enough real ones.
+      const fakeBlogs = [
+        {
+          id: 'fake-1',
+          slug: 'how-to-maintain-your-human-hair-wig',
+          title: '5 Expert Tips to Maintain Your Human Hair Wig',
+          category: 'Hair Care',
+          image: 'https://images.unsplash.com/photo-1595476108010-b4d1f10d5e43?w=800&q=80',
+          excerpt: 'Learn the secrets to keeping your human hair wig looking natural, shiny, and tangle-free for months. Discover our expert maintenance routine.',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: 'fake-2',
+          slug: 'understanding-different-lace-types',
+          title: 'Swiss Lace vs. HD Lace: Which is Right for You?',
+          category: 'Style Guide',
+          image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059e98b?w=800&q=80',
+          excerpt: 'Dive deep into the world of lace fronts. We compare the durability, invisibility, and comfort of different lace types to help you choose the best match.',
+          createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+        },
+      ];
 
-
-useEffect(() => {
-  const loadBlogs = async () => {
-    const fakeBlogs = [
-      {
-        id: 'fake-1',
-        slug: 'how-to-maintain-your-human-hair-wig',
-        title: '5 Expert Tips to Maintain Your Human Hair Wig',
-        category: 'Hair Care',
-        image: 'https://images.unsplash.com/photo-1595476108010-b4d1f10d5e43?w=800&q=80',
-        excerpt: 'Learn the secrets to keeping your human hair wig looking natural, shiny, and tangle-free for months. Discover our expert maintenance routine.',
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 'fake-2',
-        slug: 'understanding-different-lace-types',
-        title: 'Swiss Lace vs. HD Lace: Which is Right for You?',
-        category: 'Style Guide',
-        image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059e98b?w=800&q=80',
-        excerpt: 'Dive deep into the world of lace fronts. We compare the durability, invisibility, and comfort of different lace types to help you choose the best match.',
-        createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
+      try {
+        const res = await blogApi.getAll();
+        const blogList = res.data?.data || res.data?.blogs || [];
+        setBlogs([...blogList, ...fakeBlogs]);
+      } catch (error) {
+        console.error('Blog fetch error', error);
+        setBlogs(fakeBlogs);
       }
-    ];
+    };
 
-    try {
-      const res = await blogApi.getAll();
-      const blogList = res.data?.data || res.data?.blogs || [];
-      setBlogs([...blogList, ...fakeBlogs]);
-    } catch (error) {
-      console.error("Blog fetch error", error);
-      setBlogs(fakeBlogs);
-    }
-  };
+    loadBlogs();
+  }, []);
 
-  loadBlogs();
-}, []);
+  const [leadPost, ...morePosts] = blogs;
+  const story = TESTIMONIALS[activeStory];
+  const postImage = (post: any) => post.featuredImage || post.image || '/placeholder-blog.jpg';
+  const postDate = (post: any) =>
+    post.createdAt
+      ? new Date(post.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+      : null;
+
   return (
-    <div>
-      {/* ─── HERO SLIDER ─────────────────────────────────────────── */}
-      <section className="relative overflow-hidden min-h-[560px] md:min-h-[640px] lg:min-h-[700px]">
-        {/* Background image */}
-        <div className={`absolute inset-0 transition-opacity duration-500 ${isSliding ? 'opacity-0' : 'opacity-100'}`}>
-          <Image
-            src={slide.image}
-            alt={slide.headline}
-            fill
-            className="object-cover"
-            priority
-          />
-          {/* Neutral scrim behind the copy only. A full-bleed tinted wash
-              made every photo the same colour as the brand; this keeps the
-              right side of the image untouched. */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-transparent" />
-        </div>
-
-        {/* Content */}
-        <div className="relative container-custom flex items-center min-h-[560px] md:min-h-[640px] lg:min-h-[700px] py-20">
-          <div className={`max-w-xl lg:max-w-2xl text-white transition-all duration-500 ${isSliding ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
-            {slide.badge && (
-              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-sm font-semibold mb-6">
-                <Sparkles className="w-4 h-4 text-brand-300" />
-                {slide.badge}
-              </div>
+    <div className="bg-paper">
+      {/* ─── Hero: the copy on paper, the photograph beside it ─────────── */}
+      <section
+        aria-roledescription="carousel"
+        aria-label="Featured collections"
+        className="container-custom pt-8 pb-12 lg:pt-10 lg:pb-14"
+        onMouseEnter={() => setHeld(true)}
+        onMouseLeave={() => setHeld(false)}
+        onFocus={() => setHeld(true)}
+        onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setHeld(false); }}
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+          <div
+            className={cn(
+              'lg:col-span-6 xl:col-span-5 order-2 lg:order-1 transition-[opacity,transform] duration-200 ease-out',
+              isSliding ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'
+            )}
+            aria-live={paused || held ? 'polite' : 'off'}
+          >
+            <h1 className="font-display text-[length:var(--text-display)] leading-[1.02] text-ink measure-display text-balance">
+              {slide.headline}
+            </h1>
+            {slide.subheadline && (
+              <p className="font-display text-[length:var(--text-2xl)] leading-tight text-accent mt-3 max-w-[24ch]">
+                {slide.subheadline}
+              </p>
+            )}
+            {slide.description && (
+              <p className="lead text-ink-soft mt-6">{slide.description}</p>
             )}
 
-            <h1 className="heading-decorate font-display font-bold text-[38px] leading-[1.1] sm:text-5xl lg:text-6xl mb-5">
-              {slide.headline}
-              <br />
-              <span className="rule" />
-              <span className="text-brand-200">{slide.subheadline}</span>
-            </h1>
-
-            <p className="lead text-white/85 mb-8 max-w-lg">
-              {slide.description}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-x-7 gap-y-4 mt-8">
               {slide.cta && slide.ctaLink && (
-                <Link href={slide.ctaLink} className="btn-primary bg-white text-brand-700 hover:bg-brand-50 text-base py-3.5 px-8 flex items-center gap-2">
-                  {slide.cta} <ArrowRight className="w-5 h-5" />
+                <Link href={slide.ctaLink} className="btn-primary">
+                  {slide.cta}
                 </Link>
               )}
               {slide.ctaSecondary && slide.ctaSecondaryLink && (
-                <Link href={slide.ctaSecondaryLink} className="flex items-center gap-2 text-white font-semibold border border-white/40 hover:border-white rounded-full px-6 py-3.5 transition-all hover:bg-white/10 text-base">
-                  <Zap className="w-4 h-4" /> {slide.ctaSecondary}
+                <Link href={slide.ctaSecondaryLink} className="link-quiet font-semibold">
+                  {slide.ctaSecondary}
                 </Link>
               )}
             </div>
-
-            {/* Mini stats */}
-            <div className="hidden sm:flex items-center gap-6 mt-10 pt-8 border-t border-white/20">
-              {['10L+ Customers', '4.8★ Rating', '50+ Stores'].map((stat) => (
-                <div key={stat} className="text-sm text-white/70 font-medium">{stat}</div>
-              ))}
-            </div>
           </div>
 
-          {/* Tag badge */}
-          {slide.tag && (
-            <div className="absolute top-8 right-8 hidden lg:block">
-              {/* Sits over the uncovered part of the photo, so it carries its
-                  own dark backing rather than relying on a page-wide overlay. */}
-              <div className="bg-black/55 backdrop-blur-sm border border-white/25 rounded-card px-5 py-3 text-white text-center">
-                <div className="font-ui text-[11px] font-semibold uppercase tracking-label text-brand-200 mb-1">Collection</div>
-                <div className="text-2xl font-display font-bold">{slide.tag}</div>
+          <figure className="lg:col-span-6 xl:col-span-7 order-1 lg:order-2 m-0">
+            <div
+              data-slot="hero-photo"
+              className={cn(
+                'rounded-card aspect-[4/5] sm:aspect-[5/4] lg:aspect-auto lg:h-[min(560px,62vh)] transition-opacity duration-200 ease-out',
+                isSliding ? 'opacity-0' : 'opacity-100'
+              )}
+            >
+              {slide.image && (
+                <Image
+                  src={slide.image}
+                  alt={slide.headline}
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 55vw, 100vw"
+                  className="object-cover"
+                />
+              )}
+            </div>
+
+            <figcaption className="flex items-center justify-between gap-4 mt-4">
+              <div className="flex items-center gap-4 min-w-0">
+                {heroSlides.length > 1 && (
+                  <div className="flex shrink-0" role="group" aria-label="Choose a slide">
+                    {heroSlides.map((s: any, i: number) => (
+                      <button
+                        key={s.id ?? i}
+                        type="button"
+                        onClick={() => setHeroSlide(i)}
+                        aria-label={`Slide ${i + 1}: ${s.headline}`}
+                        aria-current={i === heroSlide}
+                        className="group/dot w-9 h-11 flex items-center px-1"
+                      >
+                        <span
+                          className={cn(
+                            'block h-[3px] w-full rounded-full transition-colors duration-200',
+                            i === heroSlide ? 'bg-ink' : 'bg-rule group-hover/dot:bg-ink-muted'
+                          )}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <span className="text-[0.9375rem] text-ink-soft truncate">{slide.badge}</span>
               </div>
+
+              {heroSlides.length > 1 && (
+                <div className="flex items-center gap-2">
+                  <button type="button" onClick={() => goSlide(-1)} aria-label="Previous slide" className={roundBtn}>
+                    <ChevronLeft className="w-5 h-5" aria-hidden />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaused((p) => !p)}
+                    aria-label={paused ? 'Play slideshow' : 'Pause slideshow'}
+                    aria-pressed={paused}
+                    className={roundBtn}
+                  >
+                    {paused ? <Play className="w-4 h-4" aria-hidden /> : <Pause className="w-4 h-4" aria-hidden />}
+                  </button>
+                  <button type="button" onClick={() => goSlide(1)} aria-label="Next slide" className={roundBtn}>
+                    <ChevronRight className="w-5 h-5" aria-hidden />
+                  </button>
+                </div>
+              )}
+            </figcaption>
+          </figure>
+        </div>
+
+      </section>
+
+      {/* ─── Categories ─────────────────────────────────────────────────── */}
+      {categories.length > 0 && (
+        <section aria-labelledby="home-categories" className="section-md border-t border-rule">
+          <div className="container-custom">
+            <SectionHead
+              id="home-categories"
+              title="Shop by category"
+              sub="Find the right wig for your lifestyle and personality."
+            >
+              <button type="button" onClick={() => scrollCategories(-1)} aria-label="Scroll categories back" className={roundBtn}>
+                <ChevronLeft className="w-5 h-5" aria-hidden />
+              </button>
+              <button type="button" onClick={() => scrollCategories(1)} aria-label="Scroll categories forward" className={roundBtn}>
+                <ChevronRight className="w-5 h-5" aria-hidden />
+              </button>
+            </SectionHead>
+
+            <div
+              ref={categoryScrollRef}
+              className="flex gap-5 lg:gap-8 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-hide"
+            >
+              {categories.map((cat) => {
+                const productCount = cat._count?.products ?? 0;
+                const badge = cat.gender ? GENDER_BADGE[cat.gender] : undefined;
+
+                return (
+                  <Link
+                    key={cat.id}
+                    href={`/products?category=${cat.slug}`}
+                    className="group/card w-[72vw] sm:w-[calc(50%-10px)] md:w-[calc(33.333%-14px)] lg:w-[calc(25%-24px)] shrink-0 snap-start rounded-card"
+                  >
+                    <div data-slot="category" className="rounded-card aspect-[4/5]">
+                      <Image
+                        src={cat.image || FALLBACK_CATEGORY_IMAGE}
+                        alt=""
+                        fill
+                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 72vw"
+                        className="object-cover transition-transform duration-500 ease-out group-hover/card:scale-[1.03]"
+                      />
+                    </div>
+                    <h3 className="font-display text-[length:var(--text-title)] text-ink mt-4 group-hover/card:text-accent transition-colors">
+                      {cat.name}
+                    </h3>
+                    <p className="text-[0.9375rem] text-ink-muted mt-1">
+                      {badge ? `${badge}, ` : ''}
+                      {productCount} {productCount === 1 ? 'style' : 'styles'}
+                    </p>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ─── Featured ───────────────────────────────────────────────────── */}
+      <section aria-labelledby="home-featured" className="section-md bg-paper-2">
+        <div className="container-custom">
+          <SectionHead id="home-featured" title="Featured collection" sub="Handpicked by our style experts.">
+            <Link href="/products" className="btn-secondary">View all products</Link>
+          </SectionHead>
+
+          <ul className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 lg:gap-x-8 lg:gap-y-12">
+            {featuredProducts.map((product) => (
+              <li key={product.id} className="min-w-0">
+                <ProductCard product={product} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ─── Figures band ───────────────────────────────────────────────── */}
+      <section aria-labelledby="home-figures" className="bg-deep text-deep-ink">
+        <div className="container-custom py-16 lg:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-end">
+            <h2 id="home-figures" className="lg:col-span-4 font-display text-[length:var(--text-section)] leading-[1.05] text-white max-w-[14ch]">
+              India&apos;s most trusted hair brand
+            </h2>
+            <dl className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-y-8">
+              {STATS.map(({ value, label }, i) => (
+                <div
+                  key={label}
+                  className={cn(
+                    'flex flex-col-reverse pl-5 md:pl-6 border-l border-white/15',
+                    i === 0 && 'border-l-0 pl-0',
+                    i === 2 && 'border-l-0 pl-0 md:border-l md:pl-6'
+                  )}
+                >
+                  <dt className="text-[0.9375rem] text-deep-muted mt-2">{label}</dt>
+                  <dd className="font-display text-[length:var(--text-3xl)] lg:text-[3.25rem] leading-none text-white [font-variant-numeric:lining-nums]">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Try-on ─────────────────────────────────────────────────────── */}
+      <section aria-labelledby="home-tryon" className="section-lg">
+        <div className="container-custom grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+          <div data-slot="try-on" className="lg:col-span-6 rounded-card aspect-[4/5] lg:aspect-[5/6]">
+            <Image
+              src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=900&q=80"
+              alt="A client in the salon chair, trying a new style"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+
+          <div className="lg:col-span-5 lg:col-start-8">
+            <h2 id="home-tryon" className="section-title measure-section">Try before you buy</h2>
+            <p className="lead text-ink-soft mt-6">
+              Our virtual try-on overlays any wig on your live camera feed, so you see exactly how it
+              sits before it reaches your bag.
+            </p>
+            <p className="text-ink-soft mt-4 max-w-[52ch]">
+              Match a style to your face shape, compare lengths side by side, and rotate through
+              360° product views, all without leaving home.
+            </p>
+            <Link href="/try-on" className="btn-primary mt-8">Try on free</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── New arrivals ───────────────────────────────────────────────── */}
+      <section aria-labelledby="home-arrivals" className="section-md bg-paper-2">
+        <div className="container-custom">
+          <SectionHead id="home-arrivals" title="New arrivals" sub="Fresh styles, just landed.">
+            <button
+              type="button"
+              aria-label="Previous new arrivals"
+              onClick={() => scrollNewArrivals(-1)}
+              disabled={!canScrollLeftArrivals}
+              className={roundBtn}
+            >
+              <ChevronLeft className="w-5 h-5" aria-hidden />
+            </button>
+            <button
+              type="button"
+              aria-label="Next new arrivals"
+              onClick={() => scrollNewArrivals(1)}
+              disabled={!canScrollRightArrivals}
+              className={roundBtn}
+            >
+              <ChevronRight className="w-5 h-5" aria-hidden />
+            </button>
+            <Link href="/products?sort=newest" className="link-quiet font-semibold ml-3 hidden sm:inline">
+              See all arrivals
+            </Link>
+          </SectionHead>
+
+          <div
+            ref={newArrivalsScrollRef}
+            className="flex gap-4 lg:gap-6 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-hide"
+          >
+            {newArrivals.map((p) => (
+              <div
+                key={p.id}
+                className="w-[58vw] sm:w-[220px] lg:w-[calc(20%-19.2px)] shrink-0 snap-start"
+              >
+                <ProductCard product={p} compact />
+              </div>
+            ))}
+          </div>
+
+          {newArrivals.length > 4 && (
+            <div className="mt-8 h-[3px] w-48 bg-rule rounded-full overflow-hidden" aria-hidden>
+              <div
+                className="h-full w-full bg-ink origin-left transition-transform duration-200 ease-out"
+                style={{ transform: `scaleX(${Math.max(0.2, arrivalsProgress / 100)})` }}
+              />
             </div>
           )}
-        </div>
 
-        {/* Slider controls */}
-        <button
-          onClick={() => goSlide(-1)}
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white rounded-full hidden lg:flex items-center justify-center transition-colors"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => goSlide(1)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white rounded-full hidden lg:flex items-center justify-center transition-colors"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-
-        {/* Dots */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-          {heroSlides.map((_: any, i: number) => (
-            <button
-              key={i}
-              onClick={() => setHeroSlide(i)}
-              className={`transition-all duration-300 rounded-full ${i === heroSlide ? 'w-8 h-2 bg-white' : 'w-2 h-2 bg-white/40 hover:bg-white/60'}`}
-            />
-          ))}
+          <Link href="/products?sort=newest" className="link-quiet font-semibold mt-6 inline-block sm:hidden">
+            See all arrivals
+          </Link>
         </div>
       </section>
 
-      {/* ─── TRUST STRIP ────────────────────────────────────────────── */}
-      <section className="bg-mist border-y border-gray-100">
-        <div className="container-custom py-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {TRUST_FEATURES.map(({ icon: Icon, title, desc, color }) => (
-            <div key={title} className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
-                <Icon className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="font-semibold text-sm text-gray-900">{title}</p>
-                <p className="text-xs text-gray-500">{desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── CATEGORIES ──────────────────────────────────────────────── */}
-     <section className="section-lg container-custom relative group">
-  <div className="text-center mb-10">
-    <p className="section-eyebrow">Collections</p>
-    <h2 className="section-title heading-decorate">Shop by<br /><span className="rule" />Category</h2>
-    <p className="section-subtitle">
-      Find the perfect wig for your lifestyle and personality
-    </p>
-  </div>
-
-  {categories.length > 0 && (
-  <div className="relative">
-    <button
-      onClick={() => scrollCategories(-1)}
-      className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white shadow-md border border-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:text-brand-600 hover:shadow-lg transition-all md:opacity-0 group-hover:opacity-100 hidden sm:flex"
-    >
-      <ChevronLeft className="w-5 h-5" />
-    </button>
-
-    <div 
-      ref={categoryScrollRef}
-      className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide"
-    >
-      {categories.map((cat, i) => {
-        const productCount = cat._count?.products ?? 0;
-        const badge = (cat.gender && GENDER_BADGE[cat.gender]) || 'Shop Now';
-
-        return (
-        <Link
-          key={cat.id}
-          href={`/products?category=${cat.slug}`}
-          className="group/card relative overflow-hidden rounded-2xl w-[80vw] sm:w-[calc(50%-8px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] flex-shrink-0 snap-start aspect-[3/4]"
-        >
-          <Image
-            src={cat.image || FALLBACK_CATEGORY_IMAGE}
-            alt={cat.name}
-            fill
-            className="object-cover transition-transform duration-500 group-hover/card:scale-110"
-          />
-
-          {/* Text sits along the bottom, so darken only that band and leave
-              the rest of the photograph its own colour. */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent transition-opacity duration-300 group-hover/card:from-black/70" />
-
-          <div className="absolute inset-0 p-4 flex flex-col justify-between">
-            <span className="inline-flex self-start bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-              {badge}
-            </span>
-
-            <div>
-              <p className="text-white/70 text-xs mb-1">
-                {productCount} {productCount === 1 ? 'style' : 'styles'}
-              </p>
-
-              <h3 className="text-white font-display font-bold text-lg leading-tight">
-                {cat.name}
-              </h3>
-
-              {cat.description && (
-                <p className="text-white/70 text-xs mt-1 hidden sm:block line-clamp-2">
-                  {cat.description}
-                </p>
-              )}
-
-              <div className="flex items-center gap-1 mt-2 text-white/80 text-xs font-medium">
-                Shop Now
-                <ArrowRight className="w-3 h-3 group-hover/card:translate-x-1 transition-transform" />
-              </div>
-            </div>
-          </div>
-        </Link>
-        );
-      })}
-    </div>
-
-    <button
-      onClick={() => scrollCategories(1)}
-      className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white shadow-md border border-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:text-brand-600 hover:shadow-lg transition-all md:opacity-0 group-hover:opacity-100 hidden sm:flex"
-    >
-      <ChevronRight className="w-5 h-5" />
-    </button>
-  </div>
-  )}
-</section>
-
-      {/* ─── FEATURED PRODUCTS ──────────────────────────────────── */}
-      <section className="section-lg bg-mist">
-        <div className="container-custom">
-          <div className="flex items-center justify-between mb-10">
-            <div>
-              <p className="section-eyebrow">Handpicked</p>
-              <h2 className="section-title heading-decorate">Featured<br /><span className="rule" />Collection</h2>
-              <p className="text-gray-500">Handpicked by our style experts</p>
-            </div>
-            <Link href="/products" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
-              View All <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide">
-            {featuredProducts.map((product) => (
-              <div key={product.id} className="w-[78vw] sm:w-[42vw] md:w-[30vw] lg:w-[23%] flex-shrink-0 snap-start">
-                <ProductCard product={product} />
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-8 sm:hidden">
-            <Link href="/products" className="btn-secondary inline-flex items-center gap-2">
-              View All Products <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── PROMO BANNER (Try On) ───────────────────────────────── */}
-      <section className="section-lg">
-        <div className="container-custom">
-          <div className="editorial-grid">
-            <div className="editorial-media relative aspect-[4/5] lg:aspect-[378/463]">
-              <Image
-                src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=900&q=80"
-                alt="Virtual try-on in a salon chair"
-                fill
-                className="object-cover"
-              />
-            </div>
-
-            <div className="editorial-copy">
-              <p className="section-eyebrow">Virtual Try-On</p>
-
-              <h2 className="section-title heading-decorate">
-                Try Before
-                <br />
-                <span className="rule" />
-                You Buy
-              </h2>
-
-              <p className="lead mb-5">
-                Our virtual try-on overlays any wig on your live camera feed, so you
-                see exactly how it sits before it reaches your bag.
-              </p>
-
-              <p className="text-ink-muted mb-8 leading-relaxed">
-                Match a style to your face shape, compare lengths side by side, and
-                rotate through 360° product views — all without leaving home.
-              </p>
-
-              <Link href="/try-on" className="btn-primary inline-flex items-center gap-2">
-                Try On Free <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── NEW ARRIVALS CAROUSEL ──────────────────────────────── */}
-      <section className="section-md bg-mist">
-        <div className="container-custom">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <p className="section-eyebrow">Just In</p>
-              <h2 className="section-title heading-decorate">New<br /><span className="rule" />Arrivals</h2>
-              <p className="text-gray-500">Fresh styles just landed</p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              {/* Carousel navigation controls in header */}
-              <div className="flex items-center gap-2">
+      {/* ─── Stories: one voice at a time ───────────────────────────────── */}
+      <section aria-labelledby="home-stories" className="section-lg">
+        <div className="container-custom grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
+          <div className="lg:col-span-4">
+            <h2 id="home-stories" className="section-title measure-section">Real stories, real confidence</h2>
+            <div role="tablist" aria-label="Customer stories" className="mt-8 flex lg:flex-col gap-2 overflow-x-auto scrollbar-hide">
+              {TESTIMONIALS.map((t, i) => (
                 <button
+                  key={t.name}
                   type="button"
-                  aria-label="Previous new arrivals"
-                  onClick={() => scrollNewArrivals(-1)}
-                  disabled={!canScrollLeftArrivals}
+                  role="tab"
+                  id={`story-tab-${i}`}
+                  aria-selected={i === activeStory}
+                  aria-controls="story-panel"
+                  onClick={() => setActiveStory(i)}
                   className={cn(
-                    "w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-200",
-                    canScrollLeftArrivals
-                      ? "border-gray-300 bg-white text-gray-800 shadow-sm hover:border-brand-600 hover:text-brand-600 hover:shadow"
-                      : "border-gray-200/70 bg-white/50 text-gray-300 cursor-not-allowed"
+                    'shrink-0 text-left min-h-[44px] px-4 py-2.5 rounded-input border transition-colors duration-200',
+                    i === activeStory
+                      ? 'border-ink bg-surface text-ink'
+                      : 'border-transparent text-ink-soft hover:bg-paper-2 hover:text-ink'
                   )}
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <span className="font-semibold block">{t.name}</span>
+                  <span className="text-[0.875rem] text-ink-muted">{t.location}</span>
                 </button>
-                <button
-                  type="button"
-                  aria-label="Next new arrivals"
-                  onClick={() => scrollNewArrivals(1)}
-                  disabled={!canScrollRightArrivals}
-                  className={cn(
-                    "w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-200",
-                    canScrollRightArrivals
-                      ? "border-gray-300 bg-white text-gray-800 shadow-sm hover:border-brand-600 hover:text-brand-600 hover:shadow"
-                      : "border-gray-200/70 bg-white/50 text-gray-300 cursor-not-allowed"
-                  )}
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-
-              <Link href="/products?sort=newest" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
-                See All <ArrowRight className="w-4 h-4" />
-              </Link>
+              ))}
             </div>
           </div>
 
-          <div className="relative group/carousel">
-            {/* Floating Left Arrow */}
-            {canScrollLeftArrivals && (
-              <button
-                type="button"
-                aria-label="Previous products"
-                onClick={() => scrollNewArrivals(-1)}
-                className="absolute -left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-white shadow-lg border border-gray-100 rounded-full hidden lg:flex items-center justify-center text-gray-700 hover:text-brand-600 hover:scale-105 transition-all opacity-0 group-hover/carousel:opacity-100"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-            )}
+          <figure
+            id="story-panel"
+            role="tabpanel"
+            aria-labelledby={`story-tab-${activeStory}`}
+            className="lg:col-span-7 lg:col-start-6 m-0 lg:pt-2"
+          >
+            <div className="flex items-center gap-1 text-ink" aria-label={`${story.rating} out of 5 stars`} role="img">
+              {Array.from({ length: 5 }).map((_, s) => (
+                <Star key={s} className={cn('w-5 h-5', s < story.rating ? 'star-filled' : 'star-empty')} aria-hidden />
+              ))}
+            </div>
+            <blockquote className="font-display text-[length:var(--text-2xl)] lg:text-[2.25rem] leading-[1.25] text-ink mt-6">
+              &ldquo;{story.text}&rdquo;
+            </blockquote>
+            <figcaption className="mt-8 text-[1.0625rem]">
+              <span className="font-semibold text-ink">{story.name}</span>
+              <span className="text-ink-muted">, {story.location}. Wears the {story.product}.</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
 
-            {/* Floating Right Arrow */}
-            {canScrollRightArrivals && (
-              <button
-                type="button"
-                aria-label="Next products"
-                onClick={() => scrollNewArrivals(1)}
-                className="absolute -right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-white shadow-lg border border-gray-100 rounded-full hidden lg:flex items-center justify-center text-gray-700 hover:text-brand-600 hover:scale-105 transition-all opacity-0 group-hover/carousel:opacity-100"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            )}
+      {/* ─── FAQ ────────────────────────────────────────────────────────── */}
+      <section aria-labelledby="home-faq" className="section-md bg-paper-2">
+        <div className="container-custom grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-start">
+          <div className="lg:col-span-7">
+            <h2 id="home-faq" className="section-title measure-section">Questions we hear most</h2>
+            <p className="text-ink-soft text-[1.0625rem] mt-3">Quick answers before you choose your style.</p>
 
-            {/* Scrollable Carousel Track */}
-            <div
-              ref={newArrivalsScrollRef}
-              className="flex gap-3 md:gap-4 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 px-1 scrollbar-hide scroll-smooth"
-            >
-              {newArrivals.map((p) => (
-                <div
-                  key={p.id}
-                  className="w-[58vw] sm:w-[210px] md:w-[215px] lg:w-[calc(20%-13px)] xl:w-[calc(16.666%-14px)] shrink-0 snap-start"
-                >
-                  <ProductCard product={p} compact />
-                </div>
+            <div className="mt-10 border-t border-rule">
+              {HOME_FAQS.map(({ question, answer }) => (
+                <details key={question} className="group border-b border-rule">
+                  <summary className="flex items-center justify-between gap-6 py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden rounded-sm">
+                    <span className="font-semibold text-ink text-[1.0625rem]">{question}</span>
+                    <Plus className="w-5 h-5 shrink-0 text-ink-soft transition-transform duration-200 group-open:rotate-45" aria-hidden />
+                  </summary>
+                  <p className="text-ink-soft pb-6 pr-10 max-w-[60ch]">{answer}</p>
+                </details>
               ))}
             </div>
 
-            {/* Carousel Progress Track */}
-            {newArrivals.length > 4 && (
-              <div className="mt-4 flex items-center justify-center">
-                <div className="w-40 h-1.5 bg-gray-200/80 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-brand-600 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.max(20, arrivalsProgress)}%` }}
+            <Link href="/faq" className="btn-secondary mt-8">Read all FAQs</Link>
+          </div>
+
+          <div data-slot="faq-photo" className="lg:col-span-4 lg:col-start-9 rounded-card aspect-[4/5] lg:sticky lg:top-28">
+            <Image
+              src="/faq-barber.jpg"
+              alt="A stylist fitting a hair system in the studio"
+              fill
+              sizes="(min-width: 1024px) 33vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Journal, with the letter folded in ─────────────────────────── */}
+      {leadPost && (
+        <section aria-labelledby="home-journal" className="section-lg">
+          <div className="container-custom">
+            <SectionHead id="home-journal" title="Hair care and style guides" sub="Advice from the people who fit our wigs.">
+              <Link href="/blog" className="btn-secondary">All articles</Link>
+            </SectionHead>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
+              <Link href={`/blog/${leadPost.slug}`} className="group lg:col-span-7 rounded-card">
+                <div data-slot="journal-lead" className="rounded-card aspect-[16/10]">
+                  <Image
+                    src={postImage(leadPost)}
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 58vw, 100vw"
+                    className="object-cover"
                   />
                 </div>
-              </div>
-            )}
-          </div>
+                <p className="text-[0.9375rem] text-ink-muted mt-5">
+                  {leadPost.category || 'Journal'}
+                  {postDate(leadPost) && <>, {postDate(leadPost)}</>}
+                </p>
+                <h3 className="font-display text-[length:var(--text-2xl)] leading-tight text-ink mt-2 group-hover:text-accent transition-colors max-w-[30ch]">
+                  {leadPost.title}
+                </h3>
+                <p className="text-ink-soft mt-3 max-w-[60ch] line-clamp-2">
+                  {leadPost.excerpt || leadPost.shortDescription || leadPost.content?.slice(0, 160)}
+                </p>
+              </Link>
 
-          <div className="text-center mt-6 sm:hidden">
-            <Link href="/products?sort=newest" className="btn-secondary inline-flex items-center gap-2">
-              See All Arrivals <ArrowRight className="w-4 h-4" />
+              <div className="lg:col-span-4 lg:col-start-9 flex flex-col">
+                <ul className="border-t border-rule">
+                  {morePosts.map((post: any) => (
+                    <li key={post.id} className="border-b border-rule">
+                      <Link href={`/blog/${post.slug}`} className="group block py-4 rounded-sm">
+                        <h3 className="font-display text-[length:var(--text-lg)] leading-snug text-ink group-hover:text-accent transition-colors">
+                          {post.title}
+                        </h3>
+                        <p className="text-[0.875rem] text-ink-muted mt-1">{post.category || 'Journal'}</p>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+
+                <form
+                  className="mt-auto pt-10"
+                  onSubmit={(e) => e.preventDefault()}
+                  aria-labelledby="home-letter"
+                >
+                  <h3 id="home-letter" className="font-display text-[length:var(--text-xl)] text-ink">
+                    Get exclusive offers and style tips
+                  </h3>
+                  <p className="text-ink-soft text-[0.9375rem] mt-2">
+                    Join 2 lakh+ subscribers for first access to new arrivals. No spam; unsubscribe anytime.
+                  </p>
+                  <label htmlFor="home-email" className="visually-hidden">Email address</label>
+                  <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                    <input
+                      id="home-email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder="Your email address"
+                      className="input-field flex-1"
+                    />
+                    <button type="submit" className="btn-primary whitespace-nowrap">Subscribe</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ─── Close: two doors ───────────────────────────────────────────── */}
+      <section aria-label="Shop by who it's for" className="section-md border-t border-rule">
+        <div className="container-custom grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-8">
+          {[
+            {
+              href: '/women',
+              title: "Women's wigs",
+              desc: 'From silky straight to glamorous curls: express every side of you.',
+              image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&q=80',
+            },
+            {
+              href: '/men',
+              title: "Men's hair systems",
+              desc: 'Undetectable Swiss lace hair systems. Natural look, zero compromise.',
+              image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=1200&q=80',
+            },
+          ].map(({ href, title, desc, image }) => (
+            <Link key={href} href={href} className="group rounded-card">
+              <div data-slot="door" className="rounded-card aspect-[3/2]">
+                <Image
+                  src={image}
+                  alt=""
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
+              <h2 className="font-display text-[length:var(--text-section)] leading-none text-ink mt-6 group-hover:text-accent transition-colors">
+                {title}
+              </h2>
+              <p className="text-ink-soft text-[1.0625rem] mt-3 max-w-[44ch]">{desc}</p>
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── GENDER SPLIT BANNER ──────────────────────────────────── */}
-      <section className="section-md container-custom">
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Women */}
-          <Link href="/women" className="group relative overflow-hidden rounded-3xl min-h-[360px] cursor-pointer">
-            <Image
-              src='https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&q=80'
-              alt="Women's Wigs"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-            <div className="absolute inset-0 p-10 flex flex-col justify-end">
-              <span className="badge bg-white/20 text-white mb-3 self-start backdrop-blur-sm">For Her</span>
-              <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">Women&apos;s Wigs</h3>
-              <p className="text-white/75 mb-5 max-w-xs">From silky straight to glamorous curls — express every side of you.</p>
-              <span className="inline-flex items-center gap-2 bg-white text-brand-700 font-bold px-5 py-2.5 rounded-full self-start group-hover:bg-brand-50 transition-colors">
-                Explore <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </div>
-          </Link>
-
-          {/* Men */}
-          <Link href="/men" className="group relative overflow-hidden rounded-3xl min-h-[360px] cursor-pointer">
-            <Image
-              src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80"
-              alt="Men's Hair Systems"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-            <div className="absolute inset-0 p-10 flex flex-col justify-end">
-              <span className="badge bg-white/20 text-white mb-3 self-start backdrop-blur-sm">For Him</span>
-              <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">Men&apos;s Hair Systems</h3>
-              <p className="text-white/75 mb-5 max-w-xs">Undetectable Swiss lace hair systems. Natural look, zero compromise.</p>
-              <span className="inline-flex items-center gap-2 bg-white text-brand-700 font-bold px-5 py-2.5 rounded-full self-start group-hover:bg-brand-50 transition-colors">
-                Explore <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </div>
-          </Link>
-        </div>
-      </section>
-
-      {/* ─── FAQ ────────────────────────────────────────────────── */}
-      <section className="section-lg bg-mist">
-        <div className="container-custom">
-          <div className="text-center mb-10">
-            <p className="section-eyebrow">Need to Know</p>
-            <h2 className="section-title heading-decorate">Frequently Asked<br /><span className="rule" />Questions</h2>
-            <p className="section-subtitle">Quick answers before you choose your perfect style</p>
-          </div>
-
-          <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:items-stretch">
-            <div className="space-y-3">
-              {HOME_FAQS.map(({ question, answer }) => (
-                <div key={question} className="bg-white border border-gray-100 rounded-2xl shadow-sm p-5">
-                  <h3 className="font-semibold text-gray-900 mb-2">{question}</h3>
-                  <p className="text-sm leading-relaxed text-gray-600">{answer}</p>
-                </div>
-              ))}
-              <div className="pt-3">
-                <Link href="/faq" className="btn-secondary inline-flex items-center gap-2">
-                  View all FAQs <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-
-            <div className="relative h-[300px] lg:h-auto w-full rounded-3xl overflow-hidden shadow-sm">
-              <Image 
-                src="/faq-barber.jpg" 
-                alt="Hair Replacement Process" 
-                fill 
-                className="object-cover" 
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── STATS ──────────────────────────────────────────────── */}
-      <section className="section-md bg-gradient-to-r from-brand-950 via-brand-900 to-brand-800 text-white">
-        <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-3">
-              India&apos;s Most Trusted Hair Brand
-            </h2>
-            <p className="text-white/65 text-lg">Numbers that speak for themselves</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {STATS.map(({ value, label, icon: Icon }) => (
-              <div key={label} className="text-center">
-                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                  <Icon className="w-6 h-6 text-brand-300" />
-                </div>
-                <div className="text-3xl md:text-4xl font-display font-bold text-white mb-1">{value}</div>
-                <div className="text-white/60 text-sm">{label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── TESTIMONIALS ────────────────────────────────────────── */}
-      <section className="section-md container-custom">
-        <div className="text-center mb-12">
-          <p className="section-eyebrow">Testimonials</p>
-          <h2 className="section-title heading-decorate">Real Stories.<br /><span className="rule" />Real Confidence.</h2>
-          <p className="section-subtitle">See what our customers say about Glamour Hair Studios</p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          {TESTIMONIALS.map((t) => (
-            <div key={t.name} className="card p-6 hover:shadow-product-hover transition-shadow">
-              <div className="flex items-center gap-1 mb-4">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star key={s} className="w-4 h-4 star-filled" />
-                ))}
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-5 italic">&ldquo;{t.text}&rdquo;</p>
-              <div className="flex items-center gap-3">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                  <Image src={t.image} alt={t.name} fill className="object-cover" />
-                </div>
-                <div>
-                  <p className="font-semibold text-sm text-gray-900">{t.name}</p>
-                  <p className="text-xs text-gray-500">{t.location} · {t.product}</p>
-                </div>
-                <Heart className="ml-auto w-4 h-4 text-red-400 fill-red-400" />
-              </div>
-            </div>
           ))}
-        </div>
-      </section>
-
-      {/* ─── BLOG ───────────────────────────────────────────────── */}
-      <section className="section-lg bg-mist">
-        <div className="container-custom">
-          <div className="flex items-center justify-between mb-10">
-            <div>
-              <p className="section-eyebrow">Journal</p>
-              <h2 className="section-title heading-decorate">Hair Care Tips<br /><span className="rule" />&amp; Style Guides</h2>
-              <p className="text-gray-500">Expert advice from our team</p>
-            </div>
-            <Link href="/blog" className="btn-secondary text-sm py-2 px-5 hidden sm:flex items-center gap-1">
-              All Articles <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-     {blogs.map((post: any) => (
-  <Link
-    key={post.id}
-    href={`/blog/${post.slug}`}
-    className="card group overflow-hidden"
-  >
-    <div className="relative h-48 overflow-hidden">
-      <Image
-        src={
-          post.featuredImage ||
-          post.image ||
-          "/placeholder-blog.jpg"
-        }
-        alt={post.title}
-        fill
-        className="object-cover transition-transform duration-500 group-hover:scale-105"
-      />
-
-      <div className="absolute top-3 left-3">
-        <span className="badge bg-brand-600 text-white text-xs">
-          {post.category || "Blog"}
-        </span>
-      </div>
-    </div>
-
-    <div className="p-5">
-      <p className="text-xs text-gray-400 mb-2">
-        {post.createdAt
-          ? new Date(post.createdAt).toLocaleDateString()
-          : "Latest Article"}
-      </p>
-
-      <h3 className="font-display font-bold text-gray-900 mb-2 group-hover:text-brand-600 transition-colors leading-snug">
-        {post.title}
-      </h3>
-
-      <p className="text-sm text-gray-500 line-clamp-2">
-        {post.excerpt ||
-          post.shortDescription ||
-          post.content?.slice(0, 120)}
-      </p>
-
-      <div className="flex items-center gap-1 mt-4 text-brand-600 text-sm font-semibold">
-        Read More
-        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-      </div>
-    </div>
-  </Link>
-))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── NEWSLETTER ──────────────────────────────────────────── */}
-      <section className="section-lg">
-        <div className="container-custom">
-          <div className="bg-gradient-to-r from-brand-50 to-brand-50 rounded-3xl p-10 md:p-16 text-center border border-brand-100">
-            <Sparkles className="w-10 h-10 text-brand-600 mx-auto mb-4" />
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
-              Get Exclusive Offers & Style Tips
-            </h2>
-            <p className="text-gray-500 text-lg mb-8 max-w-md mx-auto">
-              Join 2 lakh+ subscribers. Get first access to new arrivals, styling tips, and exclusive discounts.
-            </p>
-            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                className="flex-1 input-field"
-              />
-              <button type="submit" className="btn-primary whitespace-nowrap">
-                Subscribe Free
-              </button>
-            </form>
-            <p className="text-xs text-gray-400 mt-3">No spam. Unsubscribe anytime. We respect your privacy.</p>
-          </div>
         </div>
       </section>
     </div>

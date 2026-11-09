@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getAllReviews, deleteReview } from "@/lib/review-admin-api";
+import { Star } from 'lucide-react';
 
 export default function AdminReviewsPage() {
   const [reviews, setReviews] = useState<any[]>([]);
@@ -44,7 +45,7 @@ export default function AdminReviewsPage() {
         rounded-3xl
 
         bg-white/5
-        backdrop-blur-xl
+       
 
         border
         border-white/10
@@ -55,7 +56,7 @@ export default function AdminReviewsPage() {
         text-slate-400
         "
         >
-          Loading reviews...
+          Loading reviews…
         </div>
       </div>
     );
@@ -104,7 +105,7 @@ export default function AdminReviewsPage() {
       rounded-3xl
 
       bg-white/5
-      backdrop-blur-xl
+     
 
       border
       border-white/10
@@ -166,7 +167,7 @@ export default function AdminReviewsPage() {
 
                   hover:bg-white/5
 
-                  transition-all
+                  transition
                   duration-300
                   "
                   >
@@ -186,12 +187,13 @@ export default function AdminReviewsPage() {
                     <td className="p-3 sm:p-5">
                       <span
                         className="
+                      inline-flex items-center gap-1
                       px-2 sm:px-3
                       py-1
 
                       rounded-full
 
-                      text-[10px] sm:text-xs
+                      text-xs
                       font-semibold
 
                       bg-yellow-500/20
@@ -201,7 +203,7 @@ export default function AdminReviewsPage() {
                       border-yellow-500/20
                       "
                       >
-                        ⭐ {review.rating}/5
+                        <Star className="w-3.5 h-3.5 fill-current" aria-hidden /> {review.rating}/5
                       </span>
                     </td>
 
@@ -236,7 +238,7 @@ export default function AdminReviewsPage() {
                       hover:bg-red-500/30
                       hover:text-white
 
-                      transition-all
+                      transition
                       duration-300
                       "
                       >

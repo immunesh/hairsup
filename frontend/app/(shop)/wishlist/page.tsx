@@ -66,7 +66,7 @@ export default function WishlistPage() {
   return (
     <div className="container-custom py-20 text-center">
       <h2 className="text-xl font-semibold">
-        Loading Wishlist...
+        Loading your wishlist…
       </h2>
     </div>
   );
@@ -125,7 +125,7 @@ export default function WishlistPage() {
                 <div className="relative aspect-product bg-gray-50 overflow-hidden">
                   {primaryImg && (
                     <Link href={`/products/${product.slug}`}>
-                      <Image src={primaryImg.url} alt={product.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <Image src={primaryImg.url} alt={product.name} fill className="object-cover" />
                     </Link>
                   )}
                   {discount > 0 && <span className="absolute top-2 left-2 badge-sale text-xs font-bold">-{discount}%</span>}
@@ -142,7 +142,7 @@ export default function WishlistPage() {
                   </Link>
                   <div className="flex items-center gap-1.5 mb-3">
                     <span className="font-bold text-gray-900">{formatPrice(price)}</span>
-                    {product.salePrice && <span className="text-xs text-gray-400 line-through">{formatPrice(product.basePrice)}</span>}
+                    {product.salePrice && <span className="text-xs text-gray-500 line-through">{formatPrice(product.basePrice)}</span>}
                   </div>
                   <button
                     onClick={() => handleMoveToCart(productId)}

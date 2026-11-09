@@ -96,7 +96,7 @@ export default function CartSidebar() {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-fade-in"
+        className="fixed inset-0 bg-black/50 z-50 animate-fade-in"
         onClick={closeCart}
       />
 
@@ -177,7 +177,7 @@ export default function CartSidebar() {
                           <span className="font-bold text-sm">{formatPrice(price * item.quantity)}</span>
                           <button
                             onClick={() => handleQuantityChange(item.id, 0)}
-                            className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                            className="text-gray-500 hover:text-red-500 transition-colors p-1"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -221,7 +221,7 @@ export default function CartSidebar() {
                         setCouponError('');
                       }}
                       placeholder="Enter coupon code"
-                      className="flex-1 px-3 py-1.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:border-brand-500 bg-gray-55/50 uppercase"
+                      className="flex-1 px-3 py-1.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:border-brand-500 bg-gray-50"
                       disabled={applyingCoupon}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
@@ -259,7 +259,7 @@ export default function CartSidebar() {
                 <div className="flex items-center justify-between bg-green-50/80 border border-green-100 rounded-xl p-2 px-3 animate-fade-in">
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-                    <span className="text-xs font-bold text-green-800 uppercase">{couponCode}</span>
+                    <span className="text-xs font-bold text-green-800">{couponCode}</span>
                     <span className="text-[10px] text-green-600 font-medium">applied</span>
                   </div>
                   <span className="text-xs font-bold text-green-700">-{formatPrice(discount)}</span>

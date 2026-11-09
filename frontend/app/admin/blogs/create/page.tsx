@@ -66,7 +66,7 @@ export default function CreateBlogPage() {
         hover:bg-white/10
         hover:text-white
 
-        transition-all
+        transition
         duration-300
         "
         >
@@ -81,7 +81,7 @@ export default function CreateBlogPage() {
       rounded-3xl
 
       bg-white/5
-      backdrop-blur-xl
+     
 
       border
       border-white/10
@@ -112,7 +112,7 @@ export default function CreateBlogPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
 
@@ -145,7 +145,7 @@ export default function CreateBlogPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
 
@@ -178,7 +178,7 @@ export default function CreateBlogPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
 
@@ -211,7 +211,7 @@ export default function CreateBlogPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
 
@@ -233,7 +233,7 @@ export default function CreateBlogPage() {
             rows={4}
             value={excerpt}
             onChange={(e) => setExcerpt(e.target.value)}
-            placeholder="Short description of blog..."
+            placeholder="Short description of blog…"
             className="
           w-full
 
@@ -245,7 +245,7 @@ export default function CreateBlogPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
 
@@ -267,7 +267,7 @@ export default function CreateBlogPage() {
             rows={14}
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Write blog content..."
+            placeholder="Write blog content…"
             className="
           w-full
 
@@ -279,7 +279,7 @@ export default function CreateBlogPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
 
@@ -301,20 +301,20 @@ export default function CreateBlogPage() {
 
           rounded-2xl
 
-          bg-gradient-to-r
-          from-cyan-500
-          to-brand-600
+          
+          
+          
 
           text-white
           font-medium
 
-          transition-all
+          transition
           duration-300
 
           hover:scale-105
 
-          shadow-[0_0_25px_rgba(56,189,248,0.35)]
-          "
+          
+           bg-brand-600 hover:bg-brand-700 text-white"
           >
             Create Blog
           </button>
@@ -338,7 +338,7 @@ export default function CreateBlogPage() {
           hover:bg-white/10
           hover:text-white
 
-          transition-all
+          transition
           duration-300
           "
           >

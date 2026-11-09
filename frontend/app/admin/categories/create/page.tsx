@@ -90,7 +90,7 @@ export default function CreateCategoryPage() {
       rounded-3xl
 
       bg-white/5
-      backdrop-blur-xl
+     
 
       border
       border-white/10
@@ -126,7 +126,7 @@ export default function CreateCategoryPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
 
@@ -164,7 +164,7 @@ export default function CreateCategoryPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
 
@@ -191,7 +191,7 @@ export default function CreateCategoryPage() {
                 description: e.target.value,
               })
             }
-            placeholder="Category description..."
+            placeholder="Category description…"
             className="
           w-full
 
@@ -203,7 +203,7 @@ export default function CreateCategoryPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
 
@@ -231,7 +231,7 @@ export default function CreateCategoryPage() {
           rounded-2xl
           bg-white/5
           border
-          border-white/10
+          border-white/40
           text-slate-300
           "
             onChange={(e) => {
@@ -283,10 +283,10 @@ export default function CreateCategoryPage() {
 
           rounded-2xl
 
-          bg-[#131827]
+          bg-admin-raised
 
           border
-          border-white/10
+          border-white/40
 
           text-white
 
@@ -315,25 +315,25 @@ export default function CreateCategoryPage() {
 
           rounded-2xl
 
-          bg-gradient-to-r
-          from-cyan-500
-          to-brand-600
+          
+          
+          
 
           text-white
           font-medium
 
-          transition-all
+          transition
           duration-300
 
           hover:scale-105
 
-          shadow-[0_0_25px_rgba(56,189,248,0.35)]
+          
 
           disabled:opacity-50
           disabled:hover:scale-100
-          "
+           bg-brand-600 hover:bg-brand-700 text-white"
           >
-            {submitting ? "Saving..." : "Save Category"}
+            {submitting ? "Saving…" : "Save Category"}
           </button>
         </div>
       </form>

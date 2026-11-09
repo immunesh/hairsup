@@ -2,19 +2,20 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Grid, List, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import ProductCard from '@/components/ui/ProductCard';
 import FilterSidebar from '@/components/ui/FilterSidebar';
 import { productsApi } from '@/lib/api';
 import { Product } from '@/types';
-import Link from 'next/link';
+import {
+  CollectionHeader, SubcatBar, ListingToolbar, ActiveFilters, ProductGrid, GridSkeleton, EmptyState, FilterDrawer,
+} from '@/components/shop/Listing';
 
 const SORT_OPTIONS = [
-  { label: 'Newest First', value: 'createdAt-desc' },
-  { label: 'Price: Low to High', value: 'price-asc' },
-  { label: 'Price: High to Low', value: 'price-desc' },
-  { label: 'Best Rating', value: 'rating-desc' },
-  { label: 'Most Reviewed', value: 'reviews-desc' },
+  { label: 'Newest first', value: 'createdAt-desc' },
+  { label: 'Price, low to high', value: 'price-asc' },
+  { label: 'Price, high to low', value: 'price-desc' },
+  { label: 'Best rated', value: 'rating-desc' },
+  { label: 'Most reviewed', value: 'reviews-desc' },
 ];
 
 export default function AllProductsPage() {
@@ -28,15 +29,7 @@ export default function AllProductsPage() {
 function ProductGridSkeleton() {
   return (
     <div className="container-custom py-8">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-          <div key={i} className="animate-pulse">
-            <div className="bg-gray-200 aspect-product rounded-2xl mb-3" />
-            <div className="bg-gray-200 h-4 rounded mb-2" />
-            <div className="bg-gray-200 h-4 w-2/3 rounded" />
-          </div>
-        ))}
-      </div>
+      <GridSkeleton />
     </div>
   );
 }
@@ -52,6 +45,7 @@ function AllProductsContent() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
   const [activeGender, setActiveGender] = useState<'ALL' | 'WOMEN' | 'MEN'>('ALL');
+  const [loading, setLoading] = useState(true);
 const loadProducts = async () => {
   try {
     const { data } = await productsApi.getAll();
@@ -204,6 +198,8 @@ if (filters.collection) {
     setProducts(filtered);
   } catch (error) {
     console.error(error);
+  } finally {
+    setLoading(false);
   }
 };
 useEffect(() => {
@@ -271,94 +267,64 @@ switch (sort) {
 }
 
   const GENDER_TABS = [
-    { label: 'All Wigs', value: 'ALL' },
-    { label: "Women's Wigs", value: 'WOMEN' },
-    { label: "Men's Hair Systems", value: 'MEN' },
+    { label: 'All wigs', value: 'ALL' },
+    { label: "Women's wigs", value: 'WOMEN' },
+    { label: "Men's hair systems", value: 'MEN' },
   ] as const;
 
   return (
     <div>
-      {/* Page header */}
-      <div className="page-hero py-10 text-center">
-        <div className="container-custom">
-          <h1 className="text-3xl md:text-4xl font-display font-bold text-ink mb-3">All Wigs & Hair Systems</h1>
-          <p className="text-ink-muted">Premium quality wigs for men and women</p>
-        </div>
-      </div>
+      <CollectionHeader
+        crumb="All wigs"
+        title="All wigs and hair systems"
+        lead="Premium quality wigs for men and women"
+      />
 
-      {/* Gender tabs */}
-      <div className="bg-white border-b border-gray-200 sticky top-16 z-30">
-        <div className="container-custom flex gap-1 py-1 overflow-x-auto scrollbar-hide">
-          {GENDER_TABS.map(({ label, value }) => (
-            <button
-              key={value}
-              onClick={() => setActiveGender(value)}
-              className={`px-5 py-3 text-sm font-semibold border-b-2 whitespace-nowrap transition-all ${activeGender === value ? 'border-brand-600 text-brand-600' : 'border-transparent text-gray-600 hover:text-gray-900'}`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <SubcatBar label="Shop by" items={GENDER_TABS} active={activeGender} onSelect={setActiveGender} variant="tab" />
 
-      <div className="container-custom py-8">
-        <div className="flex gap-8">
-          <div className="hidden lg:block w-64 flex-shrink-0">
+      <div className="container-custom py-10">
+        <div className="flex gap-10">
+          <aside className="hidden lg:block w-64 shrink-0" aria-label="Filters">
             <FilterSidebar filters={filters} onChange={handleFilterChange} onClear={clearFilters} />
-          </div>
+          </aside>
 
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-4 mb-6 flex-wrap">
-              <p className="text-sm text-gray-500 mr-auto">
-                <span className="font-semibold text-gray-900">{products.length}</span> products
-              </p>
-              <button
-                onClick={() => setShowFilters(true)}
-                className="lg:hidden flex items-center gap-2 border border-gray-200 rounded-xl px-4 py-2 text-sm font-medium"
-              >
-                <SlidersHorizontal className="w-4 h-4" /> Filters
-                {activeFilterCount > 0 && <span className="bg-brand-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{activeFilterCount}</span>}
-              </button>
-              <div className="relative">
-                <select value={sort} onChange={(e) => setSort(e.target.value)} className="appearance-none border border-gray-200 rounded-xl px-4 py-2 pr-8 text-sm focus:outline-none bg-white cursor-pointer">
-                  {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                </select>
-                <ChevronDown className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500" />
-              </div>
-              <div className="flex border border-gray-200 rounded-xl overflow-hidden">
-                <button onClick={() => setViewMode('grid')} className={`p-2 ${viewMode === 'grid' ? 'bg-brand-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}><Grid className="w-4 h-4" /></button>
-                <button onClick={() => setViewMode('list')} className={`p-2 ${viewMode === 'list' ? 'bg-brand-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}><List className="w-4 h-4" /></button>
-              </div>
-            </div>
+            <ListingToolbar
+              count={products.length}
+              noun={products.length === 1 ? 'style' : 'styles'}
+              loading={loading}
+              sort={sort}
+              onSort={setSort}
+              sortOptions={SORT_OPTIONS}
+              viewMode={viewMode}
+              onViewMode={setViewMode}
+              onOpenFilters={() => setShowFilters(true)}
+              activeFilterCount={activeFilterCount}
+            />
 
-            <div className={`grid gap-4 md:gap-6 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1'}`}>
-              {sortedProducts.map((product) => <ProductCard key={product.id} product={product} />)}
-            </div>
+            <ActiveFilters filters={filters} onRemove={(k) => handleFilterChange(k, undefined)} onClear={clearFilters} />
 
-            {products.length === 0 && (
-              <div className="text-center py-20">
-                <div className="text-5xl mb-4">🔍</div>
-                <h3 className="text-lg font-semibold mb-2">No products found</h3>
-                <button onClick={clearFilters} className="btn-primary mt-4">Clear Filters</button>
-              </div>
+            {loading ? (
+              <GridSkeleton />
+            ) : products.length === 0 ? (
+              <EmptyState
+                title="No products found"
+                action={<button type="button" onClick={clearFilters} className="btn-primary">Clear filters</button>}
+              />
+            ) : (
+              <ProductGrid viewMode={viewMode}>
+                {sortedProducts.map((product) => (
+                  <li key={product.id}><ProductCard product={product} /></li>
+                ))}
+              </ProductGrid>
             )}
           </div>
         </div>
       </div>
 
-      {showFilters && (
-        <>
-          <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowFilters(false)} />
-          <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50 max-h-[85vh] overflow-y-auto p-5 animate-slide-up">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-lg">Filters</h3>
-              <button onClick={() => setShowFilters(false)}><X className="w-5 h-5" /></button>
-            </div>
-            <FilterSidebar filters={filters} onChange={handleFilterChange} onClear={clearFilters} />
-            <button onClick={() => setShowFilters(false)} className="btn-primary w-full mt-4">Apply Filters</button>
-          </div>
-        </>
-      )}
+      <FilterDrawer open={showFilters} onClose={() => setShowFilters(false)}>
+        <FilterSidebar filters={filters} onChange={handleFilterChange} onClear={clearFilters} />
+      </FilterDrawer>
     </div>
   );
 }

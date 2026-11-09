@@ -30,9 +30,9 @@ function StatCard({
       border
       border-white/10
       bg-white/5
-      backdrop-blur-xl
+     
       p-4 sm:p-6
-      transition-all
+      transition
       duration-300
       hover:-translate-y-1
       hover:border-white/20
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center text-white text-xl">
-        Loading Dashboard...
+        Loading dashboard…
       </div>
     );
   }
@@ -155,17 +155,17 @@ export default function AdminDashboard() {
       className="
     min-h-screen
     p-4 sm:p-6 lg:p-8
-    bg-gradient-to-br
-    from-[#0b1020]
-    via-[#131827]
-    to-[#1b1634]
-    "
+    
+    
+    
+    
+     bg-admin-base"
     >
       <div className="mb-8 sm:mb-10">
         <h1 className="text-3xl sm:text-4xl font-bold text-white">Dashboard</h1>
 
         <p className="mt-2 text-sm sm:text-base text-slate-400">
-          Welcome back, Admin 👋
+          Welcome back, Admin.
         </p>
       </div>
 
@@ -214,7 +214,7 @@ export default function AdminDashboard() {
         border
         border-white/10
         bg-white/5
-        backdrop-blur-xl
+       
         p-4 sm:p-6
         "
         >
@@ -233,7 +233,7 @@ export default function AdminDashboard() {
         border
         border-white/10
         bg-white/5
-        backdrop-blur-xl
+       
         p-4 sm:p-6
         "
         >

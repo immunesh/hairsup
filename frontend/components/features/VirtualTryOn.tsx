@@ -447,7 +447,7 @@ export default function VirtualTryOn({
       {showNoProductModal && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
           <div className="bg-white rounded-card border border-gray-100 p-8 max-w-sm w-full mx-4 text-center shadow-product-hover">
-            <div className="w-16 h-16 bg-brand-100 rounded-card flex items-center justify-center mx-auto mb-5">
+            <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-5">
               <Zap className="w-8 h-8 text-brand-700" />
             </div>
             <h2 className="font-display text-2xl font-bold text-ink mb-2">
@@ -504,14 +504,14 @@ export default function VirtualTryOn({
           {/* Camera / Preview panel */}
           <div className="lg:col-span-2 space-y-4">
             {/* Mode tabs */}
-            <div className="flex gap-2 bg-mist border border-gray-100 p-1 rounded-card">
+            <div className="flex gap-2 bg-mist border border-gray-100 p-1 rounded-full">
               <button
                 onClick={() => {
                   setMode("camera");
                   setCapturedImage(null);
                 }}
                 className={cn(
-                  "flex-1 py-2 px-4 rounded-card font-ui text-xs font-semibold uppercase tracking-button transition-colors",
+                  "flex-1 py-2 px-4 rounded-full font-ui text-sm font-semibold transition-colors",
                   mode === "camera"
                     ? "bg-white shadow-product text-brand-700"
                     : "text-ink-muted hover:text-ink",
@@ -525,7 +525,7 @@ export default function VirtualTryOn({
                   stopCamera();
                 }}
                 className={cn(
-                  "flex-1 py-2 px-4 rounded-card font-ui text-xs font-semibold uppercase tracking-button transition-colors",
+                  "flex-1 py-2 px-4 rounded-full font-ui text-sm font-semibold transition-colors",
                   mode === "upload"
                     ? "bg-white shadow-product text-brand-700"
                     : "text-ink-muted hover:text-ink",
@@ -540,6 +540,7 @@ export default function VirtualTryOn({
               {/* Hidden video element */}
               <video
                 ref={videoRef}
+                aria-hidden
                 className="hidden"
                 playsInline
                 muted
@@ -550,6 +551,7 @@ export default function VirtualTryOn({
                 <>
                   <canvas
                     ref={canvasRef}
+                    aria-label="Live camera preview with the selected wig"
                     className={cn(
                       "w-full h-full object-cover",
                       !cameraActive && "hidden",
@@ -565,12 +567,12 @@ export default function VirtualTryOn({
                           Virtual Try-On
                         </h3>
                         <p className="text-white/70 text-sm max-w-xs">
-                          See how any Glamour Hair Studios wig looks on you — in real time
+                          See how any Glamour Hair Studios wig looks on you, in real time
                           using your camera.
                         </p>
                       </div>
                       {cameraError && (
-                        <div className="flex items-start gap-2 bg-coral-600/40 border border-coral-500/40 rounded-card p-3 max-w-xs text-left">
+                        <div className="flex items-start gap-2 bg-coral-600/40 border border-coral-500/40 rounded-sm p-3 max-w-xs text-left">
                           <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
                           <p className="text-xs text-red-300">{cameraError}</p>
                         </div>
@@ -583,9 +585,9 @@ export default function VirtualTryOn({
                           }
                           startCamera();
                         }}
-                        className="btn-primary flex items-center gap-2 py-3 px-8"
+                        className="btn-primary flex items-center gap-2 py-3 px-8 focus-visible:outline-mint"
                       >
-                        <Camera className="w-5 h-5" /> Start Camera
+                        <Camera className="w-5 h-5" /> Start camera
                       </button>
                     </div>
                   )}
@@ -605,11 +607,12 @@ export default function VirtualTryOn({
 
                       <canvas
                         ref={uploadCanvasRef}
+                        aria-label="Your photo with the selected wig"
                         className="w-full h-full object-contain"
                       />
 
                       <div className="absolute bottom-3 left-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                        Wig applied ✓
+                        Wig applied
                       </div>
                     </div>
                   ) : !selectedProductId ? (
@@ -624,7 +627,7 @@ export default function VirtualTryOn({
                         <p className="font-display text-lg font-bold mb-1">
                           Upload your photo
                         </p>
-                        <p className="font-ui text-xs uppercase tracking-label text-white/60">
+                        <p className="font-ui text-sm text-white/70">
                           JPG, PNG, WEBP up to 10MB
                         </p>
                       </div>
@@ -641,7 +644,7 @@ export default function VirtualTryOn({
                         <p className="font-display text-lg font-bold mb-1">
                           Upload your photo
                         </p>
-                        <p className="font-ui text-xs uppercase tracking-label text-white/60">
+                        <p className="font-ui text-sm text-white/70">
                           JPG, PNG, WEBP up to 10MB
                         </p>
                       </div>
@@ -670,15 +673,17 @@ export default function VirtualTryOn({
                   <div className="absolute top-3 right-3 flex gap-2">
                     <button
                       onClick={downloadCapture}
-                      className="bg-white/90 hover:bg-white text-ink p-2 rounded-card transition-colors shadow-product"
+                      aria-label="Download photo"
+                      className="bg-white/90 hover:bg-white text-ink p-2.5 rounded-full transition-colors shadow-product"
                     >
-                      <Download className="w-4 h-4" />
+                      <Download className="w-4 h-4" aria-hidden />
                     </button>
                     <button
                       onClick={() => setCapturedImage(null)}
-                      className="bg-white/90 hover:bg-white text-ink p-2 rounded-card transition-colors shadow-product"
+                      aria-label="Retake photo"
+                      className="bg-white/90 hover:bg-white text-ink p-2.5 rounded-full transition-colors shadow-product"
                     >
-                      <RefreshCw className="w-4 h-4" />
+                      <RefreshCw className="w-4 h-4" aria-hidden />
                     </button>
                   </div>
                 </div>
@@ -687,7 +692,6 @@ export default function VirtualTryOn({
               {/* Face detection indicator */}
               {cameraActive && faceDetected && !capturedImage && (
                 <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
                   Tracking
                 </div>
               )}
@@ -698,7 +702,7 @@ export default function VirtualTryOn({
               <div className="flex gap-3 justify-center">
                 <button
                   onClick={capturePhoto}
-                  className="w-14 h-14 rounded-full bg-brand-600 hover:bg-brand-700 text-white shadow-lg hover:shadow-glow transition-all flex items-center justify-center"
+                  className="w-14 h-14 rounded-full bg-brand-600 hover:bg-brand-700 text-white transition-colors flex items-center justify-center"
                 >
                   <Camera className="w-6 h-6" />
                 </button>
@@ -895,7 +899,7 @@ foreheadOffset: ${tune.foreheadOffset.toFixed(2)},`}
 
                 <li className="flex items-start gap-2">
                   <span>•</span>
-                  Stay within 1–2 feet of camera
+                  Stay within 1 to 2 feet of the camera
                 </li>
               </ul>
             </div>

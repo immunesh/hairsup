@@ -23,17 +23,13 @@ export default function TermsPage() {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Hero Header */}
-      <div className="page-hero py-16 text-center relative overflow-hidden text-ink">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-brand-300 via-brand-950 to-transparent"></div>
-        <div className="container-custom max-w-3xl mx-auto relative z-10">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-100 border border-brand-200 text-brand-800 mb-4">
-            Legal Agreement
-          </span>
+      <div className="page-hero py-16 text-center text-ink">
+        <div className="container-custom max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-display font-bold text-ink mb-4">
             Terms of Service
           </h1>
-          <p className="text-ink-muted text-lg">
-            Last Updated: July 27, 2026. Please read these terms carefully before using our platform.
+          <p className="text-ink-muted text-lg max-w-[60ch] mx-auto">
+            Last updated July 27, 2026. Please read these terms carefully before using our platform.
           </p>
         </div>
       </div>
@@ -45,8 +41,8 @@ export default function TermsPage() {
           {/* Sticky Sidebar Navigation - Hidden on mobile, visible on lg and above */}
           <aside className="hidden lg:block lg:col-span-1">
             <div className="sticky top-24 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4">
-              <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                Table of Contents
+              <h2 className="text-[0.9375rem] font-semibold text-ink">
+                Contents
               </h2>
               <nav className="flex flex-col space-y-2">
                 {SECTIONS.map((sec) => {
@@ -55,16 +51,16 @@ export default function TermsPage() {
                     <a
                       key={sec.id}
                       href={`#${sec.id}`}
-                      className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 rounded-xl hover:text-brand-600 hover:bg-brand-50/50 transition-all group"
+                      className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 rounded-xl hover:text-brand-600 hover:bg-brand-50/50 transition-colors group"
                     >
-                      <Icon className="w-4 h-4 text-gray-400 group-hover:text-brand-500 transition-colors" />
+                      <Icon className="w-4 h-4 text-gray-500 group-hover:text-brand-500 transition-colors" />
                       <span>{sec.title}</span>
                     </a>
                   );
                 })}
               </nav>
               <div className="border-t border-gray-100 pt-4 mt-4">
-                <p className="text-xs text-gray-400 leading-relaxed">
+                <p className="text-xs text-gray-500 leading-relaxed">
                   Have questions about these terms?
                 </p>
                 <Link
@@ -78,14 +74,14 @@ export default function TermsPage() {
           </aside>
 
           {/* Detailed Content Column */}
-          <div className="lg:col-span-3 bg-white rounded-3xl p-8 md:p-12 border border-gray-100 shadow-sm space-y-12">
+          <div className="lg:col-span-3 bg-white rounded-3xl p-8 md:p-12 border border-gray-100 shadow-sm space-y-12 [&_p]:max-w-[35em] [&_li]:max-w-[35em]">
             
             <section id="acceptance" className="scroll-mt-24 space-y-4">
               <h2 className="text-2xl font-display font-bold text-gray-900 flex items-center gap-3 pb-2 border-b border-gray-100">
                 <Scale className="w-6 h-6 text-brand-600" />
                 1. Acceptance of Terms
               </h2>
-              <div className="text-gray-600 space-y-3 leading-relaxed">
+              <div className="text-gray-600 space-y-3 leading-relaxed max-w-[35em]">
                 <p>
                   Welcome to Glamour Hair Studios (referred to as &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;). These Terms of Service constitute a legally binding agreement made between you, whether personally or on behalf of an entity (&quot;you&quot; or &quot;user&quot;), and Glamour Hair Studios Pvt. Ltd., concerning your access to and use of our website (<Link href="/" className="text-brand-600 hover:underline font-medium">hairsup.com</Link>) as well as any other media form, media channel, mobile website, or mobile application related or connected thereto (collectively, the &quot;Platform&quot;).
                 </p>
@@ -100,7 +96,7 @@ export default function TermsPage() {
                 <FileText className="w-6 h-6 text-brand-600" />
                 2. User Accounts & Registration
               </h2>
-              <div className="text-gray-600 space-y-3 leading-relaxed">
+              <div className="text-gray-600 space-y-3 leading-relaxed max-w-[35em]">
                 <p>
                   To access certain features of the Platform, including making purchases, saving your wishlist, or using saved settings, you may be required to register for an account. You agree to provide accurate, current, and complete information during the registration process and to update such information to keep it accurate, current, and complete.
                 </p>
@@ -118,7 +114,7 @@ export default function TermsPage() {
                 <HelpCircle className="w-6 h-6 text-brand-600" />
                 3. Products, Customisations & Sizing
               </h2>
-              <div className="text-gray-600 space-y-3 leading-relaxed">
+              <div className="text-gray-600 space-y-3 leading-relaxed max-w-[35em]">
                 <p>
                   Glamour Hair Studios offers a wide range of premium hair wigs (for men and women) and hair systems. We make every effort to display the colours, features, specifications, and details of our products as accurately as possible on the Platform. However, we do not guarantee that the colours, styles, and details will be exactly accurate as your device&apos;s display configuration may alter visual representation.
                 </p>
@@ -136,7 +132,7 @@ export default function TermsPage() {
                 <ShieldAlert className="w-6 h-6 text-brand-600" />
                 4. Pricing, Payments & Taxes
               </h2>
-              <div className="text-gray-600 space-y-3 leading-relaxed">
+              <div className="text-gray-600 space-y-3 leading-relaxed max-w-[35em]">
                 <p>
                   All prices displayed on the Platform are in Indian Rupees (INR) and are inclusive of Goods and Services Tax (GST) unless specified otherwise. We reserve the right to adjust prices, correct typographical pricing errors, or change available payment options at any time.
                 </p>
@@ -154,7 +150,7 @@ export default function TermsPage() {
                 <HelpCircle className="w-6 h-6 text-brand-600" />
                 5. Shipping, Returns & Exchanges
               </h2>
-              <div className="text-gray-600 space-y-3 leading-relaxed">
+              <div className="text-gray-600 space-y-3 leading-relaxed max-w-[35em]">
                 <p>
                   <strong>Shipping:</strong> Standard shipping is free on every order within India. Express delivery may be available for an additional fee. Delivery timeframes are estimates and not guaranteed delivery dates.
                 </p>
@@ -172,7 +168,7 @@ export default function TermsPage() {
                 <Eye className="w-6 h-6 text-brand-600" />
                 6. Virtual Try-On Service & Camera Use
               </h2>
-              <div className="text-gray-600 space-y-3 leading-relaxed">
+              <div className="text-gray-600 space-y-3 leading-relaxed max-w-[35em]">
                 <p>
                   Glamour Hair Studios provides an AI-powered Virtual Try-On feature that allows you to see how our wigs and hair systems look on your face. This tool requires access to your device&apos;s camera or allows you to upload a photo.
                 </p>
@@ -190,7 +186,7 @@ export default function TermsPage() {
                 <FileText className="w-6 h-6 text-brand-600" />
                 7. Intellectual Property Rights
               </h2>
-              <div className="text-gray-600 space-y-3 leading-relaxed">
+              <div className="text-gray-600 space-y-3 leading-relaxed max-w-[35em]">
                 <p>
                   Unless otherwise indicated, the Platform is our proprietary property and all source code, databases, functionality, software, website designs, audio, video, text, photographs, and graphics on the Platform (collectively, the &quot;Content&quot;) and the trademarks, service marks, and logos contained therein (the &quot;Marks&quot;) are owned or controlled by us or licensed to us, and are protected by copyright and trademark laws.
                 </p>
@@ -205,7 +201,7 @@ export default function TermsPage() {
                 <ShieldAlert className="w-6 h-6 text-brand-600" />
                 8. Limitation of Liability
               </h2>
-              <div className="text-gray-600 space-y-3 leading-relaxed">
+              <div className="text-gray-600 space-y-3 leading-relaxed max-w-[35em]">
                 <p>
                   To the maximum extent permitted by applicable law, Glamour Hair Studios and its affiliates, directors, officers, employees, and agents shall not be liable for any direct, indirect, incidental, special, consequential, or exemplary damages, including but not limited to damages for loss of profits, goodwill, use, data, or other intangible losses, resulting from:
                 </p>
@@ -223,7 +219,7 @@ export default function TermsPage() {
                 <Scale className="w-6 h-6 text-brand-600" />
                 9. Governing Law
               </h2>
-              <div className="text-gray-600 space-y-3 leading-relaxed">
+              <div className="text-gray-600 space-y-3 leading-relaxed max-w-[35em]">
                 <p>
                   These Terms of Service and your use of the Platform are governed by and construed in accordance with the laws of India. Any legal action or proceeding arising out of or related to these terms shall be subject to the exclusive jurisdiction of the courts located in Mumbai, Maharashtra, India.
                 </p>
@@ -233,15 +229,15 @@ export default function TermsPage() {
             {/* Support section */}
             <div className="mt-12 p-6 rounded-2xl bg-brand-50/50 border border-brand-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h3 className="text-lg font-bold text-gray-900">Have Questions or Concerns?</h3>
+                <h3 className="text-lg font-bold text-gray-900">Have questions or concerns?</h3>
                 <p className="text-sm text-gray-600">Our customer support team is happy to help you understand our terms.</p>
               </div>
-              <div className="flex gap-3 flex-shrink-0">
-                <a href="tel:+919876543210" className="flex items-center gap-2 text-xs font-semibold px-4 py-2.5 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors shadow-sm text-gray-700">
-                  <Phone className="w-3.5 h-3.5 text-gray-500" /> Call Us
+              <div className="flex flex-wrap gap-3 flex-shrink-0">
+                <a href="tel:+919876543210" className="flex items-center gap-2 whitespace-nowrap text-sm font-semibold px-4 py-2.5 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors shadow-sm text-gray-700">
+                  <Phone className="w-3.5 h-3.5 text-gray-500" /> Call us
                 </a>
-                <a href="mailto:support@hairsup.com" className="flex items-center gap-2 text-xs font-semibold px-4 py-2.5 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors shadow-sm">
-                  <Mail className="w-3.5 h-3.5" /> Email Legal
+                <a href="mailto:support@hairsup.com" className="flex items-center gap-2 whitespace-nowrap text-sm font-semibold px-4 py-2.5 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors shadow-sm">
+                  <Mail className="w-3.5 h-3.5" /> Email legal
                 </a>
               </div>
             </div>

@@ -59,9 +59,9 @@ export default function UpdateOrderStatus({
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full border border-white/10 bg-slate-900/70 text-white p-2 rounded-xl focus:outline-none focus:border-cyan-500/50"
+            className="w-full border border-white/40 bg-slate-900/70 text-white p-2 rounded-xl focus:outline-none focus:border-cyan-500/50"
           >
-            <option value="">Select next status...</option>
+            <option value="">Select next status…</option>
             {nextOptions.map((s) => (
               <option key={s} value={s}>
                 {ADMIN_STATUS_LABELS[s] || s}
@@ -76,7 +76,7 @@ export default function UpdateOrderStatus({
           className="flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white px-4 py-2 rounded-xl transition-colors"
         >
           {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-          {loading ? "Updating..." : "Update"}
+          {loading ? "Updating…" : "Update"}
         </button>
       </div>
 

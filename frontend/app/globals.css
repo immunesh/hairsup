@@ -1,4 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap');
+/* Hallmark · shape: Catalogue · genre: editorial · theme: brand · redesign: full
+ * paper: oklch(97.6% 0.007 78) · accent: oklch(46.7% 0.067 183) · display: Alegreya · body: Figtree · hero: Stage · nav: edge-aligned, wordmark + one action · footer: deep-teal mast · signature: the strand G and the try-on mirror
+ * axes: linen/humanist-serif/teal · posture: Stage · contrast: pass · fold: pass · job: buy · v2.0.0 */
+/* Hallmark · pre-emit critique: P3 H3 E3 S3 R2 V3 · weakest: R, the product photos are stock and studio cut-outs; real salon photography replaces the slots */
+/* Hallmark · waive 83 · job: buy, a wig storefront whose rails of product photographs are the merchandise itself · a shopper judges a wig by its picture; the editorial sections between the rails are type-led */
+/* Hallmark · waive 85 · the footer keeps the original site's newsletter form; the page itself closes on the women's and men's doors · a storefront footer carries its mailing list, the last section is the buy path */
+/* Hallmark · reworded footer "About Glamour Hair Studios" to "About us" · card titles show the name before the first separator, full name in title */
+/* Hallmark · dismissed 77 · the section count reads 2 because the shop layout wraps the page in main > div; the homepage has ten sections */
+/* Hallmark · dismissed 42 · the footer is a decided deep-teal mast: newsletter, wordmark and contact, then three link columns, named in the stamp */
+/* Hallmark · dropped the trust strip (and its "7days" figure) · the footer carries the same four promises */
+/* Hallmark · dropped the mini stats, the hero tag box, testimonial avatars and the card Quick View overlay · duplicated content or invented faces */
+/* Hallmark · waive 44c · /women, /men, /products: a collection header, not a hero · job: buy, the sticky subcategory bar, toolbar and first row of products sit directly under it inside the first screen */
+/* Hallmark · waive 79 · /women, /men, /products: the space under the header is the product grid, which loads from the API after first paint · the render tier measures before the fetch resolves */
+/* Hallmark · moved the listing handlers (sort, view mode, subcategory, gender tab, filter drawer, filter chips) into components/shop/Listing.tsx props · same state setters, wired at each page's call site */
+/* Hallmark · reworded section heads to sentence case; hero slide copy lost its dashes · /blog/virtual-try-on is the third hero slide's link, present when that slide shows */
+/* Hallmark · service pages share components/shop/Service.tsx · headings to sentence case, eyebrows cut, women-hair-wig em dash reworded to a colon */
+/* Hallmark · dropped hair-bonding's second before/after gallery (it repeated the first) · rendered its unused HOW_IT_WORKS steps and the unused RELATED_SERVICES lists on extensions and weaving */
+/* Hallmark · replaced ba-2, the women.avif gallery on the men's page, competitor photos and dead Unsplash images with data-slot frames · dropped the nail-polish photo on hair-replacement; replacement and weaving heroes are type-led */
+/* Hallmark · waive 81 · data-slot frames: service before/after results, About team portraits, blog covers the CMS has no image for · photographs of real clients, staff and posts must come from the studio, never invented or stock */
+/* Hallmark · About: team stock portraits replaced with initials in slots; cliché lead and em dashes reworded · Contact: dropped "12 specialists online now" and its pulsing dot (unverifiable live figure), en dashes reworded, ?service= pre-fills a consultation request */
+/* Hallmark · FAQ: emoji section icons removed, two em dashes and the hero cliché reworded, section ids unchanged · Blog: dead cover URLs became slots, BLOG_CONTENT dashes reworded, a post published from the admin now opens its own page instead of the first guide */
+/* Hallmark · answered F20 · /blog card count comes from the CMS, so its last row changes as posts are added */
+/* Hallmark · coupon inputs lost their CSS uppercase · the handlers already upper-case the typed code, so the value sent to the API is unchanged */
+/* Hallmark · waive 28b · the try-on camera <video> is hidden and aria-hidden, never painted and never the LCP · it only feeds the canvas, so a poster frame would never be seen */
+/* Hallmark · dismissed 49 · the checkout place-order button already carries whitespace-nowrap; the lint joins its busy and idle labels, which never render together */
+/* Hallmark · dismissed 70 · register shows its success toast only after authApi.register resolves; the request is real */
+/* Hallmark · Phase 4 (cart, checkout, orders, profile, wishlist, auth, legal, try-on): emoji payment, status and address icons became lucide; transition-all named; the profile notification toggle became a keyboard switch; dashes, glued arrows, check glyphs and caps labels reworded; glass blur and hover-scale removed */
+/* Hallmark · Phase 5 (admin, --scope app): gradient shells and gradient text became the warm-charcoal admin-base, admin-panel and admin-raised tokens; neon glows, glow blobs and glass blur removed; hex literals tokenised; transition-all named; emoji and glyph icons became lucide; sidebar dots became an aria-current edge; loading ellipses and dashes reworded */
+/* Hallmark · waive 74 · tailwind.config.js maps gray, slate and the other default greys to tok(n-*) · every gray and slate class resolves to the warm n ramp tokens, so no literal palette reaches the page */
+
+@import url("./tokens.css");
+@import url("./base.css");
 
 @tailwind base;
 @tailwind components;
@@ -6,277 +37,388 @@
 
 @layer base {
   :root {
-    --brand: #2b8073;
-    --brand-mint: #cef1ea;
-    --brand-mint-hover: #b4e5db;
-    --ink: #151515;
-  }
-
-  * {
-    box-sizing: border-box;
+    /* Old names kept so any component reading them still resolves. */
+    --brand: var(--color-accent);
+    --brand-mint: var(--color-mint);
+    --brand-mint-hover: oklch(var(--c-brand-200));
+    --ink: var(--color-ink);
+    /* Input edges: 3:1 against paper and surface. */
+    --color-field: oklch(64% 0.013 70);
+    /* Admin surfaces: warm charcoal, matching the linen neutrals the admin's slate classes already map to. */
+    --c-admin-base: 17.5% 0.010 60;
+    --c-admin-panel: 20.5% 0.011 60;
+    --c-admin-raised: 23.5% 0.012 60;
   }
 
   html {
     scroll-behavior: smooth;
   }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
 
   body {
-    @apply font-sans text-ink bg-white antialiased;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
   }
 
-  /* Serif headings against sans body is what carries the editorial look.
-     Slightly tightened so large display sizes do not drift apart.
-     Colour is deliberately left to inherit: headings sit on dark hero
-     panels as often as on white, and forcing a colour here turns those
-     into near-black on near-black. */
-  h1,
-  h2,
-  h3,
-  h4 {
-    @apply font-display;
-    letter-spacing: -0.01em;
+  /* Colour is left to inherit: headings sit on deep teal as often as on linen. */
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    letter-spacing: var(--tracking-display);
+    overflow-wrap: break-word;
+    min-width: 0;
+    text-wrap: balance;
   }
+
+  a, button, input, select, textarea, summary, [tabindex] {
+    -webkit-tap-highlight-color: transparent;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    transition: none;
+  }
+  /* On the deep teal bands the teal ring disappears; draw it in mint. */
+  .bg-deep :focus-visible { outline-color: var(--color-mint); }
 }
 
 @layer components {
-  /* Pill, uppercase, letter-spaced, 2px border — the button treatment the
-     rest of the theme is built around. Mint fill with near-black text
-     rather than a saturated fill with white text. */
-  .btn-primary {
-    @apply font-ui text-sm font-semibold uppercase tracking-button
-           bg-brand-100 hover:bg-brand-200 text-ink
-           border-2 border-brand-100 hover:border-brand-200
-           px-8 py-2.5 rounded-button
-           transition-colors duration-200;
+  /* One primary button across the site: a filled teal pill, sentence case,
+     untracked. Every control below answers all eight states. */
+  .btn-primary,
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    min-height: 48px;
+    padding: calc(var(--space-xs) + var(--space-3xs)) var(--space-lg);
+    border-radius: var(--radius-pill);
+    border: 1.5px solid transparent;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0;
+    text-transform: none;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color var(--dur-short) var(--ease-out),
+      color var(--dur-short) var(--ease-out),
+      border-color var(--dur-short) var(--ease-out),
+      transform var(--dur-micro) var(--ease-out);
   }
+  .btn-primary:active,
+  .btn-secondary:active { transform: translateY(1px); }
+  .btn-primary:disabled,
+  .btn-secondary:disabled,
+  .btn-primary[aria-disabled='true'],
+  .btn-secondary[aria-disabled='true'] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-primary[aria-busy='true'],
+  .btn-secondary[aria-busy='true'] { cursor: progress; opacity: 0.8; }
+
+  .btn-primary {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: oklch(var(--c-brand-800));
+    border-color: oklch(var(--c-brand-800));
+  }
+  .btn-primary:focus-visible { outline-color: var(--color-ink); }
 
   .btn-secondary {
-    @apply font-ui text-sm font-semibold uppercase tracking-button
-           bg-transparent hover:bg-ink text-ink hover:text-white
-           border-2 border-ink
-           px-8 py-2.5 rounded-button
-           transition-colors duration-200;
+    background: transparent;
+    border-color: var(--color-ink);
+    color: var(--color-ink);
   }
-
-  .btn-dark {
-    @apply font-ui text-sm font-semibold uppercase tracking-button
-           bg-ink-soft hover:bg-brand-100 text-white hover:text-ink
-           border-2 border-ink-soft hover:border-brand-100
-           px-8 py-2.5 rounded-button
-           transition-colors duration-200;
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--color-ink);
+    color: var(--color-paper);
   }
 
   .btn-ghost {
-    @apply font-ui text-sm font-medium text-ink-muted hover:text-ink
-           px-4 py-2 rounded-card transition-colors duration-200;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    min-height: 40px;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-input);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-ink-2);
+    transition: color var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out);
   }
+  .btn-ghost:hover { color: var(--color-ink); background: var(--color-paper-2); }
+  .btn-ghost:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* Cards stay nearly square — the uniform heavy rounding was a large part
-     of what made the old theme read as generic. */
+  /* A quiet text link with its underline drawn, used for secondary actions. */
+  .link-quiet {
+    color: var(--color-ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, var(--color-accent) 55%, transparent);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+  }
+  .link-quiet:hover { color: var(--color-accent); text-decoration-color: currentColor; }
+
   .card {
-    @apply bg-white rounded-card border border-gray-100
-           shadow-product hover:shadow-product-hover
-           transition-shadow duration-300;
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-card);
+    transition: box-shadow var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
   }
+  .card:hover { box-shadow: var(--shadow-card); border-color: oklch(var(--c-n-400)); }
 
-  /* A padded card used as a side panel or tool surface. Same square corners and
-     quiet shadow as .card, but static - these do not respond to hover the way a
-     clickable product card does. */
   .card-panel {
-    @apply bg-white rounded-card border border-gray-100 shadow-product p-4;
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-card);
+    padding: var(--space-md);
   }
 
-  /* Accent variant for supporting/help panels. */
   .card-panel-accent {
-    @apply bg-brand-50 rounded-card border border-brand-100 p-4;
+    background: oklch(var(--c-brand-50));
+    border: 1px solid oklch(var(--c-brand-200));
+    border-radius: var(--radius-card);
+    padding: var(--space-md);
   }
 
-  /* Heading inside a panel. Uses the same small-caps UI treatment as
-     .section-eyebrow so panels read as part of the theme's type system rather
-     than as generic bold sans headings. */
+  /* Panel heading: the body face, a step down, sentence case, untracked. */
   .card-title {
-    @apply font-ui text-xs font-semibold uppercase tracking-label text-brand-600
-           flex items-center gap-2 mb-3;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-ink);
   }
 
   .input-field {
-    @apply w-full px-4 py-3 bg-white
-           border border-gray-200 rounded-card
-           text-ink placeholder:text-ink-muted
-           focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500
-           transition-colors duration-200;
+    width: 100%;
+    min-height: 48px;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-field);
+    border-radius: var(--radius-input);
+    color: var(--color-ink);
+    font-size: 1rem;
+    transition: border-color var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out);
   }
+  .input-field::placeholder { color: var(--color-muted); opacity: 1; }
+  .input-field:hover { border-color: oklch(var(--c-n-600)); }
+  .input-field:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent); }
+  .input-field:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 1px; }
+  .input-field:disabled { background: var(--color-paper-2); color: var(--color-muted); cursor: not-allowed; }
+  .input-field[aria-invalid='true'] { border-color: var(--color-error); }
 
-  /* Vertical rhythm. The reference runs 100px / 70px / 25px and alternates
-     backgrounds, so sections read as distinct blocks. Everything here used a
-     single py-16, which is the flatness that made the page feel machine-set. */
-  .section-lg {
-    @apply py-20 md:py-[100px];
-  }
+  /* Vertical rhythm from the token scale. */
+  .section-lg { padding-block: var(--section-gap-s); }
+  .section-md { padding-block: calc(var(--section-gap-s) * 0.66); }
+  .section-xs { padding-block: var(--space-lg); }
 
-  .section-md {
-    @apply py-14 md:py-[70px];
-  }
-
-  .section-xs {
-    @apply py-6 md:py-[25px];
-  }
-
-  /* Small caps label above a section title — the template uses this pairing
-     throughout and it does a lot of the work. */
+  /* Kept for existing markup: now a quiet sentence-case line in the accent,
+     not a tracked-caps label. */
   .section-eyebrow {
-    @apply font-ui text-xs font-semibold uppercase tracking-label text-brand-600 mb-3;
+    margin-bottom: var(--space-xs);
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-accent);
   }
 
   .section-title {
-    @apply font-display text-3xl md:text-[42px] md:leading-[1.15] font-bold text-ink mb-3;
+    margin-bottom: var(--space-sm);
+    font-family: var(--font-display);
+    font-size: var(--text-section);
+    font-weight: var(--display-weight);
+    line-height: 1.08;
+    color: var(--color-ink);
   }
 
-  /* Heading broken across two lines with a short rule sitting on the second.
-     This one detail carries much of the reference's character. */
   .heading-decorate .rule {
-    @apply inline-block align-middle w-[75px] h-[3px] bg-brand-100 mr-4 -translate-y-1;
+    display: inline-block;
+    vertical-align: middle;
+    width: 56px;
+    height: 2px;
+    margin-right: var(--space-md);
+    background: var(--color-accent);
+    transform: translateY(-0.25rem);
   }
 
   .section-subtitle {
-    @apply text-ink-muted text-base leading-relaxed mb-8;
+    margin-bottom: var(--space-xl);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--color-ink-2);
   }
 
-  /* Lead paragraph — a size step above body copy, used once at the top of a
-     block before the normal-sized supporting text. */
   .lead {
-    @apply text-lg leading-relaxed text-ink-soft;
+    font-size: var(--text-lead);
+    line-height: 1.5;
+    color: var(--color-ink-2);
   }
 
-  /* Asymmetric editorial block: image on one side, a deliberately narrower
-     text column on the other, so the two are not mirror images. */
   .editorial-grid {
-    @apply grid lg:grid-cols-12 gap-10 lg:gap-16 items-center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-xl);
+    align-items: center;
+  }
+  @media (min-width: 1024px) {
+    .editorial-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-2xl); }
+    .editorial-media { grid-column: span 6 / span 6; }
+    .editorial-copy { grid-column: 8 / span 5; }
   }
 
-  .editorial-media {
-    @apply lg:col-span-6;
-  }
-
-  .editorial-copy {
-    @apply lg:col-span-5 lg:col-start-8;
-  }
-
-  /* Compact by design — these sit over product photography and several can
-     stack in one corner, so they must not take more room than their text. */
+  /* Small, untracked, sentence case: they sit on product photos. */
   .badge {
-    @apply inline-flex items-center self-start shrink-0 whitespace-nowrap
-           font-ui px-2 py-[3px] rounded-sm
-           text-[10px] leading-none font-semibold uppercase tracking-button;
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: 4px;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
   }
+  .badge-sale { @apply badge; background: var(--color-sale); color: var(--color-accent-ink); }
+  .badge-new { @apply badge; background: var(--color-mint); color: var(--color-ink); }
+  .badge-best { @apply badge; background: var(--color-ink); color: var(--color-paper); }
 
-  .badge-sale {
-    @apply badge bg-coral-500 text-white;
-  }
-
-  .badge-new {
-    @apply badge bg-brand-100 text-ink;
-  }
-
-  .badge-best {
-    @apply badge bg-ink text-white;
-  }
-
-  /* Title case at 16px with a mint rule that grows from the left on hover,
-     rather than a colour swap. Taken from the reference's .rd-nav-link. */
+  /* Nav link: an accent rule that draws in from the left on hover. */
   .nav-link {
-    @apply font-ui text-base font-semibold text-ink hover:text-ink
-           relative inline-block leading-tight transition-colors duration-200;
-    letter-spacing: 0.05em;
+    position: relative;
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--color-ink);
+    letter-spacing: 0;
   }
-
   .nav-link::before {
     content: '';
-    @apply absolute left-0 -bottom-1 h-[2px] w-0 bg-brand-100;
-    transition: width 0.3s ease;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 2px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-short) var(--ease-out);
   }
-
   .nav-link:hover::before,
-  .nav-link[data-active='true']::before {
-    @apply w-full;
-  }
+  .nav-link:focus-within::before,
+  .nav-link[data-active='true']::before { transform: scaleX(1); }
 
   .price-current {
-    @apply font-display text-xl font-bold text-ink;
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
   }
-
   .price-original {
-    @apply text-sm text-ink-muted line-through ml-2;
+    margin-left: var(--space-xs);
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    text-decoration: line-through;
   }
-
   .price-discount {
-    @apply font-ui text-xs font-semibold uppercase tracking-button text-coral-600 ml-2;
+    margin-left: var(--space-xs);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-sale);
   }
 
-  .star-filled {
-    @apply text-brand-500 fill-brand-500;
-  }
+  .star-filled { color: oklch(var(--c-brand-600)); fill: oklch(var(--c-brand-600)); }
+  .star-empty { color: oklch(var(--c-n-300)); fill: oklch(var(--c-n-300)); }
 
-  .star-empty {
-    @apply text-gray-200 fill-gray-200;
-  }
-
+  /* One container width across the site. */
   .container-custom {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
   }
 
   .page-hero {
-    @apply bg-mist text-ink border-b border-gray-100;
+    background: var(--color-paper-2);
+    color: var(--color-ink);
+    border-bottom: 1px solid var(--color-rule);
   }
 
   .skeleton {
-    @apply animate-pulse bg-gray-100 rounded-card;
+    background: var(--color-paper-2);
+    border-radius: var(--radius-card);
+    animation: pulseSoft 1.6s ease-in-out infinite;
   }
 
   .divider {
-    @apply border-t border-gray-100 my-6;
+    margin-block: var(--space-lg);
+    border-top: 1px solid var(--color-rule);
   }
 }
 
 @layer utilities {
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-700 to-brand-500;
-  }
+  /* Retired: gradient text. Kept as a name so old markup reads as the accent. */
+  .text-gradient { color: var(--color-accent); }
 
-  .scrollbar-hide {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
+  .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
 
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-
-  .aspect-product {
-    aspect-ratio: 3 / 4;
-  }
+  .aspect-product { aspect-ratio: 3 / 4; }
 }
 
 /* Swiper overrides */
-.swiper-pagination-bullet-active {
-  background: #2b8073 !important;
-}
+.swiper-pagination-bullet-active { background: var(--color-accent) !important; }
 
 /* Image gallery overrides */
 .image-gallery-thumbnail.active,
-.image-gallery-thumbnail:focus {
-  border-color: #2b8073 !important;
-}
+.image-gallery-thumbnail:focus { border-color: var(--color-accent) !important; }
+.image-gallery-icon:hover { color: var(--color-accent) !important; }
 
-.image-gallery-icon:hover {
-  color: #2b8073 !important;
-}
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* Long-form article body: the blog post page. */
+@layer components {
+  .article { color: var(--color-ink-2); font-size: 1.0625rem; line-height: 1.75; max-width: 68ch; }
+  .article > * + * { margin-top: 1.25em; }
+  .article h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1.2;
+    color: var(--color-ink);
+    margin-top: 2.25em;
+  }
+  .article h3 { font-weight: 600; font-size: 1.125rem; color: var(--color-ink); margin-top: 1.75em; }
+  .article h2 + *, .article h3 + * { margin-top: 0.75em; }
+  .article > :first-child { margin-top: 0; }
+  .article strong { color: var(--color-ink); font-weight: 600; }
+  .article ul, .article ol { padding-left: 1.25em; }
+  .article ul { list-style: disc; }
+  .article ol { list-style: decimal; }
+  .article li + li { margin-top: 0.5em; }
+  .article li::marker { color: var(--color-accent); }
+  .article a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 0.2em; }
 }

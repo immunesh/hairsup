@@ -57,7 +57,7 @@ export default function OrdersPage() {
   };
 
   if (loading) {
-    return <p>Loading orders...</p>;
+    return <p>Loading orders…</p>;
   }
 
   return (
@@ -81,13 +81,13 @@ export default function OrdersPage() {
         bg-white/5
         border
         border-white/10
-        backdrop-blur-xl
+       
         p-8 sm:p-10
         text-center
         text-slate-400
         "
         >
-          Loading orders...
+          Loading orders…
         </div>
       ) : (
         <div
@@ -96,7 +96,7 @@ export default function OrdersPage() {
         border
         border-white/10
         bg-white/5
-        backdrop-blur-xl
+       
         overflow-hidden
         "
         >
@@ -156,7 +156,7 @@ export default function OrdersPage() {
                     border-b
                     border-white/5
                     hover:bg-white/5
-                    transition-all
+                    transition
                     duration-300
                     "
                       >
@@ -217,10 +217,10 @@ export default function OrdersPage() {
 
                             rounded-xl
 
-                            bg-[#131827]
+                            bg-admin-raised
 
                             border
-                            border-white/10
+                            border-white/40
 
                             text-slate-300
 
@@ -231,8 +231,8 @@ export default function OrdersPage() {
                               >
                                 <option value="">
                                   {updatingId === order.id
-                                    ? "Updating..."
-                                    : "Move to..."}
+                                    ? "Updating…"
+                                    : "Move to…"}
                                 </option>
                                 {nextOptions.map((s) => (
                                   <option key={s} value={s}>
@@ -289,7 +289,7 @@ export default function OrdersPage() {
                                   mode: "create",
                                 })
                               }
-                              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-medium transition-all"
+                              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-medium transition"
                             >
                               <Truck className="w-3.5 h-3.5" /> Ship Order
                             </button>

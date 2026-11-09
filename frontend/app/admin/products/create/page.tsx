@@ -237,7 +237,7 @@ export default function CreateProductPage() {
         return;
       }
 
-      alert("✅ Product created successfully");
+      alert("Product created successfully");
 
       router.push("/admin/products");
 
@@ -245,7 +245,7 @@ export default function CreateProductPage() {
     } catch (error) {
       console.error(error);
 
-      alert("❌ Server error");
+      alert("Server error");
     } finally {
       setLoading(false);
     }
@@ -286,7 +286,7 @@ export default function CreateProductPage() {
       border
       border-white/10
       bg-white/5
-      backdrop-blur-xl
+     
       p-8
       space-y-6
       "
@@ -313,7 +313,7 @@ export default function CreateProductPage() {
           rounded-2xl
           bg-white/5
           border
-          border-white/10
+          border-white/40
           text-white
           focus:outline-none
           focus:border-cyan-500/50
@@ -344,7 +344,7 @@ export default function CreateProductPage() {
           rounded-2xl
           bg-white/5
           border
-          border-white/10
+          border-white/40
           text-white
           placeholder:text-slate-500
           "
@@ -373,7 +373,7 @@ export default function CreateProductPage() {
           rounded-2xl
           bg-white/5
           border
-          border-white/10
+          border-white/40
           text-white
           "
           />
@@ -399,9 +399,9 @@ export default function CreateProductPage() {
             px-4
             py-3
             rounded-2xl
-            bg-[#131827]
+            bg-admin-raised
             border
-            border-white/10
+            border-white/40
             text-white
             "
             >
@@ -432,9 +432,9 @@ export default function CreateProductPage() {
       px-4
       py-3
       rounded-2xl
-      bg-[#131827]
+      bg-admin-raised
       border
-      border-white/10
+      border-white/40
       text-white
     "
             >
@@ -465,7 +465,7 @@ export default function CreateProductPage() {
             rounded-2xl
             bg-white/5
             border
-            border-white/10
+            border-white/40
             text-white
             "
             />
@@ -492,7 +492,7 @@ export default function CreateProductPage() {
             rounded-2xl
             bg-white/5
             border
-            border-white/10
+            border-white/40
             text-white
             "
             />
@@ -519,7 +519,7 @@ export default function CreateProductPage() {
             rounded-2xl
             bg-white/5
             border
-            border-white/10
+            border-white/40
             text-white
             "
             />
@@ -540,7 +540,7 @@ export default function CreateProductPage() {
                   material: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
             />
           </div>
 
@@ -557,7 +557,7 @@ export default function CreateProductPage() {
                   length: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
             />
           </div>
 
@@ -574,7 +574,7 @@ export default function CreateProductPage() {
                   density: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
             />
           </div>
 
@@ -590,7 +590,7 @@ export default function CreateProductPage() {
                   texture: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
             />
           </div>
 
@@ -606,7 +606,7 @@ export default function CreateProductPage() {
                   color: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
             />
           </div>
 
@@ -624,7 +624,7 @@ export default function CreateProductPage() {
                   capSize: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
             />
           </div>
         </div>
@@ -693,7 +693,7 @@ export default function CreateProductPage() {
           rounded-2xl
           bg-white/5
           border
-          border-white/10
+          border-white/40
           text-white
           "
           />
@@ -721,7 +721,7 @@ export default function CreateProductPage() {
           rounded-2xl
           bg-white/5
           border
-          border-white/10
+          border-white/40
           text-white
           "
           />
@@ -750,7 +750,7 @@ export default function CreateProductPage() {
           rounded-2xl
           bg-white/5
           border
-          border-white/10
+          border-white/40
           text-white
           "
           />
@@ -789,7 +789,7 @@ export default function CreateProductPage() {
                   copy[index].title = e.target.value;
                   setFeatures(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <input
@@ -801,7 +801,7 @@ export default function CreateProductPage() {
                   copy[index].subtitle = e.target.value;
                   setFeatures(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <button
@@ -850,7 +850,7 @@ export default function CreateProductPage() {
                   copy[index].question = e.target.value;
                   setFaqs(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <textarea
@@ -861,7 +861,7 @@ export default function CreateProductPage() {
                   copy[index].answer = e.target.value;
                   setFaqs(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <button
@@ -909,7 +909,7 @@ export default function CreateProductPage() {
                   copy[index].icon = e.target.value;
                   setCareGuides(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <input
@@ -921,7 +921,7 @@ export default function CreateProductPage() {
                   copy[index].title = e.target.value;
                   setCareGuides(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <input
@@ -933,7 +933,7 @@ export default function CreateProductPage() {
                   copy[index].steps = e.target.value;
                   setCareGuides(copy);
                 }}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <button
@@ -981,7 +981,7 @@ export default function CreateProductPage() {
                   copy[index].text = e.target.value;
                   setIncludedItems(copy);
                 }}
-                className="flex-1 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white"
+                className="flex-1 px-4 py-3 rounded-2xl bg-white/5 border border-white/40 text-white"
               />
 
               <button
@@ -1012,7 +1012,7 @@ export default function CreateProductPage() {
           rounded-2xl
           bg-white/5
           border
-          border-white/10
+          border-white/40
           text-slate-300
           "
             onChange={(e) => {
@@ -1056,7 +1056,7 @@ export default function CreateProductPage() {
             rounded-xl
             bg-white/5
             border
-            border-white/10
+            border-white/40
             text-sm
             text-slate-300
             "
@@ -1111,7 +1111,7 @@ export default function CreateProductPage() {
           rounded-2xl
           bg-white/5
           border
-          border-white/10
+          border-white/40
           text-slate-300
           "
             onChange={(e) => {
@@ -1170,7 +1170,7 @@ export default function CreateProductPage() {
             rounded-xl
             bg-white/5
             border
-            border-white/10
+            border-white/40
             text-sm
             text-slate-300
             "
@@ -1220,19 +1220,19 @@ export default function CreateProductPage() {
         px-8
         py-3
         rounded-2xl
-        bg-gradient-to-r
-        from-cyan-500
-        to-brand-600
+        
+        
+        
         text-white
         font-medium
-        transition-all
+        transition
         duration-300
         hover:scale-105
         disabled:opacity-50
-        shadow-[0_0_25px_rgba(56,189,248,0.35)]
-        "
+        
+         bg-brand-600 hover:bg-brand-700 text-white"
         >
-          {loading ? "Saving..." : "Save Product"}
+          {loading ? "Saving…" : "Save Product"}
         </button>
       </form>
     </div>

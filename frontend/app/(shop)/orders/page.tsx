@@ -88,7 +88,7 @@ export default function OrdersPage() {
     <div className="container-custom py-10">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-display font-bold">My Orders</h1>
-        <Link href="/profile" className="text-sm text-brand-600 hover:underline">My Account →</Link>
+        <Link href="/profile" className="text-sm text-brand-600 hover:underline">My account</Link>
       </div>
 
       {/* Filters */}
@@ -98,7 +98,7 @@ export default function OrdersPage() {
             key={s}
             onClick={() => setFilter(s)}
             className={cn(
-              'px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap border transition-all',
+              'px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap border transition-colors',
               filter === s ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-gray-600 border-gray-200 hover:border-brand-400'
             )}
           >

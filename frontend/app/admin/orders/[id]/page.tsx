@@ -36,7 +36,7 @@ export default function OrderDetailsPage() {
   if (loading) {
     return (
       <div className="p-8 flex items-center gap-2 text-slate-400">
-        <Loader2 className="w-5 h-5 animate-spin" /> Loading order...
+        <Loader2 className="w-5 h-5 animate-spin" /> Loading order…
       </div>
     );
   }
@@ -78,7 +78,7 @@ export default function OrderDetailsPage() {
           hover:bg-white/10
           hover:text-white
 
-          transition-all
+          transition
           duration-300
           "
         >
@@ -93,7 +93,7 @@ export default function OrderDetailsPage() {
           className="
           rounded-3xl
           bg-white/5
-          backdrop-blur-xl
+         
           border
           border-white/10
           p-6
@@ -126,7 +126,7 @@ export default function OrderDetailsPage() {
           className="
           rounded-3xl
           bg-white/5
-          backdrop-blur-xl
+         
           border
           border-white/10
           p-6
@@ -160,7 +160,7 @@ export default function OrderDetailsPage() {
 
         rounded-3xl
         bg-white/5
-        backdrop-blur-xl
+       
         border
         border-white/10
 
@@ -211,7 +211,7 @@ export default function OrderDetailsPage() {
 
         rounded-3xl
         bg-white/5
-        backdrop-blur-xl
+       
         border
         border-white/10
 
@@ -278,7 +278,7 @@ export default function OrderDetailsPage() {
 
         rounded-3xl
         bg-white/5
-        backdrop-blur-xl
+       
         border
         border-white/10
 
@@ -293,7 +293,7 @@ export default function OrderDetailsPage() {
           {hasShipment && (
             <button
               onClick={() => setShipmentModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-brand-400 hover:bg-white/10 transition-all text-sm"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-brand-400 hover:bg-white/10 transition text-sm"
             >
               <Pencil className="w-3.5 h-3.5" /> Edit Shipment
             </button>
@@ -344,7 +344,7 @@ export default function OrderDetailsPage() {
                 href={order.trackingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 mt-2 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium transition-all"
+                className="inline-flex items-center gap-2 mt-2 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium transition"
               >
                 Track Package <ExternalLink className="w-3.5 h-3.5" />
               </a>
@@ -358,7 +358,7 @@ export default function OrderDetailsPage() {
             </p>
             <button
               onClick={() => setShipmentModalOpen(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition-all"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition"
             >
               <Truck className="w-4 h-4" /> Ship Order
             </button>
@@ -375,7 +375,7 @@ export default function OrderDetailsPage() {
 
         rounded-3xl
         bg-white/5
-        backdrop-blur-xl
+       
         border
         border-white/10
 

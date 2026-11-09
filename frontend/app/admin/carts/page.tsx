@@ -29,7 +29,7 @@ export default function AdminCartsPage() {
   };
 
   if (loading) {
-    return <div className="p-6">Loading carts...</div>;
+    return <div className="p-6">Loading carts…</div>;
   }
 
   if (error) {
@@ -79,7 +79,7 @@ export default function AdminCartsPage() {
       rounded-3xl
 
       bg-white/5
-      backdrop-blur-xl
+     
 
       border
       border-white/10
@@ -161,7 +161,7 @@ export default function AdminCartsPage() {
 
                     hover:bg-white/5
 
-                    transition-all
+                    transition
                     duration-300
                     "
                     >

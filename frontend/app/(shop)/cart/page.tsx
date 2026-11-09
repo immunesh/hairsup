@@ -6,7 +6,7 @@ import {
 } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, Gift, Tag, ArrowLeft } from 'lucide-react';
+import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, Gift, Tag, ArrowLeft, Check } from 'lucide-react';
 import { useCartStore, useAuthStore } from '@/lib/store';
 import {
   cartApi,
@@ -166,7 +166,7 @@ export default function CartPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-xs text-gray-400 mb-0.5">{item.product.category?.name}</p>
+                        <p className="text-xs text-gray-500 mb-0.5">{item.product.category?.name}</p>
                         <Link href={`/products/${item.product.slug}`}>
                           <h3 className="font-semibold text-gray-900 hover:text-brand-600 transition-colors">{item.product.name}</h3>
                         </Link>
@@ -177,7 +177,7 @@ export default function CartPage() {
                       </div>
                       <button
                         onClick={() => handleQuantityChange(item.id, 0)}
-                        className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                        className="text-gray-500 hover:text-red-500 transition-colors p-1"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -194,7 +194,7 @@ export default function CartPage() {
                       </div>
                       <div className="text-right">
                         <p className="font-bold text-lg">{formatPrice(price * item.quantity)}</p>
-                        {item.quantity > 1 && <p className="text-xs text-gray-400">{formatPrice(price)} each</p>}
+                        {item.quantity > 1 && <p className="text-xs text-gray-500">{formatPrice(price)} each</p>}
                       </div>
                     </div>
                   </div>
@@ -233,7 +233,7 @@ export default function CartPage() {
                         )
                       }
                       placeholder="Enter coupon code"
-                      className="input-field flex-1 text-sm py-2 uppercase"
+                      className="input-field flex-1 text-sm py-2"
                       disabled={applyingCoupon}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
@@ -265,7 +265,7 @@ export default function CartPage() {
                 <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl p-3 animate-fade-in">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    <span className="font-bold text-green-800 uppercase">{couponCode}</span>
+                    <span className="font-bold text-green-800">{couponCode}</span>
                     <span className="text-xs text-green-600 font-medium">Applied Successfully</span>
                   </div>
                   <span className="font-bold text-green-700">-{formatPrice(discount)}</span>
@@ -313,7 +313,7 @@ export default function CartPage() {
             <div className="card p-4 space-y-2">
               {['100% Authentic Products', 'Easy 7-Day Returns', 'Secure Payment Gateway', 'Expert Hair Consultants'].map((text) => (
                 <div key={text} className="flex items-center gap-2 text-xs text-gray-600">
-                  <span className="text-green-500">✓</span> {text}
+                  <Check className="w-4 h-4 text-green-600 shrink-0" strokeWidth={2} aria-hidden /> {text}
                 </div>
               ))}
             </div>

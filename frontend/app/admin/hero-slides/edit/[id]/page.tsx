@@ -50,7 +50,7 @@ export default async function EditHeroSlidePage({
           hover:bg-white/10
           hover:text-white
 
-          transition-all
+          transition
           duration-300
           "
         >
@@ -64,7 +64,7 @@ export default async function EditHeroSlidePage({
         rounded-3xl
 
         bg-white/5
-        backdrop-blur-xl
+       
 
         border
         border-white/10

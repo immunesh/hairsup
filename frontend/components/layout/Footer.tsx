@@ -1,7 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { Sparkles, Instagram, Facebook, Youtube, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import {
+  Instagram, Facebook, Youtube, Twitter, Mail, Phone, MapPin,
+  Truck, RotateCcw, ShieldCheck, MessageCircle,
+} from 'lucide-react';
+import Logo from '@/components/brand/Logo';
 
 const FOOTER_LINKS = {
   'Hair Collections': [
@@ -23,7 +27,7 @@ const FOOTER_LINKS = {
     { label: 'Virtual Try-On', href: '/try-on' },
   ],
   'Company': [
-    { label: 'About Glamour Hair Studios', href: '/about' },
+    { label: 'About us', href: '/about' },
     { label: 'Blog & Tips', href: '/blog' },
     { label: 'Careers', href: '/about#careers' },
     { label: 'Privacy Policy', href: '/privacy' },
@@ -40,106 +44,66 @@ const SOCIAL_LINKS = [
 ];
 
 const FEATURES = [
-  { icon: '🚚', title: 'Free Shipping', desc: 'On every order' },
-  { icon: '↩️', title: 'Easy Returns', desc: '7-day hassle-free returns' },
-  { icon: '🔒', title: 'Secure Payment', desc: '100% encrypted & safe' },
-  { icon: '💬', title: '24/7 Support', desc: 'Expert help anytime' },
+  { Icon: Truck, title: 'Free Shipping', desc: 'On every order' },
+  { Icon: RotateCcw, title: 'Easy Returns', desc: '7-day hassle-free returns' },
+  { Icon: ShieldCheck, title: 'Secure Payment', desc: '100% encrypted & safe' },
+  { Icon: MessageCircle, title: '24/7 Support', desc: 'Expert help anytime' },
 ];
+
+// Hairlines between cells: two by two on small screens, one row on large.
+const FEATURE_CELL = [
+  '',
+  'pl-4 lg:pl-8 border-l',
+  'lg:pl-8 lg:border-l border-t lg:border-t-0',
+  'pl-4 lg:pl-8 border-l border-t lg:border-t-0',
+];
+
+const linkCls = 'text-deep-ink/80 hover:text-white underline-offset-4 hover:underline transition-colors';
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-950 text-gray-300">
-      {/* Feature strip */}
-      <div className="border-b border-gray-800">
-        <div className="container-custom py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-          {FEATURES.map(({ icon, title, desc }) => (
-            <div key={title} className="flex items-start gap-3">
-              <span className="text-2xl">{icon}</span>
+    <footer className="bg-deep text-deep-ink">
+      {/* The four promises, set in type between hairlines */}
+      <div className="border-b border-white/10">
+        <ul className="container-custom grid grid-cols-2 lg:grid-cols-4">
+          {FEATURES.map(({ Icon, title, desc }, i) => (
+            <li
+              key={title}
+              className={`flex items-start gap-3 py-6 lg:py-8 pr-4 border-white/10 ${FEATURE_CELL[i]}`}
+            >
+              <Icon className="w-5 h-5 mt-0.5 shrink-0 text-mint" strokeWidth={1.75} aria-hidden />
               <div>
-                <p className="font-semibold text-white text-sm">{title}</p>
-                <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
+                <p className="font-semibold text-white text-[0.9375rem]">{title}</p>
+                <p className="text-[0.875rem] text-deep-muted mt-0.5">{desc}</p>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
-      </div>
-
-      {/* Main footer */}
-      <div className="container-custom py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
-          {/* Brand */}
-          <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 bg-gradient-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-2xl font-display font-bold text-white">Glamour Hair Studios</span>
-            </Link>
-            <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-xs">
-              India&apos;s most trusted hair wig brand. We craft premium wigs and hair systems
-              that restore confidence and transform lives — for men and women alike.
-            </p>
-            <div className="space-y-2 text-sm">
-              <a href="tel:+919027396563" className="flex items-center gap-2 hover:text-brand-400 transition-colors">
-                <Phone className="w-4 h-4 text-brand-500" /> +91 90273 96563
-              </a>
-              <a href="mailto:hello@hairsup.com" className="flex items-center gap-2 hover:text-brand-400 transition-colors">
-                <Mail className="w-4 h-4 text-brand-500" /> hello@hairsup.com
-              </a>
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-brand-500 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-400">Glamour Hair Studios HQ, Bandra Kurla Complex, Mumbai 400051</span>
-              </div>
-            </div>
-
-            {/* Social */}
-            <div className="flex items-center gap-3 mt-6">
-              {SOCIAL_LINKS.map(({ Icon, href, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  className="w-9 h-9 bg-gray-800 hover:bg-brand-600 rounded-full flex items-center justify-center transition-colors"
-                >
-                  <Icon className="w-4 h-4" />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Links */}
-          {Object.entries(FOOTER_LINKS).map(([title, links]) => (
-            <div key={title}>
-              <h3 className="font-semibold text-white mb-4">{title}</h3>
-              <ul className="space-y-2">
-                {links.map(({ label, href }) => (
-                  <li key={label}>
-                    <Link href={href} className="text-sm text-gray-400 hover:text-brand-400 transition-colors">
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        </ul>
       </div>
 
       {/* Newsletter */}
-      <div className="border-t border-gray-800">
-        <div className="container-custom py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="border-b border-white/10">
+        <div className="container-custom py-10">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div>
-              <h4 className="font-semibold text-white">Get Style Inspiration + Exclusive Offers</h4>
-              <p className="text-sm text-gray-500 mt-1">Join 2 lakh+ subscribers. Unsubscribe anytime.</p>
+              <h2 className="font-display text-2xl text-white">Style notes, now and then</h2>
+              <p className="text-[0.9375rem] text-deep-muted mt-1">
+                Get style inspiration and exclusive offers. Join 2 lakh+ subscribers. Unsubscribe anytime.
+              </p>
             </div>
-            <form className="flex gap-2 w-full md:w-auto" onSubmit={(e) => e.preventDefault()}>
+            <form className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto" onSubmit={(e) => e.preventDefault()}>
+              <label htmlFor="footer-email" className="visually-hidden">Email address</label>
               <input
+                id="footer-email"
                 type="email"
+                autoComplete="email"
                 placeholder="Enter your email"
-                className="flex-1 md:w-72 px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-full text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-500"
+                className="flex-1 lg:w-80 min-h-[48px] px-5 bg-white/5 border border-white/55 rounded-full text-[0.9375rem] text-white placeholder:text-deep-muted hover:border-white/80 focus:outline-none focus:border-mint focus-visible:outline-2 focus-visible:outline-mint transition-colors"
               />
-              <button type="submit" className="btn-primary py-2.5 px-6 whitespace-nowrap">
+              <button
+                type="submit"
+                className="btn-primary !bg-mint !border-mint !text-ink hover:!bg-white hover:!border-white focus-visible:!outline-mint"
+              >
                 Subscribe
               </button>
             </form>
@@ -147,20 +111,79 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* Mast: the wordmark and how to reach the studio, then the links */}
+      <div className="container-custom py-16 lg:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-10 gap-y-12">
+          <div className="md:col-span-2 lg:col-span-12 xl:col-span-5">
+            <Link href="/" className="inline-block mb-6 rounded-sm">
+              <Logo tone="light" height={52} />
+            </Link>
+            <p className="font-display text-2xl leading-snug text-white max-w-[26ch] mb-8">
+              India&apos;s most trusted hair wig brand, for men and women alike.
+            </p>
+            <ul className="space-y-3 text-[0.9375rem]">
+              <li>
+                <a href="tel:+919027396563" className={`inline-flex items-center gap-3 ${linkCls}`}>
+                  <Phone className="w-4 h-4 text-mint" aria-hidden /> +91 90273 96563
+                </a>
+              </li>
+              <li>
+                <a href="mailto:hello@hairsup.com" className={`inline-flex items-center gap-3 ${linkCls}`}>
+                  <Mail className="w-4 h-4 text-mint" aria-hidden /> hello@hairsup.com
+                </a>
+              </li>
+              <li className="flex items-start gap-3 text-deep-ink/80">
+                <MapPin className="w-4 h-4 text-mint mt-1 shrink-0" aria-hidden />
+                <span>Glamour Hair Studios HQ, Bandra Kurla Complex, Mumbai 400051</span>
+              </li>
+            </ul>
+
+            <ul className="flex items-center gap-2 mt-8">
+              {SOCIAL_LINKS.map(({ Icon, href, label }) => (
+                <li key={label}>
+                  <a
+                    href={href}
+                    aria-label={label}
+                    className="w-11 h-11 border border-white/20 hover:border-mint hover:text-mint rounded-full flex items-center justify-center transition-colors"
+                  >
+                    <Icon className="w-[18px] h-[18px]" strokeWidth={1.75} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {Object.entries(FOOTER_LINKS).map(([title, links], i) => (
+            <nav
+              key={title}
+              aria-label={title}
+              className={i === 0 ? 'lg:col-span-4 xl:col-span-2 xl:col-start-7' : 'lg:col-span-4 xl:col-span-2'}
+            >
+              <h3 className="font-sans text-[0.9375rem] font-semibold text-white mb-4 tracking-normal">{title}</h3>
+              <ul className="space-y-2.5 text-[0.9375rem]">
+                {links.map(({ label, href }) => (
+                  <li key={label}>
+                    <Link href={href} className={linkCls}>
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
+        </div>
+      </div>
+
       {/* Bottom bar */}
-      <div className="border-t border-gray-800">
-        <div className="container-custom py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} Glamour Hair Studios Pvt. Ltd. All rights reserved.</p>
-          <div className="flex items-center gap-2">
-            {['Visa', 'Mastercard', 'UPI', 'Razorpay', 'EMI'].map((pay) => (
-              <span key={pay} className="bg-gray-800 px-2 py-1 rounded text-gray-400">{pay}</span>
-            ))}
-          </div>
-          <div className="flex gap-4">
-            <Link href="/privacy" className="hover:text-gray-300 transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-gray-300 transition-colors">Terms</Link>
-            <Link href="/sitemap" className="hover:text-gray-300 transition-colors">Sitemap</Link>
-          </div>
+      <div className="border-t border-white/10">
+        <div className="container-custom py-6 flex flex-col md:flex-row md:items-center justify-between gap-3 text-[0.8125rem] text-deep-muted">
+          <p>© {new Date().getFullYear()} Glamour Hair Studios Pvt. Ltd.</p>
+          <p>We accept Visa, Mastercard, UPI, Razorpay and EMI.</p>
+          <ul className="flex gap-5">
+            <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link></li>
+            <li><Link href="/terms" className="hover:text-white transition-colors">Terms</Link></li>
+            <li><Link href="/sitemap" className="hover:text-white transition-colors">Sitemap</Link></li>
+          </ul>
         </div>
       </div>
     </footer>

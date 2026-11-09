@@ -1,0 +1,40 @@
+:root {
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
+  --text-xs: 0.8125rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.25rem; --text-xl: 1.5625rem; --text-2xl: 1.953rem; --text-3xl: 2.441rem;
+  --text-display-s: clamp(2.25rem, 4vw + 0.5rem, 3.75rem); --text-display: clamp(2.75rem, 5vw + 1rem, 5.25rem);
+  --text-section: clamp(2rem, 2.5vw + 1rem, 3.5rem); --text-title: clamp(1.25rem, 0.75vw + 0.875rem, 1.625rem); --text-lead: clamp(1.125rem, 0.35vw + 1rem, 1.375rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
+  --container: 1440px; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 120px; --section-gap: 144px; --section-gap-l: 176px;
+  --z-base: 1; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200; --z-sticky-nav: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
+
+  /* Channels, so Tailwind's opacity modifiers (bg-brand-700/10) keep working.
+     The teal ramp is the project's own (tailwind.config.js, converted from hex);
+     the neutrals are new: a warm linen in place of Tailwind's cool greys. */
+  --c-brand-50: 98.1% 0.010 181; --c-brand-100: 93.1% 0.038 182; --c-brand-200: 88.5% 0.052 181; --c-brand-300: 81.7% 0.072 181;
+  --c-brand-400: 72.4% 0.093 180; --c-brand-500: 63.6% 0.096 180; --c-brand-600: 54.6% 0.083 181; --c-brand-700: 46.7% 0.067 183;
+  --c-brand-800: 40.3% 0.053 184; --c-brand-900: 35.8% 0.043 186; --c-brand-950: 25.1% 0.032 185;
+  --c-n-0: 99.3% 0.004 80; --c-n-50: 97.6% 0.007 78; --c-n-100: 95.2% 0.010 76; --c-n-200: 91.2% 0.012 75; --c-n-300: 85% 0.013 72;
+  --c-n-400: 70% 0.013 70; --c-n-500: 51% 0.013 68; --c-n-600: 44% 0.013 65; --c-n-700: 36% 0.012 62;
+  --c-n-800: 27% 0.011 60; --c-n-900: 21% 0.010 58; --c-n-950: 16.5% 0.009 56;
+  --c-coral-400: 72.4% 0.154 29; --c-coral-500: 62% 0.19 31; --c-coral-600: 54% 0.18 31;
+  --c-error: 52% 0.19 27; --c-success: 50% 0.12 150; --c-warn: 70% 0.14 75; --c-info: 52% 0.11 240;
+
+  --color-paper: oklch(var(--c-n-50)); --color-paper-2: oklch(var(--c-n-100)); --color-paper-3: oklch(var(--c-n-200));
+  --color-surface: oklch(var(--c-n-0));
+  --color-ink: oklch(var(--c-n-900)); --color-ink-2: oklch(var(--c-n-700)); --color-muted: oklch(var(--c-n-500));
+  --color-rule: oklch(var(--c-n-300));
+  --color-accent: oklch(var(--c-brand-700)); --color-accent-ink: oklch(var(--c-n-0)); --color-focus: oklch(var(--c-brand-800));
+  --c-deep-muted: 80% 0.022 180;
+  --color-mint: oklch(var(--c-brand-100)); --color-deep: oklch(var(--c-brand-950)); --color-deep-ink: oklch(var(--c-n-100)); --color-deep-muted: oklch(var(--c-deep-muted));
+  --color-sale: oklch(var(--c-coral-600));
+  --color-error: oklch(var(--c-error)); --color-success: oklch(var(--c-success));
+
+  --font-display: var(--font-alegreya), "Alegreya", ui-serif, Georgia, serif;
+  --font-body: var(--font-figtree), "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-outlier: var(--font-display);
+  --display-weight: 600;
+  --radius-card: 6px; --radius-input: 8px; --radius-pill: 999px; --rule-hair: 1px;
+  --shadow-card: 0 1px 2px oklch(var(--c-n-900) / 0.05), 0 10px 24px -14px oklch(var(--c-n-900) / 0.18);
+  --tracking-display: -0.015em;
+}

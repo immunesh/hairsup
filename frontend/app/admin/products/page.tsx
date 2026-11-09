@@ -1,6 +1,7 @@
 import Link from "next/link";
 import DeleteProductButton from "@/components/DeleteProductButton";
 import { API_URL } from "@/lib/config";
+import { Star, CheckCircle2, XCircle } from 'lucide-react';
 
 async function getProducts() {
   const res = await fetch(`${API_URL}/products`, {
@@ -36,20 +37,20 @@ export default async function ProductsPage() {
           py-3
           rounded-2xl
 
-          bg-gradient-to-r
-          from-cyan-500
-          to-brand-600
+          
+          
+          
 
           text-white
           font-medium
 
-          transition-all
+          transition
           duration-300
 
           hover:scale-105
 
-          shadow-[0_0_25px_rgba(56,189,248,0.35)]
-          "
+          
+           bg-brand-600 hover:bg-brand-700 text-white"
         >
           + Add Product
         </Link>
@@ -63,7 +64,7 @@ export default async function ProductsPage() {
         border-white/10
 
         bg-white/5
-        backdrop-blur-xl
+       
 
         overflow-x-auto 
         "
@@ -143,7 +144,7 @@ export default async function ProductsPage() {
 
                   hover:bg-white/5
 
-                  transition-all
+                  transition
                   duration-300
                   "
                 >
@@ -244,17 +245,17 @@ export default async function ProductsPage() {
 
                   {/* Rating */}
                   <td className="p-5 text-yellow-400">
-                    ⭐ {product.rating || 0}
+                    <span className="inline-flex items-center gap-1"><Star className="w-4 h-4 fill-current" aria-hidden /> {product.rating || 0}</span>
                   </td>
 
                   {/* Featured */}
-                  <td className="p-5">{product.isFeatured ? "✅" : "❌"}</td>
+                  <td className="p-5">{product.isFeatured ? <CheckCircle2 className="w-5 h-5 text-green-400" aria-label="Yes" /> : <XCircle className="w-5 h-5 text-slate-500" aria-label="No" />}</td>
 
                   {/* Best Seller */}
-                  <td className="p-5">{product.isBestSeller ? "✅" : "❌"}</td>
+                  <td className="p-5">{product.isBestSeller ? <CheckCircle2 className="w-5 h-5 text-green-400" aria-label="Yes" /> : <XCircle className="w-5 h-5 text-slate-500" aria-label="No" />}</td>
 
                   {/* New Arrival */}
-                  <td className="p-5">{product.isNewArrival ? "✅" : "❌"}</td>
+                  <td className="p-5">{product.isNewArrival ? <CheckCircle2 className="w-5 h-5 text-green-400" aria-label="Yes" /> : <XCircle className="w-5 h-5 text-slate-500" aria-label="No" />}</td>
                   {/* Short Desc */}
                   <td
                     className="
@@ -333,7 +334,7 @@ export default async function ProductsPage() {
 
                         hover:bg-cyan-500/30
 
-                        transition-all
+                        transition
                         "
                       >
                         Edit

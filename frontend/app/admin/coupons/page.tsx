@@ -99,7 +99,7 @@ export default function AdminCouponsPage() {
         rounded-3xl
 
         bg-white/5
-        backdrop-blur-xl
+       
 
         border
         border-white/10
@@ -110,7 +110,7 @@ export default function AdminCouponsPage() {
         text-slate-400
         "
         >
-          Loading coupons...
+          Loading coupons…
         </div>
       </div>
     );
@@ -159,7 +159,7 @@ export default function AdminCouponsPage() {
       rounded-3xl
 
       bg-white/5
-      backdrop-blur-xl
+     
 
       border
       border-white/10
@@ -194,7 +194,7 @@ export default function AdminCouponsPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
 
@@ -220,10 +220,10 @@ export default function AdminCouponsPage() {
 
           rounded-2xl
 
-          bg-[#131827]
+          bg-admin-raised
 
           border
-          border-white/10
+          border-white/40
 
           text-white
           "
@@ -254,7 +254,7 @@ export default function AdminCouponsPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
           "
@@ -280,7 +280,7 @@ export default function AdminCouponsPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
           "
@@ -306,7 +306,7 @@ export default function AdminCouponsPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
           "
@@ -332,7 +332,7 @@ export default function AdminCouponsPage() {
           bg-white/5
 
           border
-          border-white/10
+          border-white/40
 
           text-white
           "
@@ -356,10 +356,10 @@ export default function AdminCouponsPage() {
 
           rounded-2xl
 
-          bg-[#131827]
+          bg-admin-raised
 
           border
-          border-white/10
+          border-white/40
 
           text-white
           "
@@ -379,20 +379,20 @@ export default function AdminCouponsPage() {
 
         rounded-2xl
 
-        bg-gradient-to-r
-        from-cyan-500
-        to-brand-600
+        
+        
+        
 
         text-white
         font-medium
 
-        transition-all
+        transition
         duration-300
 
         hover:scale-105
 
-        shadow-[0_0_25px_rgba(56,189,248,0.35)]
-        "
+        
+         bg-brand-600 hover:bg-brand-700 text-white"
         >
           Create Coupon
         </button>
@@ -404,7 +404,7 @@ export default function AdminCouponsPage() {
       rounded-3xl
 
       bg-white/5
-      backdrop-blur-xl
+     
 
       border
       border-white/10
